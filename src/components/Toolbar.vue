@@ -7,12 +7,13 @@ export default {
 <template>
     <div class="toolbar">
         <div class="toolbar-title">SynthA!</div>
+        <router-link to="/">Home</router-link>
+        <!--
         <div class="toolbar-actions">
-            <!-- Add toolbar actions/buttons here -->
-            <!-- insert 5 buttons -->
             <button @click="playMainFunction">Home</button>
-
+            <router-link to="/">Back</router-link>
         </div>
+        -->
         <div class="version">DEMO v0.1</div>
     </div>
 </template>
@@ -32,7 +33,19 @@ export default {
     right: 0;
     z-index: 100;
 }
+.toolbar a {
+    height: 100%;
+    float: left;
+    font-size: 16px;
+    color: white;
+    text-align: center;
+    padding: 0px 16px;
+    text-decoration: none;
+}
 
+.toolbar a:hover {
+    background-color: blueviolet;
+}
 .toolbar-title {
     font-size: 24px;
 }

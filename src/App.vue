@@ -1,215 +1,133 @@
-export default {
-  components: {
-    Toolbar,
-  },
-};
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
-import Toolbar from './components/Toolbar.vue'
-import ControlsToolbar from './components/ControlsToolbar.vue'
-
-//import tone js
-import * as Tone from 'tone'
-
-function  play(){
-  const synth = new Tone.Synth().toDestination();
-  synth.triggerAttackRelease("C4", "2n");
-  console.log("lol");
+<script>
+import Home from './Home.vue'
+import About from './About.vue'
+import NotFound from './NotFound.vue'
+import Playground from './Playground.vue'
+  
+const routes = {
+  '/': Home,
+  '/about': About,
+  '/synth': Playground
 }
 
+export default {  
+  data() {
+    return {
+      currentPath: window.location.hash
+    }
+  },
+  computed: {
+    currentView() {
+      return routes[this.currentPath.slice(1) || '/'] || NotFound
+    }
+  },
+  mounted() {
+    window.addEventListener('hashchange', () => {
+      this.currentPath = window.location.hash
+    })
+  }
+}
 </script>
 
 <template>
+  <!-- make a toolbar with all these buttons -->
   
-  <header>
-    <Toolbar/>
-      <!-- Your main content goes here -->
-  </header> 
+  <div class="toolbar">
+    <div class="toolbar-title">SynthA!</div>
+    <div class="toolbar-actions">
+        <router-link to="/">Home</router-link>
+        <router-link to="/synth">Playground</router-link>
+        <router-link to="/about">About</router-link>
+    </div>
 
-  <main  @contextmenu.prevent="setVisibleContextMenu($event)">
-    <div>
-      <!-- create a module -->
-      <Module :moduleName="moduleName" :inputPorts="inputPorts" :outputPorts="outputPorts"
-        @start-dragging="handlePortDragging" />
-      <!---
-        <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-        <div class="wrapper">
-        -->
-      <div v-for="(module, index) in modules" :key="index">
-        <Module :moduleName="module.moduleName" :inputPorts="module.inputPorts" :outputPorts="module.outputPorts"
-          @start-dragging="handlePortDragging" />
-      </div>
-    </div>
-    <div class="libraryButton">
-      <button>></button>
-    </div>
-    <div v-if="contextMenuVisible" class="context-menu"
-      :style="{ top: contextMenuPosition.y + 'px', left: contextMenuPosition.x + 'px' }">
-      <div class="contextualMenuButton" @click="addModule('New Module')">Add Module</div>
-      <!-- Add more options as needed -->
-    </div>
-    
+    <div class="version">DEMO v0.1</div>
+  </div>
   
+  <main >
+        <div>
+          <router-view></router-view>
+        </div>
   </main>
-  
-  <div class="controls">
-    <ControlsToolbar @play-main-function="play" oncontextmenu="return false;"/>
-    </div>
 </template>
+
 
 <style scoped>
 header {
   line-height: 1.5;
 }
-html,
-body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  width:100%; 
-}
 
-body {
+.toolbar {
+  background-color: #333;
+  color: white;
   display: flex;
-  flex-direction: column;
-  background-color: rgb(202, 60, 60);;
-}
-main {
-  margin:0;
-  padding:0;
-  box-sizing: border-box;
-  background-color: #767779;
-  min-height:100%;
-  min-width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  /* position the toolber at the top of the screen */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  line-height: 1.5;
+  z-index: 100;
   overflow: hidden;
-  flex-grow: 1;
-  position:absolute;
-  left:0;
 }
-
-.logo {
-  display: block;
-  top: 10px;
-  margin: 0 auto 2rem;
+.toolbar a {
+   height:100%;
+   float: left;
+   font-size: 16px;
+   color: white;
+   text-align: center;
+   padding: 0px 16px;
+   text-decoration: none;
 }
-.mainDiv{
-  background-color: white;
+.toolbar a:hover {
+   background-color: blueviolet;
 }
-.context-menu{
-  position: absolute;
-  z-index: 1000;
-  background-color: #fff;
+.toolbarButton{
+  height:100%;
   border: 1px solid #111;
-  /*make the text black*/
-  color: #000; 
-  border-radius: 1px;
+  color:#fff;
+  flex: 1;
+  /* Adjust the padding as needed */
   cursor: pointer;
-  margin: 5px;
 }
-.contextualMenuButton{
-  padding: 10px;
-  background-color: #fff;
-  border: 1px solid #111;
-  /*make the text black*/
-  color: #000; 
-  border-radius: 1px;
-  cursor: pointer;
-  margin: 5px;
-  transition: background-color 0.3s, color 0.3s;
-}
-.libraryButton{
-  /* a button on mid of main that has a ">" inside.
-  When clicked will open a section containing all modules*/
-  position: absolute;
-  top:50%;
-  left: 1%;
-  background-color: #fff;
-  border: 1px solid #111;
-  /*make the text black*/
-  color: #000;
-}
-.contextualMenuButton:hover {
-  background-color: rgb(105, 105, 105);
+.toolbarButton:hover {
+  background-color: rgb(71, 71, 71);
   color: #fff;
 }
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
+.green{
+  background-color: green;
+}
 
-  /*
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-*/
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+.divtest {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.toolbar-title {
+  font-size: 24px;
+}
+
+.toolbar-actions {
+  position:relative;
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+}
+
+main {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background-color: #767779;
+  min-height: 100%;
+  min-width: 100%;
+  overflow: auto;
+  flex-grow: 1;
+  position: absolute;
+  left: 0;
+  top:0;
 }
 </style>
-<script>
-import Module from './components/Modules.vue'
-export default {
-  components: {
-    Module,
-  },
-  
-  data() {
-    return {
-      contextMenuVisible: false,
-      contextMenuPosition: { x: 0, y: 0 },
-      modules: [], 
-      moduleName: "My Module",
-      inputPorts: [
-        { id: 1, x: 10, y: 50 },
-        { id: 2, x: 10, y: 80 },
-        // Add more input ports as needed
-      ],
-      outputPorts: [
-        { id: 1, x: 190, y: 50 },
-        { id: 2, x: 190, y: 80 },
-        // Add more output ports as needed
-      ],
-    };
-  },
-  methods: {
-    handlePortDragging(port) {
-      // Implement the logic to handle port dragging here
-    },
-    setVisibleContextMenu(event) {
-      console.log(this.contextMenuVisible)
-      if (this.contextMenuVisible == true) {
-        console.log("Hi")
-        this.contextMenuVisible = false;
-      }else{
-      this.contextMenuVisible = true;
-      this.contextMenuPosition = { x: event.clientX, y: event.clientY };
-      console.log(event.clientX, event.clientY)
-      }
-    },
-    addModule(moduleName) {
-      // Add a new module to the modules array
-      this.modules.push({
-        moduleName,
-        inputPorts: [
-          { id: 1, x: 10, y: 50 },
-          { id: 2, x: 10, y: 80 },
-        ], // Define initial input ports if needed
-        outputPorts: [
-          { id: 1, x: 190, y: 50 },
-          { id: 2, x: 190, y: 80 },
-        ], // Define initial output ports if needed
-      });
-
-      // Close the context menu
-      this.contextMenuVisible = false;
-    },
-  },
-  
-};
-</script>

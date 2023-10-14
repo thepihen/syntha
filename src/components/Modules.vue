@@ -95,8 +95,10 @@ export default {
 .module-title {
     background-color: #000;
     color: #fff;
-    padding: 5px;
+    padding: 0px;
+    height: 20%;
     width: 100%;
+    align-items: center;
     text-align: center;
 }
 
