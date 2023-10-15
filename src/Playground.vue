@@ -71,7 +71,7 @@ function libraryButtonClicked(){
             <div class="scaffoldCategory" :id="'category' + (index)" @click="toggleCategory(index)">{{ item.toLocaleUpperCase()}} <span class="material-symbols-outlined" :id="'category_span' + (index)">arrow_drop_down</span></div>
             <!-- if the category is expanded then you need to showcase its content -->
             <div v-if="isExpanded(index)" class="scaffoldCategoryContent">
-                hey category!</div>
+                {{("heyyy I'm category "+index)}}</div>
         </div>
         </div>
         

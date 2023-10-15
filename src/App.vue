@@ -40,7 +40,7 @@ export default {
         <router-link to="/about">About</router-link>
     </div>
 
-    <div class="version">DEMO v0.1</div>
+    <div class="version">DEMO v0.2</div>
   </div>
   
   <main >
