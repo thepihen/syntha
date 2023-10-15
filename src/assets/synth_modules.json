@@ -1,7 +1,13 @@
 {
-    "osc":{
-        "name": "Oscillator",
-        "type": "synth",
+    "categories_content":{
+        "0":[
+            "basic_osc",
+            "ccc"
+        ]
+    },
+    "basic_osc":{
+        "name": "SVO",
+        "type": "oscillator",
         "description": "A simple oscillator",
         "preview_img_source": "./assets/images/oscillator.png"
     }

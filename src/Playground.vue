@@ -54,7 +54,7 @@ function libraryButtonClicked(){
         -->
             <div v-for="(module, index) in modules" :key="index">
                 <Module :moduleName="module.moduleName" :inputPorts="module.inputPorts"
-                    :outputPorts="module.outputPorts" @start-dragging="handlePortDragging" />
+                    :outputPorts="module.outputPorts" @start-dragging="handlePortDragging" @contextmenu.prevent="setVisibleContextMenu($event)" />
             </div>
         </div>
         <div v-if="contextMenuVisible" class="context-menu"
@@ -62,16 +62,27 @@ function libraryButtonClicked(){
             <div class="contextualMenuButton" @click="addModule('New Module')">Add Module</div>
             <!-- Add more options as needed -->
         </div>
-        <button id="libButton" class="libraryButton" @click="libraryButtonClicked">></button>
+        <button id="libButton" class="libraryButton material-symbols-outlined" @click="libraryButtonClicked">arrow_forward_ios</button>
         <div id="modulesScaffold" v-if="libButtonClicked" class="modules-scaffold">
             <div class="scaffoldTitle"> MODULE SCAFFOLD </div>
         <!-- display all items from myJson -->
         <div v-for="(item,index) in mod_categories" :key="index">
             <!-- simply display its contents as text -->
-            <div class="scaffoldCategory" :id="'category' + (index)" @click="toggleCategory(index)">{{ item.toLocaleUpperCase()}} <span class="material-symbols-outlined" :id="'category_span' + (index)">arrow_drop_down</span></div>
+            <div class="scaffoldCategory" :id="'category' + (index)" @click="toggleCategory(index)">
+                {{ item.toLocaleUpperCase()}} <span class="material-symbols-outlined" 
+                :id="'category_span' + (index)">arrow_drop_down</span></div>
             <!-- if the category is expanded then you need to showcase its content -->
+            <!-- <div v-if="isExpanded(index)" class="scaffoldCategoryContent">
+                {{("heyyy I'm category "+index)}}</div> -->
             <div v-if="isExpanded(index)" class="scaffoldCategoryContent">
-                {{("heyyy I'm category "+index)}}</div>
+                <!-- get the content from the synth info json-->
+                <div v-for="(it, ind) in categories_content[index]" :key="ind" class="scaffoldCategoryItem" @click="addModule(it)">
+                    <!-- recover from the same json it, then display 
+                        the image associated to the field "preview_img_source" of the field it -->
+                    <img :src="'./src/assets/images/' + it + '.png'" class="scaffoldCategoryItemImg">
+                    {{it}}
+                </div>
+            </div>
         </div>
         </div>
         
@@ -166,7 +177,8 @@ main {
     border: 1px solid #111;
     /*make the text black*/
     z-index:101;
-    background-color: blueviolet;
+    transform: translate(0, -50%);
+    background-color: rgba(199, 199, 199, 0);
         /* Blue background */
         border: none;
         /* Remove borders */
@@ -179,6 +191,7 @@ main {
         cursor: pointer;
         /* Mouse pointer on hover */
     transition: transform 0.3s ease;
+    font-size: 32px;
 }
 
 .libraryButton:hover {
@@ -196,9 +209,9 @@ main {
     position: absolute;
     top: 3.45rem;
     left: 0;
-    width: 300px;
+    width: 25%;
     /* make this extend for all height */
-    height: 90%;
+    bottom: 2.2em;
     background-color: rgb(255, 255, 255);
     /*add a black border*/
     border: 1px solid #111;
@@ -208,7 +221,7 @@ main {
 }
 
 .modules-scaffold.active {
-    width: 300px;
+    width: 30%;
 }
 
 .scaffoldTitle{
@@ -223,6 +236,8 @@ main {
 
 .scaffoldCategory{
     display: flex;
+    flex-direction:row;
+
     justify-content: space-between;
     align-items: center;
     padding: 5px;
@@ -233,6 +248,18 @@ main {
 .scaffoldCategory:hover{
     background-color: rgb(105, 105, 105);
     color: #fff;
+}
+.scaffoldCategoryContent{
+    display:flex;
+    flex-direction:row;
+}
+.scaffoldCategoryItem{
+    /* display items in a column */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 5px;
+    border: 1px solid #ccc;
 }
 
 @media (min-width: 1024px) {
@@ -281,7 +308,9 @@ export default {
                 // Add more output ports as needed
             ],
             myJson: list_json,
+            synth_info: synth_info_json,
             mod_categories: list_json["categories"],
+            categories_content: synth_info_json["categories_content"],
             expandedCategories: [] //array of expanded categories ids
         };
     },
@@ -299,6 +328,11 @@ export default {
                 this.contextMenuPosition = { x: event.clientX, y: event.clientY };
                 console.log(event.clientX, event.clientY)
             }
+            console.log(Boolean(event.originalTarget.closest("modulesScaffold")))
+            if (event.originalTarget.parentElement.classList.contains("module")){
+                //manage the removal of modules here
+            }
+            console.log(event);
         },
         addModule(moduleName) {
             // Add a new module to the modules array
@@ -313,7 +347,6 @@ export default {
                     { id: 2, x: 190, y: 80 },
                 ], // Define initial output ports if needed
             });
-
             // Close the context menu
             this.contextMenuVisible = false;
         },
@@ -323,8 +356,8 @@ export default {
             this.libButtonClicked = !this.libButtonClicked;
             if (this.libButtonClicked) {
                 //document.getElementById("libButton").style.left = "10%";
-                document.getElementById("libButton").style.transform = "translate(300px, 0) ";
-                document.getElementById("libButton").innerHTML = "<";
+                document.getElementById("libButton").style.transform = "translate(calc(24cqw), -50%) ";
+                document.getElementById("libButton").innerHTML = "arrow_back_ios_new";
                 //document.getElementById("libButton").style.transform = "rotate(180deg)";
                 //get the modulesScaffold and make a transition from 0 width to 300 px width
                 //document.getElementById("modulesScaffold").classList.add("active");
@@ -332,8 +365,8 @@ export default {
             }
             else {
                 //document.getElementById("libButton").style.left = "1%";
-                document.getElementById("libButton").innerHTML = ">";
-                document.getElementById("libButton").style.transform = "translate(0px, 0)";
+                document.getElementById("libButton").innerHTML = "arrow_forward_ios";
+                document.getElementById("libButton").style.transform = "translate(0px, -50%)";
             }   
         },
 

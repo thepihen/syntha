@@ -1,8 +1,9 @@
 import {createApp} from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import App from './App.vue'
-
+import Home from './Home.vue'
 import About from './About.vue'
+import NotFound from './NotFound.vue'
 import Playground from './Playground.vue'
 
 
@@ -14,9 +15,10 @@ const router = createRouter({
     // 4. Provide the history implementation to use. We are using the hash history for simplicity here.
     history: createWebHistory(),
     routes: [
-        { path: '/', component: App },
+        { path: '/', component: Home },
         { path: '/about', component: About },
-        { path: '/synth', component: Playground }
+        { path: '/synth', component: Playground },
+        { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFound }
     ], // short for `routes: routes`
 });
 
