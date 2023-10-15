@@ -63,8 +63,18 @@ function libraryButtonClicked(){
             <!-- Add more options as needed -->
         </div>
         <button id="libButton" class="libraryButton" @click="libraryButtonClicked">></button>
-        <div id="modulesScaffold" v-if="libButtonClicked" class="modules-scaffold">HELLO!!!!</div>
-
+        <div id="modulesScaffold" v-if="libButtonClicked" class="modules-scaffold">
+            <div class="scaffoldTitle"> MODULE SCAFFOLD </div>
+        <!-- display all items from myJson -->
+        <div v-for="(item,index) in mod_categories" :key="index">
+            <!-- simply display its contents as text -->
+            <div class="scaffoldCategory" :id="'category' + (index)" @click="toggleCategory(index)">{{ item.toLocaleUpperCase()}} <span class="material-symbols-outlined" :id="'category_span' + (index)">arrow_drop_down</span></div>
+            <!-- if the category is expanded then you need to showcase its content -->
+            <div v-if="isExpanded(index)" class="scaffoldCategoryContent">
+                hey category!</div>
+        </div>
+        </div>
+        
 
     </main>
 
@@ -98,8 +108,7 @@ main {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    background-color: rgb(255, 255, 255);/* #767779;*/
-    background-color: white;
+    background-color: rgb(128, 129, 150);/* #767779;*/
         background-image: linear-gradient(90deg, #a5a5a5ab 2px, transparent 1px),
             linear-gradient(#a5a5a5ab 2px, transparent 1px);
         background-size: 30px 30px;
@@ -132,6 +141,7 @@ main {
     border-radius: 1px;
     cursor: pointer;
     margin: 5px;
+    z-index:99;
 }
 
 .contextualMenuButton {
@@ -155,6 +165,7 @@ main {
     background-color: #fff;
     border: 1px solid #111;
     /*make the text black*/
+    z-index:101;
     background-color: blueviolet;
         /* Blue background */
         border: none;
@@ -181,20 +192,47 @@ main {
 }
 
 .modules-scaffold {
-    position: relative;
+    user-select: none;
+    position: absolute;
     top: 3.45rem;
     left: 0;
     width: 300px;
-    height: 46.4em;
+    /* make this extend for all height */
+    height: 90%;
     background-color: rgb(255, 255, 255);
     /*add a black border*/
     border: 1px solid #111;
     z-index: 100;
     transition: width 0.3s ease;
+    overflow: scroll;
 }
 
 .modules-scaffold.active {
     width: 300px;
+}
+
+.scaffoldTitle{
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    padding: 1rem;
+    background:#111;
+    color:#fff;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+.scaffoldCategory{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    background-color: rgb(255, 255, 255);
+}
+.scaffoldCategory:hover{
+    background-color: rgb(105, 105, 105);
+    color: #fff;
 }
 
 @media (min-width: 1024px) {
@@ -218,11 +256,13 @@ main {
 </style>
 <script>
 import Module from './components/Modules.vue'
+
+import list_json from './assets/synth_modules_list.json'
+import synth_info_json from './assets/synth_modules.json'
 export default {
     components: {
         Module,
     },
-
     data() {
         return {
             libButtonClicked: false,
@@ -240,6 +280,9 @@ export default {
                 { id: 2, x: 190, y: 80 },
                 // Add more output ports as needed
             ],
+            myJson: list_json,
+            mod_categories: list_json["categories"],
+            expandedCategories: [] //array of expanded categories ids
         };
     },
     methods: {
@@ -292,7 +335,20 @@ export default {
                 document.getElementById("libButton").innerHTML = ">";
                 document.getElementById("libButton").style.transform = "translate(0px, 0)";
             }   
+        },
 
+        toggleCategory(index) {
+            // Toggle the expanded state of the category at the given index
+            if (this.expandedCategories.includes(index)) {
+                this.expandedCategories = this.expandedCategories.filter(i => i !== index);
+                document.getElementById("category_span" + index).innerHTML = "arrow_drop_down";
+            } else {
+                this.expandedCategories.push(index);
+                document.getElementById("category_span" + index).innerHTML = "arrow_drop_up";
+            }
+        },
+        isExpanded(index) {
+            return this.expandedCategories.includes(index);
         }
     },
 

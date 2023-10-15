@@ -1,0 +1,8 @@
+{
+    "osc":{
+        "name": "Oscillator",
+        "type": "synth",
+        "description": "A simple oscillator",
+        "preview_img_source": "./assets/images/oscillator.png"
+    }
+}
