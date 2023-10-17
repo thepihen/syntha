@@ -21,14 +21,36 @@ export default {
         },
     },
     methods: {
-        startDragging(port) {
+        startDraggingPort(port, event) {
             // Implement the logic to start dragging the port
             // You can use Vue's $emit to notify the parent component
             // that a port is being dragged
-            this.$emit('start-dragging', port);
+            console.log("this is atest")
+            console.log(this.currentPosition);
+            //this.$emit('start-dragging-port', port, event.clientX - this.currentPosition.x, event.clientY - this.currentPosition.y);
+            this.$emit('start-dragging-port', port, event.clientX - this.currentPosition.x, event.clientY - this.currentPosition.y);
+
+            /*
+            window.addEventListener("mousemove", this.handlePortDrag(port, event));
+            window.addEventListener("mouseup", this.stopDraggingPort(port));
+            */
+           
+            window.addEventListener("mousemove", (e) => this.handlePortDrag(e));
+            window.addEventListener("mouseup", (e) => this.stopPortDrag(port, e));
         },
-    
+        stopPortDrag(port, event){
+            this.$emit('stop-dragging-port', port, event.clientX, event.clientY);
+            window.removeEventListener("mousemove", this.handlePortDrag);
+            window.removeEventListener("mouseup", this.stopDraggingPort);
+        },
+        handlePortDrag(event){
+            this.$emit('handle-port-drag', event.clientX, event.clientY);
+        },
     startDragging(event) {
+        //if control is pressed return
+        if (event.ctrlKey) {
+            return;
+        }
         console.log("AAAA");
         this.isDragging = true;
         this.startPosition = {
@@ -39,7 +61,6 @@ export default {
         window.addEventListener("mouseup", this.stopDragging);
     },
     handleDrag(event) {
-        console.log('handleDrag');
         if (this.isDragging) {
             this.currentPosition = {
                 x: event.clientX - this.startPosition.x,
@@ -57,20 +78,21 @@ export default {
 </script>
 
 <template>
-    <div class="module" @mousedown="startDragging" :style="elementStyles">
-        <div class="module-title">{{ moduleName }}</div>
+    <div class="module"   :style="elementStyles">
+        <div class="module-title" @mousedown="startDragging">{{ moduleName }}</div>
         <div class="module-knobs">
             <!-- Add your knobs here (you can use Vue components for knobs) -->
             <knob v-for="i in 3" :key="i"></knob>
         </div>
         <div class="module-io">
             <div class="input-ports">
-                <div class="input-port" v-for="inputPort in inputPorts" :key="inputPort.id"
-                    @mousedown="startDragging(inputPort)"></div>
+                <!-- careful! Numbering starts from 1 here -->
+                <div class="input-port" v-for="inputPort in inputPorts" :key="inputPort.id" v-bind:id="'inputPort'+inputPort.id"
+                    @mousedown="startDraggingPort(inputPort, $event)"></div>
             </div>
             <div class="output-ports">
                 <div class="output-port" v-for="outputPort in outputPorts" :key="outputPort.id"
-                    @mousedown="startDragging(outputPort)"></div>
+                    @mousedown="startDraggingPort(outputPort, $event)"></div>
             </div>
         </div>
     </div>
@@ -89,10 +111,11 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
-    cursor: move;
+    
 }
 
 .module-title {
+    user-select: none;
     background-color: #000;
     color: #fff;
     padding: 0px;
@@ -100,6 +123,7 @@ export default {
     width: 100%;
     align-items: center;
     text-align: center;
+    cursor: move;
 }
 
 .module-knobs {

@@ -47,15 +47,15 @@ function libraryButtonClicked(){
         <div>
             <!-- create a module -->
             <Module :moduleName="moduleName" :inputPorts="inputPorts" :outputPorts="outputPorts"
-                @start-dragging="handlePortDragging" />
+                @start-dragging-port="startPortDragging" @handle-port-drag="handlePortDragging" @stop-dragging-port="stopPortDragging"/>
             <!---
         <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
         <div class="wrapper">
         -->
             <div v-for="(module, index) in modules" :key="index">
                 <Module :moduleName="module.moduleName" :inputPorts="module.inputPorts"
-                    :outputPorts="module.outputPorts" @start-dragging="handlePortDragging" @contextmenu.prevent="setVisibleContextMenu($event)" />
-            </div>
+                    :outputPorts="module.outputPorts" @start-dragging="startPortDragging" @handle-port-drag="handlePortDragging" @contextmenu.prevent="setVisibleContextMenu($event)" />
+                </div>
         </div>
         <div v-if="contextMenuVisible" class="context-menu"
             :style="{ top: contextMenuPosition.y + 'px', left: contextMenuPosition.x + 'px' }">
@@ -65,6 +65,7 @@ function libraryButtonClicked(){
         <button id="libButton" class="libraryButton material-symbols-outlined" @click="libraryButtonClicked">arrow_forward_ios</button>
         <div id="modulesScaffold" v-if="libButtonClicked" class="modules-scaffold">
             <div class="scaffoldTitle"> MODULE SCAFFOLD </div>
+            <div v-if="isDragging()"> heyyyyy </div>
         <!-- display all items from myJson -->
         <div v-for="(item,index) in mod_categories" :key="index">
             <!-- simply display its contents as text -->
@@ -86,7 +87,11 @@ function libraryButtonClicked(){
         </div>
         </div>
         
-
+        <svg class="visualConnections">
+            <line v-if="(isDragging() || makeConnectionPermanent)" :x1="this.dragPortPositionX" :y1="this.dragPortPositionY" :x2="this.mouseCurrentX"
+                :y2="this.mouseCurrentY" stroke="blue" stroke-width="2" />
+        </svg>
+        
     </main>
 
     <div class="controls">
@@ -262,6 +267,16 @@ main {
     border: 1px solid #ccc;
 }
 
+.visualConnections{
+    z-index:1201;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
 @media (min-width: 1024px) {
     header {
         display: flex;
@@ -311,12 +326,56 @@ export default {
             synth_info: synth_info_json,
             mod_categories: list_json["categories"],
             categories_content: synth_info_json["categories_content"],
-            expandedCategories: [] //array of expanded categories ids
+            expandedCategories: [], //array of expanded categories ids
+
+            isDraggingPort:false,
+            dragPortPositionX:0,
+            dragPortPositionY:0,
+            mouseCurrentX:0,
+            mouseCurrentY:0,
+            makeConnectionPermanent:false,
         };
     },
+    options: {
+        isDragging() {
+            return this.isDraggingPort;
+        },
+    },
     methods: {
-        handlePortDragging(port) {
+        isDragging(){
+            return this.isDraggingPort;
+        },
+        startPortDragging(port, posX, posY) {
             // Implement the logic to handle port dragging here
+            console.log("ababababab")
+            console.log(posX, posY);
+            this.dragPortPositionX = posX;
+            this.dragPortPositionY = posY;
+            this.isDraggingPort = true;
+        },
+        handlePortDragging(posX, posY) {
+            if(!this.isDraggingPort){
+                return;
+            }
+            //TODO: this is just an easy fix to the fact
+            //the event listener is never remoevd and i was sick
+            //of seeing the console spammed
+            /*
+            if(!this.isDragging()){
+                return;
+            }*/
+            console.log("hokoehkokeh")
+            console.log(posX, posY);
+            this.mouseCurrentX = posX;
+            this.mouseCurrentY = posY;
+            //make a line between posX, posY and the current mouse position
+        },
+        stopPortDragging(port, posX, posY) {
+            this.isDraggingPort = false;
+            //if you're over another port then guess what we're connecting the two
+            //if you're not over another port then guess what we're not connecting the two
+            //connecting = making the connection permanently visible
+            this.makeConnectionPermanent = true;
         },
         setVisibleContextMenu(event) {
             console.log(this.contextMenuVisible)
