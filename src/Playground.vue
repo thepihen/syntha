@@ -46,20 +46,24 @@ function libraryButtonClicked(){
     <main @contextmenu.prevent="setVisibleContextMenu($event)">
         <div>
             <!-- create a module -->
-            <Module :moduleName="moduleName" :inputPorts="inputPorts" :outputPorts="outputPorts"
+            <!-- <Module :moduleName="moduleName" :inputPorts="inputPorts" :outputPorts="outputPorts"
                 @start-dragging-port="startPortDragging" @handle-port-drag="handlePortDragging" @stop-dragging-port="stopPortDragging"/>
-            <!---
+            -->
+                <!--
         <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
         <div class="wrapper">
         -->
             <div v-for="(module, index) in modules" :key="index">
                 <Module :moduleName="module.moduleName" :inputPorts="module.inputPorts"
-                    :outputPorts="module.outputPorts" @start-dragging="startPortDragging" @handle-port-drag="handlePortDragging" @contextmenu.prevent="setVisibleContextMenu($event)" />
+                    :outputPorts="module.outputPorts" :createdCoordsX="module.createdCoordsX"
+                    :createdCoordsY="module.createdCoordsY" @start-dragging-port="startPortDragging" 
+                    @handle-port-drag="handlePortDragging" @stop-dragging-port="stopPortDragging" 
+                    @contextmenu.prevent="setVisibleContextMenu($event)" />
                 </div>
         </div>
         <div v-if="contextMenuVisible" class="context-menu"
             :style="{ top: contextMenuPosition.y + 'px', left: contextMenuPosition.x + 'px' }">
-            <div class="contextualMenuButton" @click="addModule('New Module')">Add Module</div>
+            <div class="contextualMenuButton" @click="addModule('New Module', fromContextMenu = true)">Add Module</div>
             <!-- Add more options as needed -->
         </div>
         <button id="libButton" class="libraryButton material-symbols-outlined" @click="libraryButtonClicked">arrow_forward_ios</button>
@@ -86,10 +90,16 @@ function libraryButtonClicked(){
             </div>
         </div>
         </div>
-        
+        <!-- demo clutter -->
+         
         <svg class="visualConnections">
-            <line v-if="(isDragging() || makeConnectionPermanent)" :x1="this.dragPortPositionX" :y1="this.dragPortPositionY" :x2="this.mouseCurrentX"
+            <line v-if="(isDragging())" :x1="this.dragPortPositionX" :y1="this.dragPortPositionY" :x2="this.mouseCurrentX"
                 :y2="this.mouseCurrentY" stroke="blue" stroke-width="2" />
+        </svg>
+    
+        <svg class="visualConnections"  v-for="(item,index) in connections" :key="index">
+            <line  :x1="connections[index].x1" :y1="connections[index].y1"
+                :x2="connections[index].x2" :y2="connections[index].y2" stroke="blue" stroke-width="2" />
         </svg>
         
     </main>
@@ -298,7 +308,7 @@ main {
 </style>
 <script>
 import Module from './components/Modules.vue'
-
+import ModuleConnection from './scripts/classes/ModuleConnection'
 import list_json from './assets/synth_modules_list.json'
 import synth_info_json from './assets/synth_modules.json'
 export default {
@@ -327,13 +337,15 @@ export default {
             mod_categories: list_json["categories"],
             categories_content: synth_info_json["categories_content"],
             expandedCategories: [], //array of expanded categories ids
-
+            connections: [], //save all connections between modules here
             isDraggingPort:false,
             dragPortPositionX:0,
             dragPortPositionY:0,
             mouseCurrentX:0,
             mouseCurrentY:0,
             makeConnectionPermanent:false,
+            playGroundTranslateX:0,
+            playGroundTranslateX:0,
         };
     },
     options: {
@@ -375,7 +387,12 @@ export default {
             //if you're over another port then guess what we're connecting the two
             //if you're not over another port then guess what we're not connecting the two
             //connecting = making the connection permanently visible
-            this.makeConnectionPermanent = true;
+            
+            //this.makeConnectionPermanent = true; //for demo purposes
+
+            //for now this is quite useless
+            this.connections.push(new ModuleConnection(0,1, 0, port, 0, 0, this.mouseCurrentX, this.mouseCurrentY));
+            this.connections[0].printConnection();
         },
         setVisibleContextMenu(event) {
             console.log(this.contextMenuVisible)
@@ -393,8 +410,26 @@ export default {
             }
             console.log(event);
         },
-        addModule(moduleName) {
+        addModule(moduleName, fromContextMenu = false) {
             // Add a new module to the modules array
+            if(!fromContextMenu){
+                //just have it in a random (visible hopefully) position
+                this.modules.push({
+                    moduleName,
+                    inputPorts: [
+                        { id: 1, x: 10, y: 50 },
+                        { id: 2, x: 10, y: 80 },
+                    ], // Define initial input ports if needed
+                    outputPorts: [
+                        { id: 1, x: 190, y: 50 },
+                        { id: 2, x: 190, y: 80 },
+                    ], // Define initial output ports if needed
+                    createdCoordsX: (Math.floor(Math.random()*600)+200),
+                    createdCoordsY: (Math.floor(Math.random() * 500)+100),
+                });
+                return;
+            }
+            //add a module at the position of the context menu
             this.modules.push({
                 moduleName,
                 inputPorts: [
@@ -405,7 +440,10 @@ export default {
                     { id: 1, x: 190, y: 50 },
                     { id: 2, x: 190, y: 80 },
                 ], // Define initial output ports if needed
+                createdCoordsX: this.contextMenuPosition.x,
+                createdCoordsY: this.contextMenuPosition.y,
             });
+            console.log("POS: "+this.contextMenuPosition.x + "   " + this.contextMenuPosition.y)
             // Close the context menu
             this.contextMenuVisible = false;
         },

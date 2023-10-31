@@ -16,7 +16,11 @@ export default new Router({
         {
             path: '/about',
             component: () => import('./About.vue')
-        }
+        },
+        {
+            path: '/login',
+            component: () => import('./Login.vue')
+        },
         // Add more routes as needed
     ]
 

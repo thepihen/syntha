@@ -3,17 +3,30 @@ import Home from './Home.vue'
 import About from './About.vue'
 import NotFound from './NotFound.vue'
 import Playground from './Playground.vue'
-  
+import Login from './Login.vue'
+import { store } from './store.js'
+// all this might just be tremendously useless. TODO: check
+//if this, and/or the one in router.js can be deleted
 const routes = {
   '/': Home,
   '/about': About,
-  '/synth': Playground
+  '/synth': Playground,
+  '/login': Login
 }
 
 export default {  
   data() {
     return {
-      currentPath: window.location.hash
+      store,
+      currentPath: window.location.hash,
+    }
+  },
+  created(){
+    if (localStorage.getItem('loggedIn') == 'true'){
+      this.loggedIn = true;
+    }else{
+      localStorage.setItem('loggedIn', 'false')
+      this.loggedIn = false;
     }
   },
   computed: {
@@ -24,7 +37,10 @@ export default {
   mounted() {
     window.addEventListener('hashchange', () => {
       this.currentPath = window.location.hash
-    })
+    });
+    window.addEventListener('loginEvent', (event) => {
+      this.loggedIn = localStorage.getItem('loggedIn');
+    });
   }
 }
 </script>
@@ -39,7 +55,10 @@ export default {
         <router-link to="/synth">Playground</router-link>
         <router-link to="/about">About</router-link>
     </div>
-
+    <div class="accountSection">
+      <router-link to="/login" v-if="(store.loggedIn==false)">Login</router-link>
+      <router-link to="/account" v-if="(store.loggedIn)">Account</router-link> <!-- here we will put the actual account -->
+    </div>
     <div class="version">DEMO v0.2</div>
   </div>
   
@@ -108,6 +127,13 @@ header {
 }
 .toolbar-title {
   font-size: 24px;
+  /* align left */
+  flex: 1;
+  text-align: left;
+  margin-left: 10px;
+  margin-right: 10px;
+
+
 }
 
 .toolbar-actions {
@@ -115,6 +141,10 @@ header {
   display: flex;
   flex-direction: row;
   height: 100%;
+  flex: 15;
+    text-align: left;
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
 main {

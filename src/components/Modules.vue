@@ -5,6 +5,19 @@ export default {
         moduleName: String, // The name of the module
         inputPorts: Array, // An array of input ports (objects with id, x, y)
         outputPorts: Array, // An array of output ports (objects with id, x, y)
+        createdCoordsX: Number,
+        createdCoordsY: Number
+    },
+    created(){
+        this.createdCoords = [this.createdCoordsX, this.createdCoordsY]
+        this.currentPosition = {
+            x: this.createdCoordsX,
+            y: this.createdCoordsY,
+        };
+        this.startPosition = {
+            x: this.createdCoordsX,
+            y: this.createdCoordsY,
+        };
     },
     data() {
         return {
@@ -21,6 +34,7 @@ export default {
         },
     },
     methods: {
+        
         startDraggingPort(port, event) {
             // Implement the logic to start dragging the port
             // You can use Vue's $emit to notify the parent component
@@ -28,7 +42,7 @@ export default {
             console.log("this is atest")
             console.log(this.currentPosition);
             //this.$emit('start-dragging-port', port, event.clientX - this.currentPosition.x, event.clientY - this.currentPosition.y);
-            this.$emit('start-dragging-port', port, event.clientX - this.currentPosition.x, event.clientY - this.currentPosition.y);
+            this.$emit('start-dragging-port', port, event.clientX , event.clientY);
 
             /*
             window.addEventListener("mousemove", this.handlePortDrag(port, event));
@@ -78,7 +92,7 @@ export default {
 </script>
 
 <template>
-    <div class="module"   :style="elementStyles">
+    <div class="module" :style="elementStyles">
         <div class="module-title" @mousedown="startDragging">{{ moduleName }}</div>
         <div class="module-knobs">
             <!-- Add your knobs here (you can use Vue components for knobs) -->
@@ -106,8 +120,6 @@ export default {
     background-color: #ccc;
     border: 1px solid #000;
     position: absolute;
-    left: 30%; 
-    top:50%;
     display: flex;
     flex-direction: column;
     align-items: center;

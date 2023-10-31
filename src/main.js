@@ -5,8 +5,8 @@ import Home from './Home.vue'
 import About from './About.vue'
 import NotFound from './NotFound.vue'
 import Playground from './Playground.vue'
-
-
+import Login from './Login.vue'
+import Account from './Account.vue'
 
 // 3. Create the router instance and pass the `routes` option
 // You can pass in additional options here, but let's
@@ -18,6 +18,8 @@ const router = createRouter({
         { path: '/', component: Home },
         { path: '/about', component: About },
         { path: '/synth', component: Playground },
+        { path: '/login', component: Login },
+        { path: '/account', component: Account},
         { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFound }
     ], // short for `routes: routes`
 });
