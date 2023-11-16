@@ -4,6 +4,7 @@ import About from './About.vue'
 import NotFound from './NotFound.vue'
 import Playground from './Playground.vue'
 import Login from './Login.vue'
+import Workshop from './Workshop.vue'
 import { store } from './store.js'
 // all this might just be tremendously useless. TODO: check
 //if this, and/or the one in router.js can be deleted
@@ -53,6 +54,7 @@ export default {
     <div class="toolbar-actions">
         <router-link to="/">Home</router-link>
         <router-link to="/synth">Playground</router-link>
+        <router-link to="/workshop">Workshop</router-link>
         <router-link to="/about">About</router-link>
     </div>
     <div class="accountSection">

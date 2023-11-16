@@ -4,11 +4,8 @@ export default {
   },
 };
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
 import Toolbar from './components/Toolbar.vue'
 import ControlsToolbar from './components/ControlsToolbar.vue'
-
 //import tone js
 import * as Tone from 'tone'
 
@@ -44,7 +41,8 @@ function libraryButtonClicked(){
     </header>
 
     <main @contextmenu.prevent="setVisibleContextMenu($event)">
-        <div>
+        <div class="mainDiv">
+        <div style="cursor:default">
             <!-- create a module -->
             <!-- <Module :moduleName="moduleName" :inputPorts="inputPorts" :outputPorts="outputPorts"
                 @start-dragging-port="startPortDragging" @handle-port-drag="handlePortDragging" @stop-dragging-port="stopPortDragging"/>
@@ -58,8 +56,11 @@ function libraryButtonClicked(){
                     :outputPorts="module.outputPorts" :createdCoordsX="module.createdCoordsX"
                     :createdCoordsY="module.createdCoordsY" @start-dragging-port="startPortDragging" 
                     @handle-port-drag="handlePortDragging" @stop-dragging-port="stopPortDragging" 
-                    @contextmenu.prevent="setVisibleContextMenu($event)" />
-                </div>
+                    @contextmenu.prevent="setVisibleContextMenu($event)">
+                    <!--<BasicOsc></BasicOsc>-->
+                    <component :is="module.type"></component>
+                </Module>
+            </div>
         </div>
         <div v-if="contextMenuVisible" class="context-menu"
             :style="{ top: contextMenuPosition.y + 'px', left: contextMenuPosition.x + 'px' }">
@@ -88,7 +89,8 @@ function libraryButtonClicked(){
                     {{it}}
                 </div>
             </div>
-        </div>
+        </div> 
+
         </div>
         <!-- demo clutter -->
          
@@ -101,7 +103,7 @@ function libraryButtonClicked(){
             <line  :x1="connections[index].x1" :y1="connections[index].y1"
                 :x2="connections[index].x2" :y2="connections[index].y2" stroke="blue" stroke-width="2" />
         </svg>
-        
+        </div> <!--mainDiv-->
     </main>
 
     <div class="controls">
@@ -154,7 +156,14 @@ main {
 }
 
 .mainDiv {
-    background-color: white;
+    background-color: transparent;
+    min-height: 100%;
+    min-width: 100%;
+    overflow: hidden;
+    flex-grow: 1;
+    position: absolute;
+    left: 0;
+    cursor:grab;
 }
 
 .context-menu {
@@ -233,6 +242,7 @@ main {
     z-index: 100;
     transition: width 0.3s ease;
     overflow: scroll;
+    cursor: default;
 }
 
 .modules-scaffold.active {
@@ -286,6 +296,9 @@ main {
     height: 100%;
     pointer-events: none;
 }
+.playgroundBG{
+    cursor: grab;
+}
 
 @media (min-width: 1024px) {
     header {
@@ -307,13 +320,15 @@ main {
 }
 </style>
 <script>
-import Module from './components/Modules.vue'
+import Module from './components/Module.vue'
+import BasicOsc from './components/synth_modules/BasicOsc.vue'
 import ModuleConnection from './scripts/classes/ModuleConnection'
 import list_json from './assets/synth_modules_list.json'
 import synth_info_json from './assets/synth_modules.json'
 export default {
     components: {
         Module,
+        BasicOsc,
     },
     data() {
         return {
@@ -413,9 +428,13 @@ export default {
         addModule(moduleName, fromContextMenu = false) {
             // Add a new module to the modules array
             if(!fromContextMenu){
+                let codeName = synth_info_json[moduleName]["codename"]
+                let currId = this.modules.length;
                 //just have it in a random (visible hopefully) position
                 this.modules.push({
                     moduleName,
+                    type: codeName,
+                    id: currId,
                     inputPorts: [
                         { id: 1, x: 10, y: 50 },
                         { id: 2, x: 10, y: 80 },

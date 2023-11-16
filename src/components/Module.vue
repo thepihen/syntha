@@ -6,7 +6,8 @@ export default {
         inputPorts: Array, // An array of input ports (objects with id, x, y)
         outputPorts: Array, // An array of output ports (objects with id, x, y)
         createdCoordsX: Number,
-        createdCoordsY: Number
+        createdCoordsY: Number,
+        moduleId: Number,
     },
     created(){
         this.createdCoords = [this.createdCoordsX, this.createdCoordsY]
@@ -94,13 +95,13 @@ export default {
 <template>
     <div class="module" :style="elementStyles">
         <div class="module-title" @mousedown="startDragging">{{ moduleName }}</div>
-        <div class="module-knobs">
-            <!-- Add your knobs here (you can use Vue components for knobs) -->
-            <knob v-for="i in 3" :key="i"></knob>
-        </div>
-        <div class="module-io">
-            <div class="input-ports">
+        <div class="module-control-area">
+            <slot/>
+
+            <!-- 
+            <div class="input-ports">-->
                 <!-- careful! Numbering starts from 1 here -->
+                <!--
                 <div class="input-port" v-for="inputPort in inputPorts" :key="inputPort.id" v-bind:id="'inputPort'+inputPort.id"
                     @mousedown="startDraggingPort(inputPort, $event)"></div>
             </div>
@@ -108,6 +109,7 @@ export default {
                 <div class="output-port" v-for="outputPort in outputPorts" :key="outputPort.id"
                     @mousedown="startDraggingPort(outputPort, $event)"></div>
             </div>
+            -->
         </div>
     </div>
 </template>
@@ -115,8 +117,12 @@ export default {
 
 <style scoped>
 .module {
+    /*
     width: 200px;
     height: 150px;
+    */
+    width: fit-content;
+    height: fit-content;
     background-color: #ccc;
     border: 1px solid #000;
     position: absolute;
@@ -131,7 +137,7 @@ export default {
     background-color: #000;
     color: #fff;
     padding: 0px;
-    height: 20%;
+    height: 25px;
     width: 100%;
     align-items: center;
     text-align: center;
@@ -142,7 +148,7 @@ export default {
     margin-top: 10px;
 }
 
-.module-io {
+.module-control-area {
     display: flex;
     justify-content: space-between;
     width: 100%;

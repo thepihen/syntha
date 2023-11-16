@@ -7,7 +7,7 @@ import NotFound from './NotFound.vue'
 import Playground from './Playground.vue'
 import Login from './Login.vue'
 import Account from './Account.vue'
-
+import Workshop from './Workshop.vue'
 // 3. Create the router instance and pass the `routes` option
 // You can pass in additional options here, but let's
 // keep it simple for now.
@@ -20,6 +20,8 @@ const router = createRouter({
         { path: '/synth', component: Playground },
         { path: '/login', component: Login },
         { path: '/account', component: Account},
+        { path: '/workshop', component: Workshop },
+
         { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFound }
     ], // short for `routes: routes`
 });

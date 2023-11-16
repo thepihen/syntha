@@ -9,6 +9,13 @@
         "name": "SVO",
         "type": "oscillator",
         "description": "A simple oscillator",
-        "preview_img_source": "./assets/images/oscillator.png"
-    }
+        "preview_img_source": "./assets/images/oscillator.png",
+        "codename": "BasicOsc",
+
+        "parameters":{
+            "frequency":4402
+        }
+    } 
 }
+
+

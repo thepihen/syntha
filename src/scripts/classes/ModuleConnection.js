@@ -4,10 +4,13 @@ export default class ModuleConnection{
         this.toId = toId;
         this.fromPort = fromPort;
         this.toPort = toPort;
+        /*
+        //don't really need this as it depends on the screen
         this.x1 = x1;
         this.y1 = y1;
         this.x2 = x2;
         this.y2 = y2;
+        */
         this.color = color;
     }
     printConnection(){
