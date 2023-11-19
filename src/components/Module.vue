@@ -118,17 +118,21 @@ export default {
 <style scoped>
 .module {
     /*
-    width: 200px;
+    width: 400px;
     height: 150px;
     */
+    
     width: fit-content;
     height: fit-content;
+    
+    min-width: 100px;
+    min-height: 100px;
+    
     background-color: #ccc;
     border: 1px solid #000;
     position: absolute;
     display: flex;
     flex-direction: column;
-    align-items: center;
     
 }
 
@@ -149,10 +153,17 @@ export default {
 }
 
 .module-control-area {
+    /*
     display: flex;
-    justify-content: space-between;
+    position:relative;
+    top:0%;
+    left:0%;
+    */
+    top:25px;
     width: 100%;
-    padding: 10px;
+    height:100%;
+    min-height:100px;
+      
 }
 
 .input-ports,

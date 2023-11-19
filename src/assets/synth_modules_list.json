@@ -1,6 +1,7 @@
 {
     "categories": [
         "oscillator",
+        "I/O",
         "filter",
         "delay",
         "reverb",

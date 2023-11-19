@@ -3,8 +3,14 @@
         "0":[
             "basic_osc",
             "ccc"
+        ],
+        "1":[
+            "midi_in_keyboard",
+            "audio_out"
         ]
     },
+
+
     "basic_osc":{
         "name": "SVO",
         "type": "oscillator",
@@ -15,7 +21,17 @@
         "parameters":{
             "frequency":4402
         }
-    } 
+    },
+    "audio_out": {
+        "name": "Audio Out",
+        "type": "I/O",
+        "description": "Audio output. Stereo only, sorry!",
+        "preview_img_source": "./assets/images/audio_out.png",
+        "codename": "AudioOut",
+        "parameters": {
+            "frequency": 4402
+        }
+    }
 }
 
 

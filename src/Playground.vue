@@ -285,6 +285,7 @@ main {
     align-items: center;
     padding: 5px;
     border: 1px solid #ccc;
+    cursor: pointer;
 }
 
 .visualConnections{
@@ -322,6 +323,7 @@ main {
 <script>
 import Module from './components/Module.vue'
 import BasicOsc from './components/synth_modules/BasicOsc.vue'
+import AudioOut from './components/synth_modules/AudioOut.vue'
 import ModuleConnection from './scripts/classes/ModuleConnection'
 import list_json from './assets/synth_modules_list.json'
 import synth_info_json from './assets/synth_modules.json'
@@ -329,6 +331,7 @@ export default {
     components: {
         Module,
         BasicOsc,
+        AudioOut,
     },
     data() {
         return {

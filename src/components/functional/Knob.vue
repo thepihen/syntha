@@ -11,6 +11,11 @@ export default {
         from: Number, //the minimum value
         to: Number, //the maximum value
     },
+    emits:{
+        updateknobvalue: null,
+        //if needed validate here. Don't have time for doing everything properly
+        //since we're running late :|
+    },
     created(){
         this.currentKnobValue = this.initialValue;
         this.currentAngle = mapValue(this.currentKnobValue,this.from,this.to,-135,135);
@@ -62,11 +67,15 @@ export default {
                 this.currentAngle = -135;
                 this.draggingDirection = 0;
             }
+            this.updateKnobValue()
         },
         stopDraggingKnob() {
             this.isDraggingKnob = false;
             window.removeEventListener("mousemove", this.handleDragKnob);
             window.removeEventListener("mouseup", this.stopDraggingKnob);
+        },
+        updateKnobValue() {
+            this.$emit('updateknobvalue', [this.parameter, this.currentKnobValue]);
         },
     }
 };
@@ -128,14 +137,15 @@ knob.addEventListener("mousemove", (e) => {
 
 <style scoped>
 .wrapper {
-    top: 50px;
-    left: 50%;
-    position: absolute;
+    top: 0%;
+    left: 20%;
+    width:100px;
+    position: relative;
     transform: translateX(-50%);
 }
 
 .parameter{
-    transform: translateY(50%);
+    transform: translateY(90%);
     text-align:center;
     font-size: 16px;
     color: #fff;
@@ -163,7 +173,7 @@ knob.addEventListener("mousemove", (e) => {
 }
 
 .knob_inner_pointer {
-    position: absolute;
+    position: relative;
     width: 12px;
     height: 12px;
     top: 6px;
@@ -175,17 +185,19 @@ knob.addEventListener("mousemove", (e) => {
 }
 
 .label-l {
+    position:absolute;
     left: -20%;
 }
 
 .label-r {
+    position: absolute;
     right: -20%;
 }
 
 .label {
-    position: absolute;
+    position: relative;
     font-size: 16px;
-    top: 100%;
+    top: 25%;
     user-select: none;
 }
 

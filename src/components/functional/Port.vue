@@ -1,0 +1,96 @@
+<template>
+    <div class="container" @mouseover="handlePortMouseOver"
+           @mouseout="handlePortMouseOut">
+        <div class="square" :style="{ backgroundColor: squareColor }">
+            <div class="circle" :style="{ backgroundColor: circleColor, borderColor: circleBorderColor }">
+                <div class="innerCircle"></div>
+            </div>
+        </div>
+    </div>
+    <div class="portName">{{parameter}}</div>
+</template>
+
+<script>
+export default {
+    props: {
+        parameter: String,
+        type: String,
+    },
+    data() {
+        return {
+            portType: "OUT", // Default value
+            normalColor: "rgb(255, 255, 255)",
+            hoverColor: "rgb(255, 255, 255)",
+            circleColor: "rgb(150,150, 150)",
+            circleBorderColor: "rgb(255, 255, 255)",
+            squareColor: "rgb(255, 255, 255)",
+        };
+    },
+    created() {
+        this.portType = this.type;
+        if (this.portType === "IN") {
+            this.normalColor = "rgb(0, 0, 0)";
+            this.hoverColor = "rgb(75, 75, 75)";
+        } else {
+            this.normalColor = "rgb(255, 255, 255)";
+            this.hoverColor = "rgb(170, 170, 170)";
+        }
+        this.squareColor = this.normalColor;
+    },
+    methods:{
+        handlePortMouseOver(){
+            this.squareColor = this.hoverColor;
+        },
+        handlePortMouseOut(){
+            this.squareColor = this.normalColor;
+        },
+    }
+};
+</script>
+
+<style scoped>
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60px;
+}
+
+.square {
+    width: 50px;
+    height: 50px;
+    position: relative;
+}
+
+.circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.innerCircle {
+    width: 30px;
+    height: 30px;
+    background-color: black;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.circle:hover {
+    border: 4px solid white;
+}
+
+.portName{
+    text-align: center;
+    font-size: 16px;
+    color: #fff;
+    font-weight: 600;
+    text-shadow: 0px 0px 2px #000;
+}
+</style>
