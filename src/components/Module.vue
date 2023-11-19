@@ -88,6 +88,12 @@ export default {
         window.removeEventListener("mousemove", this.handleDrag);
         window.removeEventListener("mouseup", this.stopDragging);
     },
+    handleModulePortClick(){
+        console.log("module port clicked and passed");
+    },
+    test(){
+        console.log("test");
+    },
     },
 };
 </script>
@@ -96,7 +102,7 @@ export default {
     <div class="module" :style="elementStyles">
         <div class="module-title" @mousedown="startDragging">{{ moduleName }}</div>
         <div class="module-control-area">
-            <slot/>
+            <slot :test="test"></slot> <!-- <slot/> -->
 
             <!-- 
             <div class="input-ports">-->
@@ -113,7 +119,7 @@ export default {
         </div>
     </div>
 </template>
-
+@portClicked="handleModulePortClick"
 
 <style scoped>
 .module {

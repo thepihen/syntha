@@ -1,6 +1,7 @@
 <template>
     <div class="container" @mouseover="handlePortMouseOver"
-           @mouseout="handlePortMouseOut">
+           @mouseout="handlePortMouseOut" @mousedown="handlePortMouseClick"
+           @mousemove="handlePortMouseMove" @mouseup="handlePortMouseUp">
         <div class="square" :style="{ backgroundColor: squareColor }">
             <div class="circle" :style="{ backgroundColor: circleColor, borderColor: circleBorderColor }">
                 <div class="innerCircle"></div>
@@ -12,9 +13,13 @@
 
 <script>
 export default {
+    emits: {
+        portClicked: null,
+    },
     props: {
         parameter: String,
         type: String,
+        ID: Number,
     },
     data() {
         return {
@@ -24,6 +29,7 @@ export default {
             circleColor: "rgb(150,150, 150)",
             circleBorderColor: "rgb(255, 255, 255)",
             squareColor: "rgb(255, 255, 255)",
+            portID: 0,
         };
     },
     created() {
@@ -32,10 +38,12 @@ export default {
             this.normalColor = "rgb(0, 0, 0)";
             this.hoverColor = "rgb(75, 75, 75)";
         } else {
-            this.normalColor = "rgb(255, 255, 255)";
+            this.normalColor = "rgb(220, 220, 220)";
             this.hoverColor = "rgb(170, 170, 170)";
         }
         this.squareColor = this.normalColor;
+        if(this.ID != null)
+            this.portID = this.ID;
     },
     methods:{
         handlePortMouseOver(){
@@ -44,6 +52,12 @@ export default {
         handlePortMouseOut(){
             this.squareColor = this.normalColor;
         },
+        handlePortMouseClick(){
+            this.$emit("portClicked", this.portID);
+        },
+        handlePortMouseUp() {
+            console.log("mouse up");
+        }
     }
 };
 </script>
@@ -54,8 +68,12 @@ export default {
     justify-content: center;
     align-items: center;
     height: 60px;
+    cursor: grab;
 }
 
+.container:active{
+    cursor: grabbing;
+}
 .square {
     width: 50px;
     height: 50px;
