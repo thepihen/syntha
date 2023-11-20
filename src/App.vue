@@ -42,6 +42,27 @@ export default {
     window.addEventListener('loginEvent', (event) => {
       this.loggedIn = localStorage.getItem('loggedIn');
     });
+  },
+  methods: {
+    testButton(){
+      console.log("testButton clicked");
+      var data = JSON.stringify({
+        "name": "testPresetName",
+        "data": "testPresetData",
+        "creator_id": "-1"
+      });
+      var xhr = new XMLHttpRequest();
+      var url = "localhost:5000/presets/new";
+      xhr.open("POST", url, true);
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          var json = JSON.parse(xhr.responseText);
+          console.log(json.email + ", " + json.password);
+        }
+      };
+      xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.send(data);
+    }
   }
 }
 </script>
@@ -56,6 +77,7 @@ export default {
         <router-link to="/synth">Playground</router-link>
         <router-link to="/workshop">Workshop</router-link>
         <router-link to="/about">About</router-link>
+        <button @click="testButton" class="testButton">CLick me!</button>
     </div>
     <div class="accountSection">
       <router-link to="/login" v-if="(store.loggedIn==false)">Login</router-link>
@@ -75,6 +97,10 @@ export default {
 <style scoped>
 header {
   line-height: 1.5;
+}
+
+.testButton{
+  z-index:5000;
 }
 
 .toolbar {
