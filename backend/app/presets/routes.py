@@ -20,8 +20,6 @@ def create():
         preset.name = request.json["name"]
     if request.json["data"]:
         preset.data = request.json["data"]
-    if request.json["isPublic"]:
-        preset.isPublic = int(request.json["isPublic"])
     db.session.add(preset)
     db.session.commit()
     return make_response("Preset successfully created/updated")
