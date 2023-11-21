@@ -54,11 +54,15 @@ function libraryButtonClicked(){
             <div v-for="(module, index) in modules" :key="index">
                 <Module :moduleName="module.moduleName" :inputPorts="module.inputPorts"
                     :outputPorts="module.outputPorts" :createdCoordsX="module.createdCoordsX"
-                    :createdCoordsY="module.createdCoordsY" @start-dragging-port="startPortDragging" 
+                    :createdCoordsY="module.createdCoordsY" :moduleId="module.id"
+                    @start-dragging-port="startPortDragging" 
                     @handle-port-drag="handlePortDragging" @stop-dragging-port="stopPortDragging" 
                     @contextmenu.prevent="setVisibleContextMenu($event)">
                     <!--<BasicOsc></BasicOsc>-->
-                    <component :is="module.type"></component>
+                    <component :is="module.type" @portClicked="startPortDragging"  
+                    @modulePortMouseMoved="handlePortDragging"
+                    @modulePortMouseStopMove="stopPortDragging"
+                    ></component>
                 </Module>
             </div>
         </div>
@@ -70,7 +74,7 @@ function libraryButtonClicked(){
         <button id="libButton" class="libraryButton material-symbols-outlined" @click="libraryButtonClicked">arrow_forward_ios</button>
         <div id="modulesScaffold" v-if="libButtonClicked" class="modules-scaffold">
             <div class="scaffoldTitle"> MODULE SCAFFOLD </div>
-            <div v-if="isDragging()"> heyyyyy </div>
+            <!-- <div v-if="isDragging()"> heyyyyy </div>-->
         <!-- display all items from myJson -->
         <div v-for="(item,index) in mod_categories" :key="index">
             <!-- simply display its contents as text -->
@@ -156,6 +160,7 @@ main {
 }
 
 .mainDiv {
+    user-select: none;
     background-color: transparent;
     min-height: 100%;
     min-width: 100%;
@@ -375,7 +380,7 @@ export default {
         isDragging(){
             return this.isDraggingPort;
         },
-        startPortDragging(port, posX, posY) {
+        startPortDragging(module, port, posX, posY) {
             // Implement the logic to handle port dragging here
             console.log("ababababab")
             console.log(posX, posY);
@@ -394,8 +399,6 @@ export default {
             if(!this.isDragging()){
                 return;
             }*/
-            console.log("hokoehkokeh")
-            console.log(posX, posY);
             this.mouseCurrentX = posX;
             this.mouseCurrentY = posY;
             //make a line between posX, posY and the current mouse position
@@ -501,7 +504,7 @@ export default {
         },
         isExpanded(index) {
             return this.expandedCategories.includes(index);
-        }
+        },
     },
 
 };

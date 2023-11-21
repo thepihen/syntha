@@ -1,10 +1,11 @@
 <template>
-    <div class="container" @mouseover="handlePortMouseOver"
-           @mouseout="handlePortMouseOut" @mousedown="handlePortMouseClick"
-           @mousemove="handlePortMouseMove" @mouseup="handlePortMouseUp">
+    <div class="container" 
+            @mouseover="handlePortMouseOver"
+           @mouseout="handlePortMouseOut" 
+           @mousedown="handlePortMouseClick">
         <div class="square" :style="{ backgroundColor: squareColor }">
             <div class="circle" :style="{ backgroundColor: circleColor, borderColor: circleBorderColor }">
-                <div class="innerCircle"></div>
+                <div class="innerCircle" ref="innerCircle"></div>
             </div>
         </div>
     </div>
@@ -15,6 +16,8 @@
 export default {
     emits: {
         portClicked: null,
+        portMouseMoved:null,
+        portMouseStopMove:null,
     },
     props: {
         parameter: String,
@@ -52,11 +55,30 @@ export default {
         handlePortMouseOut(){
             this.squareColor = this.normalColor;
         },
-        handlePortMouseClick(){
-            this.$emit("portClicked", this.portID);
+        handlePortMouseClick(event){
+
+            const innerCircle = this.$refs.innerCircle;
+            const rect = innerCircle.getBoundingClientRect();
+
+            // Calculate the center position
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+
+            //event.clientX, event.clientY
+            this.$emit("portClicked", this.portID, centerX, centerY);
+            window.addEventListener("mousemove", this.handlePortMouseMove);
+            window.addEventListener("mouseup", this.handlePortStopMove);
+        },
+        handlePortMouseMove(event){
+            this.$emit("portMouseMoved", event.clientX, event.clientY);
+        },
+        handlePortStopMove(event) {
+            this.$emit("portMouseStopMove", event.clientX, event.clientY);
         },
         handlePortMouseUp() {
             console.log("mouse up");
+            window.removeEventListener("mousemove", this.handleDrag);
+            window.removeEventListener("mouseup", this.stopDragging);
         }
     }
 };

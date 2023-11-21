@@ -14,12 +14,13 @@ export default {
             <router-link to="/">Back</router-link>
         </div>
         -->
-        <div class="version">DEMO v0.2</div>
+        <div class="version">DEMO v0.3</div>
     </div>
 </template>
 
 <style scoped>
 .toolbar {
+    user-select: none;
     background-color: #333;
     color: white;
     display: flex;

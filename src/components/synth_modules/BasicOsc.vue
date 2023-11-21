@@ -9,9 +9,12 @@
         </div>
 
         <div class="portContainer">
-
-            <component @portClicked="" :is="'Port'" :type="'IN'" :parameter="'FREQ'" :ID="0"></component>
-            <component @portClicked="handlePortClick" :is="'Port'" :type="'OUT'" :parameter="'OUT'" :ID="1"></component>
+            <component @portClicked="handlePortClick" @portMouseMoved="handlePortMouseMove"  
+                @portMouseStopMove="handlePortMouseStopMove" :is="'Port'" :type="'IN'" 
+                :parameter="'FREQ'" :ID="0"></component>
+            <component @portClicked="handlePortClick" @portMouseMoved="handlePortMouseMove"  
+                @portMouseStopMove="handlePortMouseStopMove" :is="'Port'" :type="'OUT'"
+                :parameter="'OUT'" :ID="1"></component>
         </div>
     </div>
 </template>
@@ -70,10 +73,19 @@ export default{
                 console.log(val);
             }
         },
-        handlePortClick(portID){
-            console.log("port clicked");
-            console.log(portID);
-            this.$emit("portClicked", portID);
+
+
+        //PORT FUNCTIONS (EVERY MODULE NEEDS TO HAVE THESE!)
+        handlePortClick(portID, x,y){
+            this.$emit("portClicked", this.$parent.moduleId, portID,x,y);
+        },
+
+        handlePortMouseMove(x,y,){
+            this.$emit("modulePortMouseMoved", x,y);
+        },
+
+        handlePortMouseStopMove(){
+            this.$emit("modulePortMouseStopMove");
         }
     },
 }

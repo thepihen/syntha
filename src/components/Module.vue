@@ -44,12 +44,12 @@ export default {
             console.log(this.currentPosition);
             //this.$emit('start-dragging-port', port, event.clientX - this.currentPosition.x, event.clientY - this.currentPosition.y);
             this.$emit('start-dragging-port', port, event.clientX , event.clientY);
-
+            
             /*
             window.addEventListener("mousemove", this.handlePortDrag(port, event));
             window.addEventListener("mouseup", this.stopDraggingPort(port));
             */
-           
+            
             window.addEventListener("mousemove", (e) => this.handlePortDrag(e));
             window.addEventListener("mouseup", (e) => this.stopPortDrag(port, e));
         },
@@ -61,39 +61,39 @@ export default {
         handlePortDrag(event){
             this.$emit('handle-port-drag', event.clientX, event.clientY);
         },
-    startDragging(event) {
-        //if control is pressed return
-        if (event.ctrlKey) {
-            return;
-        }
-        console.log("AAAA");
-        this.isDragging = true;
-        this.startPosition = {
-            x: event.clientX - this.currentPosition.x,
-            y: event.clientY - this.currentPosition.y,
-        };
-        window.addEventListener("mousemove", this.handleDrag);
-        window.addEventListener("mouseup", this.stopDragging);
-    },
-    handleDrag(event) {
-        if (this.isDragging) {
-            this.currentPosition = {
-                x: event.clientX - this.startPosition.x,
-                y: event.clientY - this.startPosition.y,
+        startDragging(event) {
+            //if control is pressed return
+            if (event.ctrlKey) {
+                return;
+            }
+            console.log("AAAA");
+            this.isDragging = true;
+            this.startPosition = {
+                x: event.clientX - this.currentPosition.x,
+                y: event.clientY - this.currentPosition.y,
             };
-        }
-    },
-    stopDragging() {
-        this.isDragging = false;
-        window.removeEventListener("mousemove", this.handleDrag);
-        window.removeEventListener("mouseup", this.stopDragging);
-    },
-    handleModulePortClick(){
-        console.log("module port clicked and passed");
-    },
-    test(){
-        console.log("test");
-    },
+            window.addEventListener("mousemove", this.handleDrag);
+            window.addEventListener("mouseup", this.stopDragging);
+        },
+        handleDrag(event) {
+            if (this.isDragging) {
+                this.currentPosition = {
+                    x: event.clientX - this.startPosition.x,
+                    y: event.clientY - this.startPosition.y,
+                };
+            }
+        },
+        stopDragging() {
+            this.isDragging = false;
+            window.removeEventListener("mousemove", this.handleDrag);
+            window.removeEventListener("mouseup", this.stopDragging);
+        },
+        handleModulePortClick(){
+            console.log("module port clicked and passed");
+        },
+        test(){
+            console.log("test");
+        },
     },
 };
 </script>
@@ -102,91 +102,91 @@ export default {
     <div class="module" :style="elementStyles">
         <div class="module-title" @mousedown="startDragging">{{ moduleName }}</div>
         <div class="module-control-area">
-            <slot :test="test"></slot> <!-- <slot/> -->
-
+            <slot></slot> <!-- <slot/> -->
+            
             <!-- 
-            <div class="input-ports">-->
-                <!-- careful! Numbering starts from 1 here -->
-                <!--
-                <div class="input-port" v-for="inputPort in inputPorts" :key="inputPort.id" v-bind:id="'inputPort'+inputPort.id"
-                    @mousedown="startDraggingPort(inputPort, $event)"></div>
+                <div class="input-ports">-->
+                    <!-- careful! Numbering starts from 1 here -->
+                    <!--
+                        <div class="input-port" v-for="inputPort in inputPorts" :key="inputPort.id" v-bind:id="'inputPort'+inputPort.id"
+                        @mousedown="startDraggingPort(inputPort, $event)"></div>
+                    </div>
+                    <div class="output-ports">
+                        <div class="output-port" v-for="outputPort in outputPorts" :key="outputPort.id"
+                        @mousedown="startDraggingPort(outputPort, $event)"></div>
+                    </div>
+                -->
             </div>
-            <div class="output-ports">
-                <div class="output-port" v-for="outputPort in outputPorts" :key="outputPort.id"
-                    @mousedown="startDraggingPort(outputPort, $event)"></div>
-            </div>
-            -->
         </div>
-    </div>
-</template>
-@portClicked="handleModulePortClick"
-
-<style scoped>
-.module {
-    /*
-    width: 400px;
-    height: 150px;
-    */
+    </template>
+    @portClicked="handleModulePortClick"
     
-    width: fit-content;
-    height: fit-content;
+    <style scoped>
+    .module {
+        /*
+        width: 400px;
+        height: 150px;
+        */
+        
+        width: fit-content;
+        height: fit-content;
+        
+        min-width: 100px;
+        min-height: 100px;
+        
+        background-color: #ccc;
+        border: 1px solid #000;
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        
+    }
     
-    min-width: 100px;
-    min-height: 100px;
+    .module-title {
+        user-select: none;
+        background-color: #000;
+        color: #fff;
+        padding: 0px;
+        height: 25px;
+        width: 100%;
+        align-items: center;
+        text-align: center;
+        cursor: move;
+    }
     
-    background-color: #ccc;
-    border: 1px solid #000;
-    position: absolute;
-    display: flex;
-    flex-direction: column;
+    .module-knobs {
+        margin-top: 10px;
+    }
     
-}
-
-.module-title {
-    user-select: none;
-    background-color: #000;
-    color: #fff;
-    padding: 0px;
-    height: 25px;
-    width: 100%;
-    align-items: center;
-    text-align: center;
-    cursor: move;
-}
-
-.module-knobs {
-    margin-top: 10px;
-}
-
-.module-control-area {
-    /*
-    display: flex;
-    position:relative;
-    top:0%;
-    left:0%;
-    */
-    top:25px;
-    width: 100%;
-    height:100%;
-    min-height:100px;
-      
-}
-
-.input-ports,
-.output-ports {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.input-port,
-.output-port {
-    width: 15px;
-    height: 15px;
-    background-color: #fff;
-    border: 1px solid #000;
-    border-radius: 50%;
-    margin: 5px;
-    cursor: pointer;
-}
+    .module-control-area {
+        /*
+        display: flex;
+        position:relative;
+        top:0%;
+        left:0%;
+        */
+        top:25px;
+        width: 100%;
+        height:100%;
+        min-height:100px;
+        
+    }
+    
+    .input-ports,
+    .output-ports {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .input-port,
+    .output-port {
+        width: 15px;
+        height: 15px;
+        background-color: #fff;
+        border: 1px solid #000;
+        border-radius: 50%;
+        margin: 5px;
+        cursor: pointer;
+    }
 </style>

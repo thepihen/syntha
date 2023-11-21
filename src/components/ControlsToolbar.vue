@@ -21,6 +21,7 @@ export default {
 
 <style scoped>
 .control_toolbar {
+    user-select: none;
     background-color: #333;
     color: white;
     display: flex;

@@ -49,19 +49,35 @@ export default {
       var data = JSON.stringify({
         "name": "testPresetName",
         "data": "testPresetData",
-        "creator_id": "-1"
+        "creator_id": "1"
       });
+      fetch('http://localhost:5000/presets/new', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: data,
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log('Success:', data);
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
+      /*
       var xhr = new XMLHttpRequest();
-      var url = "localhost:5000/presets/new";
+      var url = "http://localhost:5000/presets/new";
       xhr.open("POST", url, true);
       xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
           var json = JSON.parse(xhr.responseText);
-          console.log(json.email + ", " + json.password);
+          console.log("response received!");
         }
       };
       xhr.setRequestHeader("Content-Type", "application/json");
       xhr.send(data);
+      */
     }
   }
 }
