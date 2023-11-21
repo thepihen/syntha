@@ -62,6 +62,8 @@ function libraryButtonClicked(){
                     <component :is="module.type" @portClicked="startPortDragging"  
                     @modulePortMouseMoved="handlePortDragging"
                     @modulePortMouseStopMove="stopPortDragging"
+                    @modulePortHover="trackPort"
+                    @modulePortOut="stopTrackPort"
                     ></component>
                 </Module>
             </div>
@@ -105,7 +107,7 @@ function libraryButtonClicked(){
     
         <svg class="visualConnections"  v-for="(item,index) in connections" :key="index">
             <line  :x1="connections[index].x1" :y1="connections[index].y1"
-                :x2="connections[index].x2" :y2="connections[index].y2" stroke="blue" stroke-width="2" />
+                :x2="connections[index].x2" :y2="connections[index].y2" :stroke="connections[index].color" stroke-width="2" />
         </svg>
         </div> <!--mainDiv-->
     </main>
@@ -369,6 +371,10 @@ export default {
             makeConnectionPermanent:false,
             playGroundTranslateX:0,
             playGroundTranslateX:0,
+            lastHoveredPortModID:-1,
+            lastHoveredPortID:-1,
+            lastHoveredPortX:0,
+            lastHoveredPortY:0,
         };
     },
     options: {
@@ -403,7 +409,7 @@ export default {
             this.mouseCurrentY = posY;
             //make a line between posX, posY and the current mouse position
         },
-        stopPortDragging(port, posX, posY) {
+        stopPortDragging(moduleID,portID,fromX,fromY) {
             this.isDraggingPort = false;
             //if you're over another port then guess what we're connecting the two
             //if you're not over another port then guess what we're not connecting the two
@@ -412,8 +418,22 @@ export default {
             //this.makeConnectionPermanent = true; //for demo purposes
 
             //for now this is quite useless
-            this.connections.push(new ModuleConnection(0,1, 0, port, 0, 0, this.mouseCurrentX, this.mouseCurrentY));
-            this.connections[0].printConnection();
+            if(this.isHoveringPort){
+                this.connections.push(new ModuleConnection(moduleID, this.lastHoveredPortModID, portID, this.lastHoveredPortID, fromX, fromY, this.lastHoveredPortX, this.lastHoveredPortY));
+                this.connections[0].printConnection();
+            }
+            this.isHoveringPort = false;
+        },
+        trackPort(moduleId, portID, x, y){
+            //console.log(moduleId, portID, x, y);
+            this.lastHoveredPortModID = moduleId;
+            this.lastHoveredPortID = portID;
+            this.lastHoveredPortX = x;
+            this.lastHoveredPortY = y;
+            this.isHoveringPort = true;
+        },
+        stopTrackPort(){
+            this.isHoveringPort = false;
         },
         setVisibleContextMenu(event) {
             console.log(this.contextMenuVisible)

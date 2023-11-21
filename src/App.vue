@@ -86,7 +86,7 @@ export default {
 <template>
   <!-- make a toolbar with all these buttons -->
   
-  <div class="toolbar">
+  <div class="toolbar" style="user-select: none;">
     <div class="toolbar-title">SynthA!</div>
     <div class="toolbar-actions">
         <router-link to="/">Home</router-link>

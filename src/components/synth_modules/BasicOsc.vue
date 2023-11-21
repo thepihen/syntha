@@ -10,10 +10,14 @@
 
         <div class="portContainer">
             <component @portClicked="handlePortClick" @portMouseMoved="handlePortMouseMove"  
-                @portMouseStopMove="handlePortMouseStopMove" :is="'Port'" :type="'IN'" 
+                @portMouseStopMove="handlePortMouseStopMove" 
+                @portHovered="handlePortHover" @portOut="handlePortOut"
+                :is="'Port'" :type="'IN'" 
                 :parameter="'FREQ'" :ID="0"></component>
             <component @portClicked="handlePortClick" @portMouseMoved="handlePortMouseMove"  
-                @portMouseStopMove="handlePortMouseStopMove" :is="'Port'" :type="'OUT'"
+                @portMouseStopMove="handlePortMouseStopMove" 
+                @portHovered="handlePortHover" @portOut="handlePortOut"
+                :is="'Port'" :type="'OUT'"
                 :parameter="'OUT'" :ID="1"></component>
         </div>
     </div>
@@ -80,13 +84,19 @@ export default{
             this.$emit("portClicked", this.$parent.moduleId, portID,x,y);
         },
 
-        handlePortMouseMove(x,y,){
+        handlePortMouseMove(x,y){
             this.$emit("modulePortMouseMoved", x,y);
         },
 
-        handlePortMouseStopMove(){
-            this.$emit("modulePortMouseStopMove");
-        }
+        handlePortMouseStopMove(portID,x,y){
+            this.$emit("modulePortMouseStopMove", this.$parent.moduleId, portID,x,y);
+        },
+        handlePortHover(portID, x, y){
+            this.$emit("modulePortHover", this.$parent.moduleId, portID, x, y);
+        },
+        handlePortOut(portId){
+            this.$emit("modulePortOut", this.$parent.moduleId, portId)
+        },
     },
 }
 </script>

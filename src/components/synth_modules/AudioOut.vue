@@ -1,6 +1,8 @@
 <template>
     <div class="mainDivAO">
-        <component :is="'Port'" :type="'IN'" :parameter="'OUT'"></component>
+        <component @portClicked="handlePortClick" @portMouseMoved="handlePortMouseMove"
+            @portMouseStopMove="handlePortMouseStopMove" @portHovered="handlePortHover" @portOut="handlePortOut" :is="'Port'"
+            :type="'IN'" :parameter="'OUT'" :ID="0"></component>
     </div>
 </template>
 
@@ -24,7 +26,24 @@ export default {
         Port
     },
     methods: {
-        
+        //PORT FUNCTIONS (EVERY MODULE NEEDS TO HAVE THESE!)
+        handlePortClick(portID, x, y) {
+            this.$emit("portClicked", this.$parent.moduleId, portID, x, y);
+        },
+
+        handlePortMouseMove(x, y) {
+            this.$emit("modulePortMouseMoved", x, y);
+        },
+
+        handlePortMouseStopMove() {
+            this.$emit("modulePortMouseStopMove");
+        },
+        handlePortHover(portID, x, y) {
+            this.$emit("modulePortHover", this.$parent.moduleId, portID, x, y);
+        },
+        handlePortOut(portId) {
+            this.$emit("modulePortOut", this.$parent.moduleId, portId)
+        },
     },
 }
 </script>

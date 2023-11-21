@@ -1,15 +1,15 @@
 <template>
     <div class="container" 
-            @mouseover="handlePortMouseOver"
-           @mouseout="handlePortMouseOut" 
-           @mousedown="handlePortMouseClick">
-        <div class="square" :style="{ backgroundColor: squareColor }">
-            <div class="circle" :style="{ backgroundColor: circleColor, borderColor: circleBorderColor }">
-                <div class="innerCircle" ref="innerCircle"></div>
-            </div>
+    @mouseover="handlePortMouseOver"
+    @mouseout="handlePortMouseOut" 
+    @mousedown="handlePortMouseClick">
+    <div class="square" :style="{ backgroundColor: squareColor }">
+        <div class="circle" :style="{ backgroundColor: circleColor, borderColor: circleBorderColor }">
+            <div class="innerCircle" ref="innerCircle"></div>
         </div>
     </div>
-    <div class="portName">{{parameter}}</div>
+</div>
+<div class="portName">{{parameter}}</div>
 </template>
 
 <script>
@@ -18,6 +18,8 @@ export default {
         portClicked: null,
         portMouseMoved:null,
         portMouseStopMove:null,
+        portHovered:null,
+        portOut:null,
     },
     props: {
         parameter: String,
@@ -46,34 +48,56 @@ export default {
         }
         this.squareColor = this.normalColor;
         if(this.ID != null)
-            this.portID = this.ID;
+        this.portID = this.ID;
     },
     methods:{
         handlePortMouseOver(){
             this.squareColor = this.hoverColor;
+            //we only wish to handle this if the port accepts inputs
+            if (this.portType == "IN") {
+                const innerCircle = this.$refs.innerCircle;
+                const rect = innerCircle.getBoundingClientRect();
+
+                // Calculate the center position
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+
+                //event.clientX, event.clientY
+                this.$emit("portHovered", this.portID, centerX, centerY);
+            }
         },
         handlePortMouseOut(){
             this.squareColor = this.normalColor;
+            this.$emit("portOut", this.portID);
         },
         handlePortMouseClick(event){
-
+            //connections go from OUT to IN ports ONLY
+            if(this.portType=="OUT"){
+                const innerCircle = this.$refs.innerCircle;
+                const rect = innerCircle.getBoundingClientRect();
+                
+                // Calculate the center position
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                
+                //event.clientX, event.clientY
+                this.$emit("portClicked", this.portID, centerX, centerY);
+                window.addEventListener("mousemove", this.handlePortMouseMove);
+                window.addEventListener("mouseup", this.handlePortStopMove);
+            }
+        },
+        handlePortMouseMove(event){
+            this.$emit("portMouseMoved", event.clientX, event.clientY);
+        },
+        handlePortStopMove(event) {
+            console.log(event.target)
             const innerCircle = this.$refs.innerCircle;
             const rect = innerCircle.getBoundingClientRect();
 
             // Calculate the center position
             const centerX = rect.left + rect.width / 2;
             const centerY = rect.top + rect.height / 2;
-
-            //event.clientX, event.clientY
-            this.$emit("portClicked", this.portID, centerX, centerY);
-            window.addEventListener("mousemove", this.handlePortMouseMove);
-            window.addEventListener("mouseup", this.handlePortStopMove);
-        },
-        handlePortMouseMove(event){
-            this.$emit("portMouseMoved", event.clientX, event.clientY);
-        },
-        handlePortStopMove(event) {
-            this.$emit("portMouseStopMove", event.clientX, event.clientY);
+            this.$emit("portMouseStopMove", this.portID, centerX, centerY);
         },
         handlePortMouseUp() {
             console.log("mouse up");
