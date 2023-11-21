@@ -388,8 +388,6 @@ export default {
         },
         startPortDragging(module, port, posX, posY) {
             // Implement the logic to handle port dragging here
-            console.log("ababababab")
-            console.log(posX, posY);
             this.dragPortPositionX = posX;
             this.dragPortPositionY = posY;
             this.isDraggingPort = true;
@@ -418,9 +416,15 @@ export default {
             //this.makeConnectionPermanent = true; //for demo purposes
 
             //for now this is quite useless
+            console.log("Module ID from: ", moduleID)
+            console.log("Last Hoevered module:", this.lastHoveredPortModID)
+            console.log(this.isHoveringPort);
             if(this.isHoveringPort){
-                this.connections.push(new ModuleConnection(moduleID, this.lastHoveredPortModID, portID, this.lastHoveredPortID, fromX, fromY, this.lastHoveredPortX, this.lastHoveredPortY));
-                this.connections[0].printConnection();
+                if(moduleID != this.lastHoveredPortModID){
+                    console.log("fff", moduleID, this.lastHoveredPortModID)
+                    this.connections.push(new ModuleConnection(moduleID, this.lastHoveredPortModID, portID, this.lastHoveredPortID, fromX, fromY, this.lastHoveredPortX, this.lastHoveredPortY));
+                    this.connections[this.connections.length - 1].printConnection();
+                }
             }
             this.isHoveringPort = false;
         },
@@ -439,7 +443,6 @@ export default {
         moduleMovedUpdate(moduleId, xoff, yoff){
             //update all connections to and from this module to
             //match the new position
-            console.log(xoff,yoff)
             this.findUpdateConnectionsToModule(moduleId, xoff, yoff);
             this.findUpdateConnectionsFromModule(moduleId, xoff, yoff);
         }, 
@@ -469,14 +472,14 @@ export default {
         setVisibleContextMenu(event) {
             console.log(this.contextMenuVisible)
             if (this.contextMenuVisible == true) {
-                console.log("Hi")
+                //console.log("Hi")
                 this.contextMenuVisible = false;
             } else {
                 this.contextMenuVisible = true;
                 this.contextMenuPosition = { x: event.clientX, y: event.clientY };
-                console.log(event.clientX, event.clientY)
+                //console.log(event.clientX, event.clientY)
             }
-            console.log(Boolean(event.originalTarget.closest("modulesScaffold")))
+            //console.log(Boolean(event.originalTarget.closest("modulesScaffold")))
             if (event.originalTarget.parentElement.classList.contains("module")){
                 //manage the removal of modules here
             }
@@ -519,7 +522,7 @@ export default {
                 createdCoordsX: this.contextMenuPosition.x,
                 createdCoordsY: this.contextMenuPosition.y,
             });
-            console.log("POS: "+this.contextMenuPosition.x + "   " + this.contextMenuPosition.y)
+            //console.log("POS: "+this.contextMenuPosition.x + "   " + this.contextMenuPosition.y)
             // Close the context menu
             this.contextMenuVisible = false;
         },

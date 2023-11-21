@@ -3,12 +3,13 @@
     @mouseover="handlePortMouseOver"
     @mouseout="handlePortMouseOut" 
     @mousedown="handlePortMouseClick">
-    <div class="square" :style="{ backgroundColor: squareColor }">
+    <div class="square" :style="{ backgroundColor: squareColor }"
+    >
         <div class="circle" :style="{ backgroundColor: circleColor, borderColor: circleBorderColor }">
-            <div class="innerCircle" ref="innerCircle"></div>
+            <div class="innerCircle" :ref=this.circleRef></div>
         </div>
     </div>
-</div>
+    </div>
 <div class="portName">{{parameter}}</div>
 </template>
 
@@ -25,6 +26,7 @@ export default {
         parameter: String,
         type: String,
         ID: Number,
+        modId: Number,
     },
     data() {
         return {
@@ -49,13 +51,15 @@ export default {
         this.squareColor = this.normalColor;
         if(this.ID != null)
         this.portID = this.ID;
+        this.parentModuleID = this.modId;
+        this.circleRef = "innerCircle"+this.parentModuleID+this.portID; 
     },
     methods:{
         handlePortMouseOver(){
             this.squareColor = this.hoverColor;
             //we only wish to handle this if the port accepts inputs
             if (this.portType == "IN") {
-                const innerCircle = this.$refs.innerCircle;
+                const innerCircle = this.$refs[this.circleRef];
                 const rect = innerCircle.getBoundingClientRect();
 
                 // Calculate the center position
@@ -73,7 +77,7 @@ export default {
         handlePortMouseClick(event){
             //connections go from OUT to IN ports ONLY
             if(this.portType=="OUT"){
-                const innerCircle = this.$refs.innerCircle;
+                const innerCircle = this.$refs[this.circleRef];
                 const rect = innerCircle.getBoundingClientRect();
                 
                 // Calculate the center position
@@ -87,22 +91,26 @@ export default {
             }
         },
         handlePortMouseMove(event){
+            console.log("aaaa")
             this.$emit("portMouseMoved", event.clientX, event.clientY);
         },
         handlePortStopMove(event) {
-            console.log(event.target)
-            const innerCircle = this.$refs.innerCircle;
+            //console.log(event.target)
+            console.log("-----ref-----", this.$refs[this.circleRef])
+            const innerCircle = this.$refs[this.circleRef];
+            //console.log(innerCircle)
             const rect = innerCircle.getBoundingClientRect();
 
             // Calculate the center position
             const centerX = rect.left + rect.width / 2;
             const centerY = rect.top + rect.height / 2;
-            this.$emit("portMouseStopMove", this.portID, centerX, centerY);
+            this.$emit("portMouseStopMove",this.modId, this.portID, centerX, centerY);
+            window.removeEventListener("mousemove", this.handlePortMouseMove);
+            window.removeEventListener("mouseup", this.handlePortStopMove);
         },
         handlePortMouseUp() {
-            console.log("mouse up");
-            window.removeEventListener("mousemove", this.handleDrag);
-            window.removeEventListener("mouseup", this.stopDragging);
+            console.log("mouseup!")
+            
         }
     }
 };

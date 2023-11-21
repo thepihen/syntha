@@ -13,12 +13,16 @@
                 @portMouseStopMove="handlePortMouseStopMove" 
                 @portHovered="handlePortHover" @portOut="handlePortOut"
                 :is="'Port'" :type="'IN'" 
-                :parameter="'FREQ'" :ID="0"></component>
+                :parameter="'FREQ'" 
+                :modId="this.$parent.moduleId"
+                :ID="0"></component>
             <component @portClicked="handlePortClick" @portMouseMoved="handlePortMouseMove"  
                 @portMouseStopMove="handlePortMouseStopMove" 
                 @portHovered="handlePortHover" @portOut="handlePortOut"
                 :is="'Port'" :type="'OUT'"
-                :parameter="'OUT'" :ID="1"></component>
+                :parameter="'OUT'" 
+                :modId="this.$parent.moduleId"
+                :ID="1"></component>
         </div>
     </div>
 </template>
@@ -81,15 +85,17 @@ export default{
 
         //PORT FUNCTIONS (EVERY MODULE NEEDS TO HAVE THESE!)
         handlePortClick(portID, x,y){
+            console.log("parent", this.$parent.moduleId)
             this.$emit("portClicked", this.$parent.moduleId, portID,x,y);
         },
 
-        handlePortMouseMove(x,y){
+        handlePortMouseMove(x,y) {
             this.$emit("modulePortMouseMoved", x,y);
         },
 
-        handlePortMouseStopMove(portID,x,y){
-            this.$emit("modulePortMouseStopMove", this.$parent.moduleId, portID,x,y);
+        handlePortMouseStopMove(modId,portID,x,y){
+            console.log("stopped moving ", modId)
+            this.$emit("modulePortMouseStopMove", modId, portID,x,y);
         },
         handlePortHover(portID, x, y){
             this.$emit("modulePortHover", this.$parent.moduleId, portID, x, y);

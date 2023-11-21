@@ -72,7 +72,6 @@ export default {
             if (event.ctrlKey) {
                 return;
             }
-            console.log("AAAA");
             this.isDragging = true;
             this.startPosition = {
                 x: event.clientX - this.currentPosition.x,
@@ -87,7 +86,6 @@ export default {
                     x: event.clientX - this.startPosition.x,
                     y: event.clientY - this.startPosition.y,
                 };
-                console.log("y", this.currentPosition.y)
                 let offSetX = this.currentPosition.x - this.lastPosition.x;
                 let offSetY = this.currentPosition.y - this.lastPosition.y;
                 this.$emit('module-moved', this.moduleId, 
@@ -107,6 +105,7 @@ export default {
             window.removeEventListener("mousemove", this.handleDrag);
             window.removeEventListener("mouseup", this.stopDragging);
         },
+        
         handleModulePortClick(){
             console.log("module port clicked and passed");
         },

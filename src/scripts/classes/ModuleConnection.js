@@ -14,7 +14,7 @@ export default class ModuleConnection{
         this.color = this.getRandomColor();
     }
     getRandomColor(){
-        var colors = ["red", "green", "blue", "yellow", "cyan", 
+        var colors = ["red", "green", "yellow", "cyan", 
         "magenta", "green"];
         var color = colors[Math.floor(Math.random()*colors.length)];
         return color;
