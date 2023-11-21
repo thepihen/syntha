@@ -57,8 +57,8 @@ function libraryButtonClicked(){
                     :createdCoordsY="module.createdCoordsY" :moduleId="module.id"
                     @start-dragging-port="startPortDragging" 
                     @handle-port-drag="handlePortDragging" @stop-dragging-port="stopPortDragging" 
-                    @contextmenu.prevent="setVisibleContextMenu($event)">
-                    <!--<BasicOsc></BasicOsc>-->
+                    @contextmenu.prevent="setVisibleContextMenu($event)"
+                    @module-moved="moduleMovedUpdate">
                     <component :is="module.type" @portClicked="startPortDragging"  
                     @modulePortMouseMoved="handlePortDragging"
                     @modulePortMouseStopMove="stopPortDragging"
@@ -435,6 +435,37 @@ export default {
         stopTrackPort(){
             this.isHoveringPort = false;
         },
+
+        moduleMovedUpdate(moduleId, xoff, yoff){
+            //update all connections to and from this module to
+            //match the new position
+            console.log(xoff,yoff)
+            this.findUpdateConnectionsToModule(moduleId, xoff, yoff);
+            this.findUpdateConnectionsFromModule(moduleId, xoff, yoff);
+        }, 
+        findUpdateConnectionsToModule(moduleId,xoff,yoff){
+            if (this.connections.length == 0){
+                return;
+            }
+            for (let i = 0; i < this.connections.length; i++) {
+                if (this.connections[i].toId == moduleId) {
+                    this.connections[i].x2 += xoff;
+                    this.connections[i].y2 += yoff;
+                }
+            }
+        },
+        findUpdateConnectionsFromModule(moduleId, xoff, yoff){
+            if (this.connections.length == 0) {
+                return;
+            }
+            for(let i = 0; i < this.connections.length; i++){
+                if (this.connections[i].fromId == moduleId){
+                    this.connections[i].x1 += xoff;
+                    this.connections[i].y1 += yoff;
+                }
+            }
+        },
+
         setVisibleContextMenu(event) {
             console.log(this.contextMenuVisible)
             if (this.contextMenuVisible == true) {

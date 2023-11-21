@@ -9,3 +9,4 @@ Main priorities for now:
 * prests page (like gmod workshop content, you can click + to add it to your account)
 * user saved presets page (double click to open in playground)
 * saving preset: with own name
+* it should not be possible to have 2 audio out modules.

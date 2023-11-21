@@ -19,6 +19,10 @@ export default {
             x: this.createdCoordsX,
             y: this.createdCoordsY,
         };
+        this.lastPosition = {
+            x: this.currentPosition.x,
+            y: this.currentPosition.y,
+        };
     },
     data() {
         return {
@@ -35,7 +39,8 @@ export default {
         },
     },
     methods: {
-        
+        /*
+        //goofy aah code from the demo gala
         startDraggingPort(port, event) {
             // Implement the logic to start dragging the port
             // You can use Vue's $emit to notify the parent component
@@ -45,10 +50,10 @@ export default {
             //this.$emit('start-dragging-port', port, event.clientX - this.currentPosition.x, event.clientY - this.currentPosition.y);
             this.$emit('start-dragging-port', port, event.clientX , event.clientY);
             
-            /*
-            window.addEventListener("mousemove", this.handlePortDrag(port, event));
-            window.addEventListener("mouseup", this.stopDraggingPort(port));
-            */
+            
+            //window.addEventListener("mousemove", this.handlePortDrag(port, event));
+            //window.addEventListener("mouseup", this.stopDraggingPort(port));
+            
             
             window.addEventListener("mousemove", (e) => this.handlePortDrag(e));
             window.addEventListener("mouseup", (e) => this.stopPortDrag(port, e));
@@ -61,6 +66,7 @@ export default {
         handlePortDrag(event){
             this.$emit('handle-port-drag', event.clientX, event.clientY);
         },
+        */
         startDragging(event) {
             //if control is pressed return
             if (event.ctrlKey) {
@@ -81,6 +87,19 @@ export default {
                     x: event.clientX - this.startPosition.x,
                     y: event.clientY - this.startPosition.y,
                 };
+                console.log("y", this.currentPosition.y)
+                let offSetX = this.currentPosition.x - this.lastPosition.x;
+                let offSetY = this.currentPosition.y - this.lastPosition.y;
+                this.$emit('module-moved', this.moduleId, 
+                    offSetX, offSetY
+                );
+                
+                this.lastPosition = {
+                    x: this.currentPosition.x,
+                    y: this.currentPosition.y,
+                };
+                
+                
             }
         },
         stopDragging() {
@@ -121,7 +140,7 @@ export default {
     </template>
     @portClicked="handleModulePortClick"
     
-    <style scoped>
+<style scoped>
     .module {
         /*
         width: 400px;
