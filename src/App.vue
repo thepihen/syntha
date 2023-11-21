@@ -5,7 +5,8 @@ import NotFound from './NotFound.vue'
 import Playground from './Playground.vue'
 import Login from './Login.vue'
 import Workshop from './Workshop.vue'
-import { store } from './store.js'
+import { store } from './store.js'  
+
 // all this might just be tremendously useless. TODO: check
 //if this, and/or the one in router.js can be deleted
 const routes = {
@@ -16,6 +17,7 @@ const routes = {
 }
 
 export default {  
+  inject:['ACM'], //inject the audio context manager
   data() {
     return {
       store,
@@ -78,7 +80,10 @@ export default {
       xhr.setRequestHeader("Content-Type", "application/json");
       xhr.send(data);
       */
-    }
+    }, //end testButton
+    async startACM(){
+      await this.ACM.startAudio();
+    },
   }
 }
 </script>
@@ -94,6 +99,7 @@ export default {
         <router-link to="/workshop">Workshop</router-link>
         <router-link to="/about">About</router-link>
         <button @click="testButton" class="testButton">CLick me!</button>
+        <button @click="startACM" class="testButton">start ACM!</button>
     </div>
     <div class="accountSection">
       <router-link to="/login" v-if="(store.loggedIn==false)">Login</router-link>

@@ -70,6 +70,9 @@ export default{
         Knob,
         Port,
     },
+    created(){
+        
+    },
     methods:{
         knobUpdatedValue(data){
             console.log(data);

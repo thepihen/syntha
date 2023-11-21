@@ -8,6 +8,7 @@ import Playground from './Playground.vue'
 import Login from './Login.vue'
 import Account from './Account.vue'
 import Workshop from './Workshop.vue'
+import AudioChainManager from "./scripts/classes/AudioChainManager.js"
 // 3. Create the router instance and pass the `routes` option
 // You can pass in additional options here, but let's
 // keep it simple for now.
@@ -25,9 +26,11 @@ const router = createRouter({
         { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFound }
     ], // short for `routes: routes`
 });
+var ACM = new AudioChainManager("SynthA!");
 
 // 5. Create and mount the root instance.
 const app = createApp(App)
+app.provide('ACM', ACM)
 // Make sure to _use_ the router instance to make the
 // whole app router-aware.
 app.use(router)

@@ -8,30 +8,6 @@ import Toolbar from './components/Toolbar.vue'
 import ControlsToolbar from './components/ControlsToolbar.vue'
 //import tone js
 import * as Tone from 'tone'
-
-function play() {
-    const synth = new Tone.Synth().toDestination();
-    synth.triggerAttackRelease("C4", "2n");
-    console.log("lol");
-}
-/*
-var libButtonClicked = false;
-function libraryButtonClicked(){
-    libButtonClicked = !libButtonClicked;
-    if(libButtonClicked){
-        //document.getElementById("libButton").style.left = "10%";
-        document.getElementById("libButton").style.transform = "translate(300px, 0) ";
-        document.getElementById("libButton").innerHTML = "<";
-        //document.getElementById("libButton").style.transform = "rotate(180deg)";
-    }
-    else{
-        //document.getElementById("libButton").style.left = "1%";
-        document.getElementById("libButton").innerHTML = ">";
-        document.getElementById("libButton").style.transform = "translate(0px, 0)";
-    }
-    
-}
-*/
 </script>
 
 <template>
@@ -107,7 +83,7 @@ function libraryButtonClicked(){
     
         <svg class="visualConnections"  v-for="(item,index) in connections" :key="index">
             <line  :x1="connections[index].x1" :y1="connections[index].y1"
-                :x2="connections[index].x2" :y2="connections[index].y2" :stroke="connections[index].color" stroke-width="2" />
+                :x2="connections[index].x2" :y2="connections[index].y2" :stroke="connections[index].color" stroke-width="6" />
         </svg>
         </div> <!--mainDiv-->
     </main>
@@ -335,6 +311,7 @@ import ModuleConnection from './scripts/classes/ModuleConnection'
 import list_json from './assets/synth_modules_list.json'
 import synth_info_json from './assets/synth_modules.json'
 export default {
+    inject: ['ACM'],
     components: {
         Module,
         BasicOsc,
@@ -559,6 +536,14 @@ export default {
         isExpanded(index) {
             return this.expandedCategories.includes(index);
         },
+
+
+        play() {
+            const synth = new Tone.Synth().toDestination();
+            synth.triggerAttackRelease("C4", "2n");
+            console.log("lol");
+            this.ACM.testACM()
+        }
     },
 
 };
