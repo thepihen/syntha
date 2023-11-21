@@ -35,8 +35,8 @@ export default {
             this.$emit("modulePortMouseMoved", x, y);
         },
 
-        handlePortMouseStopMove() {
-            this.$emit("modulePortMouseStopMove");
+        handlePortMouseStopMove(portID, x, y) {
+            this.$emit("modulePortMouseStopMove", this.$parent.moduleId, portID, x, y);
         },
         handlePortHover(portID, x, y) {
             this.$emit("modulePortHover", this.$parent.moduleId, portID, x, y);
