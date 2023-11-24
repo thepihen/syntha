@@ -462,7 +462,7 @@ export default {
                 }
             }
         },
-        removeConnectionsWithModule(id){
+        removeConnectionsWithModule(moduleId){
             if (this.connections.length == 0) {
                 return;
             }
@@ -471,7 +471,7 @@ export default {
                     this.connections.splice(i, 1);
                 }
             }
-            ACM.removeNode(moduleId);
+            this.ACM.removeNode(moduleId);
         },
         removeModule(moduleId){
             //remove all connections to and from this module

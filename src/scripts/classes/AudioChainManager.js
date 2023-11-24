@@ -21,7 +21,26 @@ export default class AudioChainManager {
         console.log("adding node " + id + " of type " + toneType);
     }
     removeNode(id){
-        //TODO
+        let nodeIdx = this.findNode(id);
+        if(nodeIdx == null){
+            console.log("removeNode ERROR: could not find node with id " + id);
+            return;
+        }
+        let node = this.modules[nodeIdx];
+        this.removeAllConnections(node);
+        node.handleNodeRemoval();
+        this.modules.splice(nodeIdx, 1);
+        //TODO: there is still an issue here: when you remove
+        //the types don't get updated somewhere...
+        //basically you can't immediately reconnect a new module 
+        //because it could have the same type as the old one
+        //I'll work on this next
+    }
+    removeAllConnections(node){
+        for(let i = 0; i<this.modules.length; i++){
+            let currNode = this.modules[i];
+            currNode.removeConnectionsWith(node);
+        }
     }
     connectNodes(nodeFromId, nodeToId, fromPortId, toPortId){
         //find the nodes

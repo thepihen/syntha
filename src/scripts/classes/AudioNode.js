@@ -40,6 +40,14 @@ export default class AudioNode {
             break;
         }
     }
+    handleNodeRemoval(){
+        switch (this.type){
+            case "Oscillator":
+            //disconnects and marks this for garbage collection
+            this.synthNode.dispose();
+            break;
+        }
+    }
 
     updateParameter(parameter, value){
         //issue: we need to find out if this.synthNode actually has a field
@@ -58,15 +66,30 @@ export default class AudioNode {
 
     }
     hasConnectionsOnPort(portId){
-        console.log("NEXT",this.next)
-        console.log("PREV", this.prev)
-        console.log(this.next[portId], this.prev[portId])
+        //console.log("NEXT",this.next)
+        //console.log("PREV", this.prev)
+        //console.log(this.next[portId], this.prev[portId])
         if ((this.next[portId] != null || this.prev[portId] != null) || (this.next[portId] != undefined || this.prev[portId] != undefined)){
-            console.log("HAS A CONNECTION")
+            //console.log("HAS A CONNECTION")
             return true;
         }
         return false;
     }
+
+    removeConnectionsWith(node){
+        //ez trick
+        for (let key in this.next) {
+            if (this.next[key] == node) {
+                delete this.next[key];
+            }
+        }
+        for (let key in this.prev) {
+            if (this.prev[key] == node) {
+                delete this.prev[key];
+            }
+        }
+    }
+
     sendOutToDestination(){
         this.synthNode.toDestination().start();
     }

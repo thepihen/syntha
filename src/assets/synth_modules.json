@@ -4,7 +4,8 @@
             "basic_osc",
             "theremin"
         ],
-        "1":[
+        "1":[],
+        "2":[
             "audio_out",
             "midi_in"
         ]
