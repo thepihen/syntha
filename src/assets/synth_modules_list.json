@@ -1,6 +1,7 @@
 {
     "categories": [
-        "oscillator",
+        "Synth",
+        "Effects",
         "I/O"
     ],
     "modules":{

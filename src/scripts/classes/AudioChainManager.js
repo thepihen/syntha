@@ -21,7 +21,7 @@ export default class AudioChainManager {
         console.log("adding node " + id + " of type " + toneType);
     }
     removeNode(id){
-
+        //TODO
     }
     connectNodes(nodeFromId, nodeToId, fromPortId, toPortId){
         //find the nodes

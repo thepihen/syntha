@@ -35,7 +35,7 @@ import * as Tone from 'tone'
                     @start-dragging-port="startPortDragging" 
                     @handle-port-drag="handlePortDragging" @stop-dragging-port="stopPortDragging" 
                     @contextmenu.prevent="setVisibleContextMenu($event)"
-                    @module-moved="moduleMovedUpdate">
+                    @module-moved="moduleMovedUpdate" @remove-module="removeModule">
                     <component :is="module.type" @portClicked="startPortDragging"  
                     @modulePortMouseMoved="handlePortDragging"
                     @modulePortMouseStopMove="stopPortDragging"
@@ -309,6 +309,7 @@ import Module from './components/Module.vue'
 import BasicOsc from './components/synth_modules/BasicOsc.vue'
 import AudioOut from './components/synth_modules/AudioOut.vue'
 import MidiIn from './components/synth_modules/MidiIn.vue'
+import Theremin from './components/synth_modules/Theremin.vue'
 import ModuleConnection from './scripts/classes/ModuleConnection'
 import list_json from './assets/synth_modules_list.json'
 import synth_info_json from './assets/synth_modules.json'
@@ -319,6 +320,7 @@ export default {
         BasicOsc,
         AudioOut,
         MidiIn,
+        Theremin,
     },
     data() {
         return {
@@ -457,6 +459,27 @@ export default {
                 if (this.connections[i].fromId == moduleId){
                     this.connections[i].x1 += xoff;
                     this.connections[i].y1 += yoff;
+                }
+            }
+        },
+        removeConnectionsWithModule(id){
+            if (this.connections.length == 0) {
+                return;
+            }
+            for (let i = 0; i < this.connections.length; i++) {
+                if (this.connections[i].fromId == moduleId || this.connections[i].toId == moduleId) {
+                    this.connections.splice(i, 1);
+                }
+            }
+            ACM.removeNode(moduleId);
+        },
+        removeModule(moduleId){
+            //remove all connections to and from this module
+            this.removeConnectionsWithModule(moduleId);
+            //remove the module itself
+            for(let i = 0 ; i < this.modules.length; i++){
+                if (this.modules[i].id == moduleId){
+                    this.modules.splice(i, 1);
                 }
             }
         },

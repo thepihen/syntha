@@ -2,7 +2,7 @@
     "categories_content":{
         "0":[
             "basic_osc",
-            "ccc"
+            "theremin"
         ],
         "1":[
             "audio_out",
@@ -13,12 +13,22 @@
 
     "basic_osc":{
         "name": "SVO",
-        "type": "oscillator",
+        "type": "synth",
         "description": "A simple oscillator",
         "preview_img_source": "./assets/images/oscillator.png",
         "codename": "BasicOsc",
         "parameters":{
             "frequency":4402
+        }
+    },
+    "theremin": {
+        "name": "Theremin",
+        "type": "synth",
+        "description": "A Theremin - like oscillator",
+        "preview_img_source": "./assets/images/theremin.png",
+        "codename": "Theremin",
+        "parameters": {
+            "frequency": 4402
         }
     },
     "audio_out": {

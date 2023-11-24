@@ -114,6 +114,9 @@ export default {
         handleModulePortClick(){
             console.log("module port clicked and passed");
         },
+        removeModule(){
+            this.$emit('remove-module', this.moduleId);
+        },
         test(){
             console.log("test");
         },
@@ -122,26 +125,26 @@ export default {
 </script>
 
 <template>
-    <div class="module" :style="elementStyles">
-        <div class="module-title" @mousedown="startDragging">{{ moduleName }}</div>
-        <div class="module-control-area">
-            <slot></slot> <!-- <slot/> -->
-            
-            <!-- 
-                <div class="input-ports">-->
-                    <!-- careful! Numbering starts from 1 here -->
-                    <!--
-                        <div class="input-port" v-for="inputPort in inputPorts" :key="inputPort.id" v-bind:id="'inputPort'+inputPort.id"
-                        @mousedown="startDraggingPort(inputPort, $event)"></div>
-                    </div>
-                    <div class="output-ports">
-                        <div class="output-port" v-for="outputPort in outputPorts" :key="outputPort.id"
-                        @mousedown="startDraggingPort(outputPort, $event)"></div>
-                    </div>
-                -->
-            </div>
+<div class="module" :style="elementStyles">
+    <div class="module-title" @mousedown="startDragging">{{ moduleName }} <a style="cursor:pointer" @click="removeModule"> &nbsp;&nbsp;&nbsp;&nbsp;X </a></div>
+    <div class="module-control-area">
+        <slot></slot> <!-- <slot/> -->
+        
+        <!-- 
+            <div class="input-ports">-->
+                <!-- careful! Numbering starts from 1 here -->
+                <!--
+                    <div class="input-port" v-for="inputPort in inputPorts" :key="inputPort.id" v-bind:id="'inputPort'+inputPort.id"
+                    @mousedown="startDraggingPort(inputPort, $event)"></div>
+                </div>
+                <div class="output-ports">
+                    <div class="output-port" v-for="outputPort in outputPorts" :key="outputPort.id"
+                    @mousedown="startDraggingPort(outputPort, $event)"></div>
+                </div>
+            -->
         </div>
-    </template>
+    </div>
+</template>
     @portClicked="handleModulePortClick"
     
 <style scoped>
