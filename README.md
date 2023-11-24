@@ -1,6 +1,16 @@
-# designwww_demo
+# SynthA! | A Modular Synth for the Web Generation
+## Francesco Colotti, Jakub Votrubec, Roos Zoutman
+## CS-E4400 - Design of WWW Services (23/24)
+Project intro here.
 
-This template should help get you started developing with Vue 3 in Vite.
+Some random informations:
+* I (Francesco) have decided that for simplicity all nodes accept only one input per port (except for audio out nodes) and only one output per port. This is to keep the implementations simple, and also because in practice, even with a physical modular synthesiser, it's rare to send the same output port to two input ports (there are precise cables to do that). To account for this, I'll think about adding an "output duplicator" block.  
+
+Key challenges here:
+
+Key learning moments here:
+
+
 
 ## Recommended IDE Setup
 

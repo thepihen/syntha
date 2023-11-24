@@ -407,12 +407,19 @@ export default {
                     //however, taking inspiration from VCV rack, we decided it really 
                     //doesn't make sense to do that
                     //and we'd rather let the user take weird decisions
-                    this.connections.push(new ModuleConnection(this.ACM,moduleID, this.lastHoveredPortModID, portID, this.lastHoveredPortID, fromX, fromY, this.lastHoveredPortX, this.lastHoveredPortY));
-                    this.connections[this.connections.length - 1].printConnection();
+                    let valid = this.ACM.checkConnectionValidity(moduleID, this.lastHoveredPortModID, portID, this.lastHoveredPortID);
+                    if (valid){
+                        this.connections.push(new ModuleConnection(this.ACM,moduleID, this.lastHoveredPortModID, portID, this.lastHoveredPortID, fromX, fromY, this.lastHoveredPortX, this.lastHoveredPortY));
+                        this.connections[this.connections.length - 1].printConnection();
+                    }else{
+                        console.log("Invalid connection");
+                    }
                 }
             }
             this.isHoveringPort = false;
         },
+        
+
         trackPort(moduleId, portID, x, y){
             //console.log(moduleId, portID, x, y);
             this.lastHoveredPortModID = moduleId;

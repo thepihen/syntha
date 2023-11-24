@@ -4,8 +4,8 @@ export default class AudioNode {
         this.id = modId;
         this.synthNode = null;
         this.type = toneType;
-        this.next = []; //can be a list
-        this.prev = []; //can be a list
+        this.next = {}; //can be a list
+        this.prev = {}; //can be a list
         this.createSynthNode(toneType);
     }
     createSynthNode(toneType){
@@ -16,14 +16,14 @@ export default class AudioNode {
         }
         this.handleNodeSetup(toneType);
     }
-    setNext(node) {
-        this.next.push(node);
+    setNext(node, portIdFrom) {
+        this.next[portIdFrom] = node;
         if(node.type == "AudioOut"){
             this.sendOutToDestination();
         }
     }
-    setPrevious(node){
-        this.prev.push(node);
+    setPrevious(node, portIdTo){
+        this.prev[portIdTo] = node;
     }
     handleNodeSetup(type){
         //this is the point where good practices go and die
@@ -57,7 +57,16 @@ export default class AudioNode {
         }
 
     }
-
+    hasConnectionsOnPort(portId){
+        console.log("NEXT",this.next)
+        console.log("PREV", this.prev)
+        console.log(this.next[portId], this.prev[portId])
+        if ((this.next[portId] != null || this.prev[portId] != null) || (this.next[portId] != undefined || this.prev[portId] != undefined)){
+            console.log("HAS A CONNECTION")
+            return true;
+        }
+        return false;
+    }
     sendOutToDestination(){
         this.synthNode.toDestination().start();
     }

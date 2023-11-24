@@ -2,6 +2,7 @@
 
 <template>
     <div class="mainDivMI">
+        <div> Oct: {{oct}}</div>
         <ul class="set">
             <!-- note the setActiveKey key is referred to the key you press 
             on your keyboard, not the actual key on the piano! -->
@@ -17,6 +18,7 @@
             <li class="white a" @click="setActiveKey('h')" :class="{ 'w-active': activeKey === 'h' }"></li>
             <li class="black as" @click="setActiveKey('u')" :class="{ 'b-active': activeKey === 'u' }"></li>
             <li class="white b" @click="setActiveKey('j')" :class="{ 'w-active': activeKey === 'j' }"></li>
+            <!--<li class="white c_up" @click="setActiveKey('k')" :class="{ 'w-active': activeKey === 'k' }"></li>-->
         </ul>
     </div>
     <div class="portContainer">
@@ -137,6 +139,7 @@ ul li:last-child {
     min-width: 250px;
     min-height: 150px;
     background-color: rgb(24, 24, 24);
+    color:#bbb;
 }
 
 .portContainer {
@@ -153,10 +156,9 @@ ul li:last-child {
 }
 </style>
 <script>
-import Knob from '../functional/Knob.vue';
 import Port from '../functional/Port.vue';
 export default {
-    inject: ['ACM'],
+    inject: ['ACM', 'oct'],
     components: {
         Port,
     },
@@ -172,10 +174,24 @@ export default {
     },
     methods: {
         playKeyPressed(event){
-            this.setActiveKey(event.key)
+            let key = event.key.toLowerCase();
+            if(key == 'x'){
+                this.oct = this.oct + 1
+                if(this.oct > 7){
+                    this.oct = 7
+                }
+                return;
+            }else if(key == 'z'){
+                this.oct = this.oct - 1
+                if (this.oct < 1) {
+                    this.oct = 1
+                }
+                return;
+            }
+            this.setActiveKey(key)
         },
         setActiveKey(key){
-            this.activeKey = key.toLowerCase();
+            this.activeKey = key;
         },
         playKeyReleased(event){
             if(this.activeKey == event.key.toLowerCase()){

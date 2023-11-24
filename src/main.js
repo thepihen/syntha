@@ -27,10 +27,12 @@ const router = createRouter({
     ], // short for `routes: routes`
 });
 var ACM = new AudioChainManager("SynthA!");
-
+var octave = 4;
 // 5. Create and mount the root instance.
 const app = createApp(App)
 app.provide('ACM', ACM)
+//all "midi" inputs from keyboard share the same octave
+app.provide('oct', octave)
 // Make sure to _use_ the router instance to make the
 // whole app router-aware.
 app.use(router)

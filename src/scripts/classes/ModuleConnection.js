@@ -12,7 +12,7 @@ export default class ModuleConnection{
         this.y2 = y2;
         
         this.color = this.getRandomColor();
-        this.addConnectionToACM(ACM, this.fromId, this.toId);
+        this.addConnectionToACM(ACM, this.fromId, this.toId, this.fromPort, this.toPort);
     }
     getRandomColor(){
         var colors = ["red", "green", "yellow", "cyan", 
@@ -23,7 +23,7 @@ export default class ModuleConnection{
     printConnection(){
         console.log("fromId: " + this.fromId + " toId: " + this.toId + " fromPort: " + this.fromPort + " toPort: " + this.toPort + " x1: " + this.x1 + " y1: " + this.y1 + " x2: " + this.x2 + " y2: " + this.y2)
     }
-    addConnectionToACM(ACM, fromId, toId){
-        ACM.connectNodes(fromId, toId);
+    addConnectionToACM(ACM, fromId, toId, fromPortId, toPortId){
+        ACM.connectNodes(fromId, toId, fromPortId, toPortId);
     }
 }

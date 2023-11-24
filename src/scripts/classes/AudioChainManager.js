@@ -1,3 +1,6 @@
+//This class basically manages audio connections and nodes
+//The UI accesses audio stuff through the ACM
+
 import AudioNode from "./AudioNode.js";
 import * as Tone from 'tone'
 //import the type to tone class json
@@ -20,7 +23,7 @@ export default class AudioChainManager {
     removeNode(id){
 
     }
-    connectNodes(nodeFromId, nodeToId){
+    connectNodes(nodeFromId, nodeToId, fromPortId, toPortId){
         //find the nodes
         let fromNodeIdx = this.findNode(nodeFromId);
         let toNodeIdx = this.findNode(nodeToId);
@@ -29,10 +32,11 @@ export default class AudioChainManager {
             console.log("ERROR: could not find node with id " + nodeFromId + " or " + nodeToId);
             return;
         }
+        //TODO this structure can't work for multiple ports going to different places
         let fromNode = this.modules[fromNodeIdx];
         let toNode = this.modules[toNodeIdx];
-        fromNode.setNext(this.modules[toNodeIdx]);
-        toNode.setPrevious(this.modules[fromNodeIdx]);
+        fromNode.setNext(this.modules[toNodeIdx], fromPortId);
+        toNode.setPrevious(this.modules[fromNodeIdx], toPortId);
     }
 
     findNode(id){
@@ -66,9 +70,36 @@ export default class AudioChainManager {
         await Tone.start()
         console.log('audio is ready')
     }
+    checkConnectionValidity(fromModId, toModId, fromPortId, toPortId){
+        //first issue: fromPortId and toPortId can't have multiple active connections 
+        //also the connection can't already exist
 
+        //if the toModId is a AudioOut we can always connect to it
+        let fromModIdx = this.findNode(fromModId);
+        let toModIdx = this.findNode(toModId);
+        let fromMod = this.modules[fromModIdx];
+        let toMod = this.modules[toModIdx];
+        console.log("fromMod: " + fromMod.type + " toMod: " + toMod.type)
+        if(toMod.type == "AudioOut"){
+            //whatever the combination we can always connect to it
+            return true;
+        }
+        if(fromMod.type =="MidiIn"){
+            return true;
+        }
+
+        return (!this.hasConnections(fromModIdx, fromPortId) && !this.hasConnections(toModIdx, toPortId));
+    }
+    hasConnections(modId, portId){
+        //check if a port has connections
+        if(this.modules[modId].hasConnectionsOnPort(portId)){
+            return true;
+        }
+        return false;
+    }
     testACM(){
         console.log(this.appName + " ACM tested successfully")
+
     }
 }
 
