@@ -1,8 +1,10 @@
 
 <script>
 export default {
+    inject: ['ACM'],
     props: {
         moduleName: String, // The name of the module
+        moduleType: String,
         inputPorts: Array, // An array of input ports (objects with id, x, y)
         outputPorts: Array, // An array of output ports (objects with id, x, y)
         createdCoordsX: Number,
@@ -23,6 +25,9 @@ export default {
             x: this.currentPosition.x,
             y: this.currentPosition.y,
         };
+    },
+    mounted(){
+        this.ACM.addNode(this.moduleId, this.moduleType);
     },
     data() {
         return {

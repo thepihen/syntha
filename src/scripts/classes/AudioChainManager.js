@@ -1,13 +1,22 @@
 import AudioNode from "./AudioNode.js";
 import * as Tone from 'tone'
+//import the type to tone class json
+import type_to_class_json from "../../assets/module_type_to_tone_class.json"
 export default class AudioChainManager {
     constructor(appName) {
         this.appName = appName;
+        this.modules = [];
     }
-    addNode(){
-        
+    addNode(id, type){
+        let toneType = type_to_class_json[type];
+        if(toneType == null){
+            console.log("ERROR: " + type + " is not a valid type. Not adding module");
+            return;
+        }
+        let newNode = new AudioNode(id, toneType);
+        console.log("adding node " + id + " of type " + toneType);
     }
-    removeNode(){
+    removeNode(id){
 
     }
     connectNode(from,to){

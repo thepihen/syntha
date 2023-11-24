@@ -31,6 +31,7 @@ import * as Tone from 'tone'
                 <Module :moduleName="module.moduleName" :inputPorts="module.inputPorts"
                     :outputPorts="module.outputPorts" :createdCoordsX="module.createdCoordsX"
                     :createdCoordsY="module.createdCoordsY" :moduleId="module.id"
+                    :moduleType="module.type"
                     @start-dragging-port="startPortDragging" 
                     @handle-port-drag="handlePortDragging" @stop-dragging-port="stopPortDragging" 
                     @contextmenu.prevent="setVisibleContextMenu($event)"
@@ -465,7 +466,7 @@ export default {
         addModule(moduleName, fromContextMenu = false) {
             // Add a new module to the modules array
             if(!fromContextMenu){
-                let codeName = synth_info_json[moduleName]["codename"]
+                let codeName = synth_info_json[moduleName]["codename"];
                 let currId = this.modules.length;
                 //just have it in a random (visible hopefully) position
                 this.modules.push({
