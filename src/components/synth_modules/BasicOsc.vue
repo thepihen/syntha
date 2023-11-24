@@ -1,10 +1,11 @@
 <template>
     <div class="mainDivBO">
         <div class="knobClass">
-        <component  @updateknobvalue="knobUpdatedValue" :is="'Knob'" :parameter="'FREQ'" :initialValue=440
-            :from=20 :to=4000>
+        <component  @updateknobvalue="knobUpdatedValue" :is="'Knob'" 
+        :parameter="'frequency'" :label="'FREQ'" :initialValue=440
+        :from=20 :to=4000>
         </component>
-        <component  @updateknobvalue="knobUpdatedValue" :is="'Knob'" :parameter="'ATK'" :initialValue=4 :from=3
+        <component  @updateknobvalue="knobUpdatedValue" :is="'Knob'" :parameter="'attack'" :label="'ATK'" :initialValue=4 :from=3
             :to=10> </component>
         </div>
 
@@ -66,6 +67,7 @@
 import Knob from '../functional/Knob.vue';
 import Port from '../functional/Port.vue';
 export default{
+    inject: ['ACM'],
     components:{
         Knob,
         Port,
@@ -75,14 +77,12 @@ export default{
     },
     methods:{
         knobUpdatedValue(data){
-            console.log(data);
             var param, val;
             if(data != null){
                 param = data[0];
                 val = parseFloat(data[1]);
-                console.log(param);
-                console.log(val);
             }
+            this.ACM.updateModuleParameter(this.$parent.moduleId, param, val);
         },
 
 

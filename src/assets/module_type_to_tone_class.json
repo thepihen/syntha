@@ -1,4 +1,4 @@
 {
     "BasicOsc":"Oscillator",
-    "AudioOut":null
+    "AudioOut":"AudioOut"
 }

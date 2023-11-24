@@ -399,8 +399,13 @@ export default {
             console.log(this.isHoveringPort);
             if(this.isHoveringPort){
                 if(moduleID != this.lastHoveredPortModID){
-                    console.log("fff", moduleID, this.lastHoveredPortModID)
-                    this.connections.push(new ModuleConnection(moduleID, this.lastHoveredPortModID, portID, this.lastHoveredPortID, fromX, fromY, this.lastHoveredPortX, this.lastHoveredPortY));
+                    console.log("fff", moduleID, this.lastHoveredPortModID);
+                    //let connection = new ModuleConnection(this.ACM, moduleID, this.lastHoveredPortModID, portID, this.lastHoveredPortID, fromX, fromY, this.lastHoveredPortX, this.lastHoveredPortY);
+                    //here one could check if the connection is valid and makes sense, 
+                    //however, taking inspiration from VCV rack, we decided it really 
+                    //doesn't make sense to do that
+                    //and we'd rather let the user take weird decisions
+                    this.connections.push(new ModuleConnection(this.ACM,moduleID, this.lastHoveredPortModID, portID, this.lastHoveredPortID, fromX, fromY, this.lastHoveredPortX, this.lastHoveredPortY));
                     this.connections[this.connections.length - 1].printConnection();
                 }
             }

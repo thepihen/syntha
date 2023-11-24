@@ -7,6 +7,7 @@ import { mapValue } from "../../scripts/utils/utils.js"
 export default {
     props: {
         parameter: String, //The parameter the knob controls
+        label: String, 
         initialValue: Number, //its initial value
         from: Number, //the minimum value
         to: Number, //the maximum value
@@ -121,7 +122,7 @@ knob.addEventListener("mousemove", (e) => {
 </script>
 <template>
     <div class="wrapper">
-        <div class="label parameter">{{parameter}}</div>
+        <div class="label parameter">{{label}}</div>
         <div class="knob">
             <div class="label label-l">{{from}}</div>
             <div class="knob_inner" id="knob-inner" :style="{ transform: 'rotate(' + currentAngle + 'deg)' }" @mousedown="startDraggingKnob">

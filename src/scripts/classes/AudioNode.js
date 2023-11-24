@@ -1,5 +1,4 @@
 import * as Tone from 'tone'
-import { TickSignal } from 'tone/build/esm/core/clock/TickSignal';
 export default class AudioNode {
     constructor(modId, toneType) {
         this.id = modId;
@@ -18,10 +17,13 @@ export default class AudioNode {
         this.handleNodeSetup(toneType);
     }
     setNext(node) {
-        this.next.append(node);
+        this.next.push(node);
+        if(node.type == "AudioOut"){
+            this.sendOutToDestination();
+        }
     }
     setPrevious(node){
-        this.prev.append(node);
+        this.prev.push(node);
     }
     handleNodeSetup(type){
         //this is the point where good practices go and die
@@ -32,10 +34,34 @@ export default class AudioNode {
             this.synthNode = new Tone[type]();
             this.synthNode.type = "sine";
             this.synthNode.set({
-                frequency: 440
+                frequency: "C4"
             });
-            this.synthNode.toDestination().start();
+            //this.synthNode.toDestination().start();
             break;
         }
+    }
+
+    updateParameter(parameter, value){
+        //issue: we need to find out if this.synthNode actually has a field
+        //called $parameter. We can work this out in two ways, the stupid one
+        //or the smart one
+        console.log(parameter);
+        console.log(this.synthNode)
+        if (this.synthNode.hasOwnProperty(parameter)) {
+            this.synthNode.set({
+                [parameter]: value
+            });
+        } else {
+            console.log("Oscillator does not have the field!", parameter);
+            return;
+        }
+
+    }
+
+    sendOutToDestination(){
+        this.synthNode.toDestination().start();
+    }
+    print(){
+        console.log("id: " + this.id + " type: " + this.type);
     }
 }

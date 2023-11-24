@@ -14,14 +14,54 @@ export default class AudioChainManager {
             return;
         }
         let newNode = new AudioNode(id, toneType);
+        this.modules.push(newNode);
         console.log("adding node " + id + " of type " + toneType);
     }
     removeNode(id){
 
     }
-    connectNode(from,to){
-
+    connectNodes(nodeFromId, nodeToId){
+        //find the nodes
+        let fromNodeIdx = this.findNode(nodeFromId);
+        let toNodeIdx = this.findNode(nodeToId);
+        //add the connections
+        if (fromNodeIdx == null || toNodeIdx == null) {
+            console.log("ERROR: could not find node with id " + nodeFromId + " or " + nodeToId);
+            return;
+        }
+        let fromNode = this.modules[fromNodeIdx];
+        let toNode = this.modules[toNodeIdx];
+        fromNode.setNext(this.modules[toNodeIdx]);
+        toNode.setPrevious(this.modules[fromNodeIdx]);
     }
+
+    findNode(id){
+        for(let i = 0; i < this.modules.length; i++){
+            if(this.modules[i].id == id){
+                return i;
+            }
+        }
+        console.log("ERROR: could not find node with id " + id);
+        return null;
+    }
+
+    updateModuleParameter(id, parameter, value){
+        let idx = this.findNode(id);
+        if(idx == null){
+            console.log("ERROR: could not find node with id " + id);
+            return;
+        }
+        let node = this.modules[idx];
+        node.updateParameter(parameter,value);
+    }
+
+    printModules(){
+        console.log("printing modules...")
+        for(let i = 0; i < this.modules.length; i++){
+            console.log(this.modules[i].print());
+        }
+    }
+
     async startAudio(){
         await Tone.start()
         console.log('audio is ready')
