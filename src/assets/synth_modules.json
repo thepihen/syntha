@@ -5,8 +5,8 @@
             "ccc"
         ],
         "1":[
-            "midi_in_keyboard",
-            "audio_out"
+            "audio_out",
+            "midi_in"
         ]
     },
 
@@ -28,7 +28,15 @@
         "preview_img_source": "./assets/images/audio_out.png",
         "codename": "AudioOut",
         "parameters": {
-            "frequency": 4402
+        }
+    },
+    "midi_in": {
+        "name": "Keyboard Input",
+        "type": "I/O",
+        "description": "Midi input. For now only thorugh the computer keyboard",
+        "preview_img_source": "./assets/images/midi_in_key.png",
+        "codename": "MidiIn",
+        "parameters": {
         }
     }
 }
