@@ -3,6 +3,7 @@ export default class AudioNode {
     constructor(modId, toneType) {
         this.id = modId;
         this.synthNode = null;
+        this.internalChain = [];
         this.type = toneType;
         this.next = {}; //can be a list
         this.prev = {}; //can be a list
@@ -43,11 +44,23 @@ export default class AudioNode {
                 //the theremin has a very specific chain to replicate the sound
                 //of the real instrument, so even though the type "Theremin"
                 //is not a Tone class, we need to fake it by creating said chain
+
+                //ok first of all we need a sine oscillator. We can "sort of"
+                //emulate the theremin timbre by using the fundamental and the first
+                //2 harmonics with an exponential roll-off
                 this.synthNode = new Tone.Oscillator();
                 this.synthNode.type = "sine";
                 this.synthNode.set({
-                    frequency: "C4"
+                    frequency: "C4" //good "beginning" frequency
                 });
+                this.synthNode.partials = [1, 0.6, 0.2]; //I found
+                //these values by playing around with an FM synth (Sytrus)
+                //in FL Studio
+                //next up an LFO will modulate the frequency of the oscillator
+                var lfo = new Tone.LFO(7, this.synthNode.frequency.value - 10, this.synthNode.frequency.value + 10).start();
+
+                lfo.connect(this.synthNode.frequency);
+                this.internalChain.push(lfo);
             break;
         }
     }
@@ -68,6 +81,11 @@ export default class AudioNode {
                 }
             break;
         }
+        if(this.internalChain.length>0){
+            for(let i=0; i<this.internalChain.length; i++){
+                this.internalChain[i].dispose();
+            }
+        }
     }
 
     updateParameter(parameter, value){
@@ -79,6 +97,13 @@ export default class AudioNode {
                 console.log(value);
                 this.synthNode.volume.value = value;
                 return;
+            }
+            if(this.type=="Theremin"){
+                if(parameter=="frequency"){
+                    this.internalChain[0].min = value - value/20;
+                    this.internalChain[0].max = value + value/20;
+                    return;
+                }
             }
             this.synthNode.set({
                 [parameter]: value
