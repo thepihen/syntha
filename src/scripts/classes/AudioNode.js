@@ -139,6 +139,23 @@ export default class AudioNode {
         }
     }
 
+
+    keyPlayed(midiKey){
+        if(this.type=="MidiIn"){
+            if(this.next[0] != null && this.next[0] != undefined){
+                this.next[0].keyPlayed(midiKey);
+            }
+        }
+        if(this.type=="Oscillator"){
+            this.synthNode.set({
+                "frequency": Tone.Frequency(midiKey, "midi").toFrequency(),
+            });
+        }
+    }
+    
+    keyReleased(midiKey){
+        
+    }
     sendOutToDestination(){
         this.synthNode.toDestination().start();
     }

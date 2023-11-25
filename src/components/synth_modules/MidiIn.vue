@@ -167,6 +167,8 @@ export default {
     data(){
         return{
             activeKey:null,
+            keyNotes:['a', 'w', 's', 'e', 'd', 'f', 't', 'g', 'y', 'h', 'u', 'j'],
+            midiNotes:[60,61,62,63,64,65,66,67,68,69,70,71], //not the best way to do this but don't have time sorry
         }
     },
     emits: ['portClicked', 'modulePortMouseMoved', 'modulePortMouseStopMove', 'modulePortHover', 'modulePortOut'],
@@ -191,8 +193,10 @@ export default {
                 }
                 return;
             }
-            console.log(key)
             this.setActiveKey(key)
+            let octDiff = this.oct - 4
+            let midiKey = this.getMidiKey(key) + 12 * octDiff;
+            this.ACM.keyPlayed(midiKey, this.$parent.moduleId)
         },
         setActiveKey(key){
             this.activeKey = key;
@@ -200,7 +204,14 @@ export default {
         playKeyReleased(event){
             if(this.activeKey == event.key.toLowerCase()){
                 this.activeKey = null;
+                let octDiff = this.oct - 4
+                let midiKey = this.getMidiKey(event.key.toLowerCase()) + 12 * octDiff;
+                this.ACM.keyReleased(midiKey, this.$parent.moduleId)
             }
+        },
+        getMidiKey(key){
+            let index = this.keyNotes.indexOf(key)
+            return this.midiNotes[index]
         },
         removeModuleListeners(){
             window.removeEventListener("keydown", this.playKeyPressed);
