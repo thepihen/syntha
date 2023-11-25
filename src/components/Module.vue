@@ -5,8 +5,10 @@ export default {
     props: {
         moduleName: String, // The name of the module
         moduleType: String,
+        /*
         inputPorts: Array, // An array of input ports (objects with id, x, y)
         outputPorts: Array, // An array of output ports (objects with id, x, y)
+        */
         createdCoordsX: Number,
         createdCoordsY: Number,
         moduleId: Number,
@@ -116,6 +118,9 @@ export default {
         },
         removeModule(){
             this.$emit('remove-module', this.moduleId);
+            var event = new Event("remove-module-"+this.moduleId);
+            // Dispatch the event.
+            dispatchEvent(event);
         },
         test(){
             console.log("test");

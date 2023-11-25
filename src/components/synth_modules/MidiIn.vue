@@ -21,7 +21,7 @@
             <!--<li class="white c_up" @click="setActiveKey('k')" :class="{ 'w-active': activeKey === 'k' }"></li>-->
         </ul>
     </div>
-    <div class="portContainer">
+    <div class="portContainerMidiIn">
         <!-- this could probably be automated with a v-for but I'm lazy -->
         <component @portClicked="handlePortClick" @portMouseMoved="handlePortMouseMove"
             @portMouseStopMove="handlePortMouseStopMove" @portHovered="handlePortHover" @portOut="handlePortOut"
@@ -40,9 +40,11 @@
 </template>
 
 <style>
+/*
 * {
     box-sizing: border-box
 }
+*/
 
 body {
     margin: 0;
@@ -142,7 +144,7 @@ ul li:last-child {
     color:#bbb;
 }
 
-.portContainer {
+.portContainerMidiIn{
     position: relative;
     display: flex;
     flex-direction: row;
@@ -171,6 +173,7 @@ export default {
     created() {
         window.addEventListener("keydown", this.playKeyPressed);
         window.addEventListener("keyup", this.playKeyReleased);
+        window.addEventListener("remove-module-"+this.$parent.moduleId, this.removeModuleListeners)
     },
     methods: {
         playKeyPressed(event){
@@ -188,6 +191,7 @@ export default {
                 }
                 return;
             }
+            console.log(key)
             this.setActiveKey(key)
         },
         setActiveKey(key){
@@ -197,6 +201,11 @@ export default {
             if(this.activeKey == event.key.toLowerCase()){
                 this.activeKey = null;
             }
+        },
+        removeModuleListeners(){
+            window.removeEventListener("keydown", this.playKeyPressed);
+            window.removeEventListener("keyup", this.playKeyReleased);
+            window.removeEventListener("remove-module"+this.$parent.moduleId, this.removeModuleListeners)
         },
         //PORT FUNCTIONS (EVERY MODULE NEEDS TO HAVE THESE!)
         handlePortClick(portID, x, y) {

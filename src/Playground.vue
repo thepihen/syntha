@@ -329,16 +329,6 @@ export default {
             contextMenuPosition: { x: 0, y: 0 },
             modules: [],
             moduleName: "My Module",
-            inputPorts: [
-                { id: 1, x: 10, y: 50 },
-                { id: 2, x: 10, y: 80 },
-                // Add more input ports as needed
-            ],
-            outputPorts: [
-                { id: 1, x: 190, y: 50 },
-                { id: 2, x: 190, y: 80 },
-                // Add more output ports as needed
-            ],
             myJson: list_json,
             synth_info: synth_info_json,
             mod_categories: list_json["categories"],
@@ -357,6 +347,7 @@ export default {
             lastHoveredPortID:-1,
             lastHoveredPortX:0,
             lastHoveredPortY:0,
+            lastAssignedModuleId:-1,
         };
     },
     options: {
@@ -504,12 +495,15 @@ export default {
             // Add a new module to the modules array
             if(!fromContextMenu){
                 let codeName = synth_info_json[moduleName]["codename"];
-                let currId = this.modules.length;
+                //let currId = this.modules.length;
+                let currId = this.lastAssignedModuleId + 1;
+                this.lastAssignedModuleId = currId;
                 //just have it in a random (visible hopefully) position
                 this.modules.push({
                     moduleName,
                     type: codeName,
                     id: currId,
+                    /*
                     inputPorts: [
                         { id: 1, x: 10, y: 50 },
                         { id: 2, x: 10, y: 80 },
@@ -518,6 +512,7 @@ export default {
                         { id: 1, x: 190, y: 50 },
                         { id: 2, x: 190, y: 80 },
                     ], // Define initial output ports if needed
+                    */
                     createdCoordsX: (Math.floor(Math.random()*600)+200),
                     createdCoordsY: (Math.floor(Math.random() * 500)+100),
                 });

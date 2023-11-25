@@ -30,11 +30,12 @@ export default class AudioChainManager {
         this.removeAllConnections(node);
         node.handleNodeRemoval();
         this.modules.splice(nodeIdx, 1);
-        //TODO: there is still an issue here: when you remove
+        //there is still an issue here: when you remove
         //the types don't get updated somewhere...
         //basically you can't immediately reconnect a new module 
         //because it could have the same type as the old one
-        //I'll work on this next
+        //Solved it by changing the way Ids are assigned to modules in Playground.vue
+
     }
     removeAllConnections(node){
         for(let i = 0; i<this.modules.length; i++){
