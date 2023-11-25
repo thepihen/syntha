@@ -310,6 +310,8 @@ import BasicOsc from './components/synth_modules/BasicOsc.vue'
 import AudioOut from './components/synth_modules/AudioOut.vue'
 import MidiIn from './components/synth_modules/MidiIn.vue'
 import Theremin from './components/synth_modules/Theremin.vue'
+import Reverb from './components/synth_modules/Reverb.vue'
+
 import ModuleConnection from './scripts/classes/ModuleConnection'
 import list_json from './assets/synth_modules_list.json'
 import synth_info_json from './assets/synth_modules.json'
@@ -321,6 +323,7 @@ export default {
         AudioOut,
         MidiIn,
         Theremin,
+        Reverb,
     },
     data() {
         return {

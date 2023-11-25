@@ -21,6 +21,8 @@ export default class AudioNode {
         this.next[portIdFrom] = node;
         if(node.type == "AudioOut"){
             this.sendOutToDestination();
+        }else if(node.type!="MidiIn"){
+            this.synthNode.connect(node.synthNode);
         }
     }
     setPrevious(node, portIdTo){
@@ -36,6 +38,7 @@ export default class AudioNode {
                 this.synthNode.set({
                     frequency: "C4"
                 });
+                this.synthNode.start();
                 //this.synthNode.toDestination().start();
             break;
 
@@ -61,6 +64,15 @@ export default class AudioNode {
 
                 lfo.connect(this.synthNode.frequency);
                 this.internalChain.push(lfo);
+                this.synthNode.start();
+            break;
+
+            case "Reverb":
+                this.synthNode = new Tone[type]();
+                this.synthNode.set({
+                    decay: 0.5,
+                    wet: 0.5
+                });
             break;
         }
     }
@@ -71,6 +83,9 @@ export default class AudioNode {
                 this.synthNode.dispose();
             break;
             case "Theremin":
+                this.synthNode.dispose();
+            break;
+            case "Reverb":
                 this.synthNode.dispose();
             break;
             case "AudioOut":
@@ -92,6 +107,16 @@ export default class AudioNode {
         //issue: we need to find out if this.synthNode actually has a field
         //called $parameter. We can work this out in two ways, the stupid one
         //or the smart one
+        /*  //fun fact: the tone Reverb class has a property called "decay" according
+        //to the documentation, but if you change it a new reverb will actually be
+        //created... 
+        if (this.type == "Reverb") {
+            if (parameter == "decay") {
+                this.synthNode.decay = value;
+                return;
+            }
+        }
+        */
         if (this.synthNode.hasOwnProperty(parameter)) {
             if(parameter=="volume"){
                 console.log(value);
@@ -109,7 +134,8 @@ export default class AudioNode {
                 [parameter]: value
             });
         } else {
-            console.log("Oscillator does not have the field!", parameter);
+            console.log(this.synthNode)
+            console.log(this.type+" does not have the field", parameter);
             return;
         }
 
@@ -156,8 +182,9 @@ export default class AudioNode {
     keyReleased(midiKey){
         
     }
+
     sendOutToDestination(){
-        this.synthNode.toDestination().start();
+        this.synthNode.toDestination();
     }
     print(){
         console.log("id: " + this.id + " type: " + this.type);

@@ -4,7 +4,9 @@
             "basic_osc",
             "theremin"
         ],
-        "1":[],
+        "1":[
+            "reverb"
+        ],
         "2":[
             "audio_out",
             "midi_in"
@@ -30,6 +32,15 @@
         "codename": "Theremin",
         "parameters": {
             "frequency": 4402
+        }
+    },
+    "reverb":{
+        "name": "Reverb",
+        "type": "effect",
+        "description": "A basic reverb",
+        "preview_img_source": "./assets/images/reverb.png",
+        "codename": "Reverb",
+        "parameters":{
         }
     },
     "audio_out": {
