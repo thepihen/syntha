@@ -87,8 +87,7 @@ export default class AudioChainManager {
     }
 
     async startAudio(){
-        await Tone.start()
-        console.log('audio is ready')
+        await Tone.start().then(console.log('Hello party people, this is your captain ACM speaking. The audio is ready'))
     }
     checkConnectionValidity(fromModId, toModId, fromPortId, toPortId){
         //first issue: fromPortId and toPortId can't have multiple active connections 

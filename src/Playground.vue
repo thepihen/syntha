@@ -462,11 +462,11 @@ export default {
                     this.connections.splice(i, 1);
                 }
             }
-            this.ACM.removeNode(moduleId);
         },
         removeModule(moduleId){
             //remove all connections to and from this module
             this.removeConnectionsWithModule(moduleId);
+            this.ACM.removeNode(moduleId);
             //remove the module itself
             for(let i = 0 ; i < this.modules.length; i++){
                 if (this.modules[i].id == moduleId){

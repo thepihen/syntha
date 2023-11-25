@@ -1,5 +1,6 @@
 {
     "BasicOsc":"Oscillator",
     "AudioOut":"AudioOut",
-    "MidiIn":"MidiIn"
+    "MidiIn":"MidiIn",
+    "Theremin":"Theremin"
 }

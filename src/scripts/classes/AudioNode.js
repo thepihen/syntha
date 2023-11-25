@@ -30,21 +30,42 @@ export default class AudioNode {
         //since I no longer have enough time...
         switch (type){
             case "Oscillator":
-                console.log("aaaa")
-            this.synthNode = new Tone[type]();
-            this.synthNode.type = "sine";
-            this.synthNode.set({
-                frequency: "C4"
-            });
-            //this.synthNode.toDestination().start();
+                this.synthNode = new Tone[type]();
+                this.synthNode.type = "sine";
+                this.synthNode.set({
+                    frequency: "C4"
+                });
+                //this.synthNode.toDestination().start();
+            break;
+
+
+            case "Theremin":
+                //the theremin has a very specific chain to replicate the sound
+                //of the real instrument, so even though the type "Theremin"
+                //is not a Tone class, we need to fake it by creating said chain
+                this.synthNode = new Tone.Oscillator();
+                this.synthNode.type = "sine";
+                this.synthNode.set({
+                    frequency: "C4"
+                });
             break;
         }
     }
     handleNodeRemoval(){
         switch (this.type){
             case "Oscillator":
-            //disconnects and marks this for garbage collection
-            this.synthNode.dispose();
+                //disconnects and marks this for garbage collection
+                this.synthNode.dispose();
+            break;
+            case "Theremin":
+                this.synthNode.dispose();
+            break;
+            case "AudioOut":
+                //go through all the elmeents in this.prev 
+                for (let key in this.prev) {
+                    //console.log(this.prev[key])
+                    this.prev[key].synthNode.disconnect();
+                }
             break;
         }
     }
@@ -53,9 +74,12 @@ export default class AudioNode {
         //issue: we need to find out if this.synthNode actually has a field
         //called $parameter. We can work this out in two ways, the stupid one
         //or the smart one
-        console.log(parameter);
-        console.log(this.synthNode)
         if (this.synthNode.hasOwnProperty(parameter)) {
+            if(parameter=="volume"){
+                console.log(value);
+                this.synthNode.volume.value = value;
+                return;
+            }
             this.synthNode.set({
                 [parameter]: value
             });

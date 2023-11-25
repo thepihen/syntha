@@ -95,7 +95,7 @@ export default {
     <div class="toolbar-title">SynthA!</div>
     <div class="toolbar-actions">
         <router-link to="/">Home</router-link>
-        <router-link to="/synth">Playground</router-link>
+        <router-link @click="startACM" to="/synth">Playground</router-link>
         <router-link to="/workshop">Workshop</router-link>
         <router-link to="/about">About</router-link>
         <button @click="testButton" class="testButton">CLick me!</button>

@@ -11,6 +11,8 @@
             Vertical axis: amplitude
             <br>
             Horizontal axis: pitch
+            <br> 
+            Click and drag to move!
         </div>
         <div class="portContainerThe">
             <component @portClicked="handlePortClick" @portMouseMoved="handlePortMouseMove"
@@ -29,7 +31,7 @@
     left: 0%;
     width: 100%;
     height: 100%;
-    min-height: 350px;
+    min-height: 390px;
     min-width: 300px;
     background-color: rgb(24, 24, 24);
     overflow: hidden;
@@ -51,7 +53,7 @@
     left: 0%;
     width: 100%;
     border: 1px solid white;
-    height: 50px;
+    height: 90px;
     transform: translate(0,0);
     background-color: rgb(24, 24, 24);
 }
@@ -75,6 +77,7 @@
 <script>
 import Knob from '../functional/Knob.vue';
 import Port from '../functional/Port.vue';
+import { mapValue } from "../../scripts/utils/utils.js"
 export default {
     inject: ['ACM'],
     components: {
@@ -113,6 +116,16 @@ export default {
             if(this.thereminIndicator.y >300){
                 this.thereminIndicator.y = 300;
             }
+            //a quick google search told me that the theremin covers approximately
+            //from C2 to C7 (5 octaves)
+            //using https://pages.mtu.edu/~suits/notefreqs.html for tunings
+            let freqVal = mapValue(this.thereminIndicator.x, 0, 300, 65.41, 2093)
+            let volumeVal = ( 1 - mapValue(this.thereminIndicator.y, 0, 300,0, 1))
+            //this conversion to decibel doesn't make any sense, I'm just going by ear
+            volumeVal = 30 * Math.log10(volumeVal) 
+            this.ACM.updateModuleParameter(this.$parent.moduleId, "frequency", freqVal);
+            this.ACM.updateModuleParameter(this.$parent.moduleId, "volume", volumeVal)
+
         },
 
         //PORT FUNCTIONS (EVERY MODULE NEEDS TO HAVE THESE!)
