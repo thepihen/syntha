@@ -3,5 +3,6 @@
     "AudioOut":"AudioOut",
     "MidiIn":"MidiIn",
     "Theremin":"Theremin",
-    "Reverb":"Reverb"
+    "Reverb":"Reverb",
+    "VCA":"Gain"
 }

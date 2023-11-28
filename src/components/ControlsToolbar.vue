@@ -45,7 +45,7 @@ export default {
     bottom: 0;
     left: 0;
     right: 0;
-    z-index: 100;
+    z-index: 1203;
     height: 2rem;
     border: 1px solid rgb(0, 0, 0);
 }

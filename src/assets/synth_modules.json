@@ -5,7 +5,8 @@
             "theremin"
         ],
         "1":[
-            "reverb"
+            "reverb",
+            "VCA"
         ],
         "2":[
             "audio_out",
@@ -42,6 +43,14 @@
         "codename": "Reverb",
         "parameters":{
         }
+    },
+    "VCA":{
+        "name": "VCA",
+        "type": "effect",
+        "description": "Simple VCA/gain module. Not actually voltage controlled :|",
+        "preview_img_source": "./assets/images/VCA.png",
+        "codename": "VCA",
+        "parameters": {}
     },
     "audio_out": {
         "name": "Audio Out",

@@ -65,6 +65,8 @@ export default class AudioNode {
                 lfo.connect(this.synthNode.frequency);
                 this.internalChain.push(lfo);
                 this.synthNode.start();
+
+                
             break;
 
             case "Reverb":
@@ -73,6 +75,10 @@ export default class AudioNode {
                     decay: 0.5,
                     wet: 0.5
                 });
+            break;
+
+            case "Gain":4
+                this.synthNode = new Tone.Multiply(1);
             break;
         }
     }
@@ -88,6 +94,9 @@ export default class AudioNode {
             case "Reverb":
                 this.synthNode.dispose();
             break;
+            case "Gain":
+                this.synthNode.dispose();
+                break;
             case "AudioOut":
                 //go through all the elmeents in this.prev 
                 for (let key in this.prev) {

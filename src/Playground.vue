@@ -231,7 +231,7 @@ main {
     background-color: rgb(255, 255, 255);
     /*add a black border*/
     border: 1px solid #111;
-    z-index: 100;
+    z-index: 1202;
     transition: width 0.3s ease;
     overflow: scroll;
     cursor: default;
@@ -323,6 +323,7 @@ import AudioOut from './components/synth_modules/AudioOut.vue'
 import MidiIn from './components/synth_modules/MidiIn.vue'
 import Theremin from './components/synth_modules/Theremin.vue'
 import Reverb from './components/synth_modules/Reverb.vue'
+import VCA from './components/synth_modules/VCA.vue'
 
 import ModuleConnection from './scripts/classes/ModuleConnection'
 import list_json from './assets/synth_modules_list.json'
@@ -337,6 +338,7 @@ export default {
         MidiIn,
         Theremin,
         Reverb,
+        VCA,
     },
     data() {
         return {
@@ -423,7 +425,10 @@ export default {
                     //and we'd rather let the user take weird decisions
                     let valid = this.ACM.checkConnectionValidity(moduleID, this.lastHoveredPortModID, portID, this.lastHoveredPortID);
                     if (valid){
-                        this.connections.push(new ModuleConnection(this.ACM,moduleID, this.lastHoveredPortModID, portID, this.lastHoveredPortID, fromX, fromY, this.lastHoveredPortX, this.lastHoveredPortY));
+                        this.connections.push(new ModuleConnection(this.ACM, moduleID, this.lastHoveredPortModID, 
+                        portID, this.lastHoveredPortID, fromX - this.playGroundXtranslate, 
+                        fromY - this.playGroundYtranslate, this.lastHoveredPortX - this.playGroundXtranslate, 
+                        this.lastHoveredPortY - this.playGroundYtranslate));
                         this.connections[this.connections.length - 1].printConnection();
                     }else{
                         console.log("Invalid connection");
