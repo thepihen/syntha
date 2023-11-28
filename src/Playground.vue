@@ -12,7 +12,7 @@ import * as Tone from 'tone'
 
 <template>
     <header>
-        <Toolbar />
+        <Toolbar @savepreset="savePreset" @loadpreset="loadPreset" />
         <!-- Your main content goes here -->
     </header>
 
@@ -327,6 +327,7 @@ import Reverb from './components/synth_modules/Reverb.vue'
 import ModuleConnection from './scripts/classes/ModuleConnection'
 import list_json from './assets/synth_modules_list.json'
 import synth_info_json from './assets/synth_modules.json'
+import {getTodaysDate} from './scripts/utils/utils.js'
 export default {
     inject: ['ACM'],
     components: {
@@ -590,14 +591,17 @@ export default {
             return this.expandedCategories.includes(index);
         },
 
-
+        /* //testing function, should you wish to test the ACM alone
         play() {
             const synth = new Tone.Synth().toDestination();
             synth.triggerAttackRelease("C4", "2n");
             console.log("lol");
             this.ACM.testACM()
         },
+        */
 
+
+        //PLAYGROUND MOVEMENT STUFF
         clickedMainDiv(event, type){
             //if the class of the event original target is not mainDiv
             //then do nothing
@@ -632,7 +636,77 @@ export default {
             this.playGroundYtranslate += event.clientY - this.playGroundMoveInitialY;
             this.playGroundMoveInitialX = event.clientX;
             this.playGroundMoveInitialY = event.clientY;
-        }
+        },
+
+
+        //PRESET MANAGEMENT STUFF
+        savePreset(){
+            console.log("saving preset!!!!")
+            //create a small screen to get user input
+            //get the name of the preset
+            
+            //create the small screen
+            let presetName = prompt("Please enter the name of your preset", "Preset Name");
+            if (presetName == null || presetName == ""){
+                return;
+            }
+            
+            //create a new preset object
+            let METADATA = {
+                "id": 539, //get the last ID from server
+	            "name": "SynthA! Team",  //get the user's name,
+                "pos":{x:this.playGroundXtranslate, y:this.playGroundYtranslate},
+                "owner": 0, //get the current user's id from the local storage,
+                "public": true,// if trueeverybody who has the preset_id can edit it
+	            "date_of_creation": getTodaysDate(), //if modifying a preset then we should
+                //have a flag saying that, then the original date should be kept
+                "date_of_last_modification": getTodaysDate(), //or we can just not let
+                //users modify presets
+            }
+            let MODULES_STATE = []; //we need a specific functions for modules
+            //to get their state. Both from module.vue and from the ACM
+
+            let CONNECTIONS_STATE = []; //get this from the  ACM and here
+            
+            let preset = {
+                "metadata":METADATA,
+                "modules": MODULES_STATE,
+                "connections": CONNECTIONS_STATE,
+            }
+
+            //save this on the goofy ahh database
+
+            //TODO
+            var data = JSON.stringify({
+                "name": "testPresetName",
+                "data": "testPresetData",
+                "creator_id": "1"
+            });
+            fetch('http://localhost:5000/presets/new', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: data,
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Success:', data);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        },
+
+        loadPreset(){
+            console.log("loading preset!!!!")
+            //load the preset from the database
+
+            //empty modules and connections in case there is any
+
+            //re-initialise ACM if needed
+
+        },
     },
 
 };

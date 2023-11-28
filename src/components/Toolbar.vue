@@ -1,6 +1,13 @@
 <script>
 export default {
+    emits:['savepreset','loadpreset'],
     methods: {
+        savePreset(){
+            this.$emit('savepreset');
+        },
+        loadPreset(){
+            this.$emit('loadpreset');
+        },
     },
 };
 </script>
@@ -10,8 +17,8 @@ export default {
         
         <div class="toolbar-actions">
             <router-link to="/">Home</router-link>
-            <button class="toolbarButton"> Save </button>
-            <button class="toolbarButton"> Load </button>
+            <button class="toolbarButton" @click="savePreset"> Save </button>
+            <button class="toolbarButton" @click="loadPreset"> Load </button>
         </div>
         
         <div class="version">DEMO v0.5</div>
