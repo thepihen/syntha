@@ -7,6 +7,7 @@
 29/11
 * account system
 * save presets
+* minimap (**IF THERE IS TIME**)
 
 30/11 
 * connection to backend + deployment
