@@ -2,7 +2,7 @@
 
 <template>
     <div class="mainDivMI">
-        <div> Oct: {{oct}}</div>
+        <div> Oct: {{oct}} <br>(z and x <br>to change)</div>
         <ul class="set">
             <!-- note the setActiveKey key is referred to the key you press 
             on your keyboard, not the actual key on the piano! -->

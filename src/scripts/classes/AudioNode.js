@@ -78,13 +78,18 @@ export default class AudioNode {
                 });
             break;
 
-            case "Gain":4
+            case "Gain":
                 this.synthNode = new Tone.Multiply(1);
+            break;
+
+            case "Filter":
+                this.synthNode = new Tone.Filter(3000, "lowpass");
             break;
         }
     }
     handleNodeRemoval(){
         switch (this.type){
+            /*
             case "Oscillator":
                 //disconnects and marks this for garbage collection
                 this.synthNode.dispose();
@@ -97,7 +102,11 @@ export default class AudioNode {
             break;
             case "Gain":
                 this.synthNode.dispose();
-                break;
+            break;
+            case "Filter":
+                this.synthNode.dispose();
+            break;
+            */
             case "AudioOut":
                 //go through all the elmeents in this.prev 
                 for (let key in this.prev) {
@@ -106,6 +115,7 @@ export default class AudioNode {
                 }
             break;
         }
+        this.synthNode.dispose();
         if(this.internalChain.length>0){
             for(let i=0; i<this.internalChain.length; i++){
                 this.internalChain[i].dispose();
@@ -127,7 +137,8 @@ export default class AudioNode {
             }
         }
         */
-        if (this.type == "Oscillator") {
+       //kinda stupid that you can't change this with set but here we are...
+        if (this.type == "Oscillator" || this.type == "Filter") {
             if (parameter == "type") {
                 this.synthNode.type = value;
                 return;

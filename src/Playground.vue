@@ -324,6 +324,7 @@ import MidiIn from './components/synth_modules/MidiIn.vue'
 import Theremin from './components/synth_modules/Theremin.vue'
 import Reverb from './components/synth_modules/Reverb.vue'
 import VCA from './components/synth_modules/VCA.vue'
+import Filter from './components/synth_modules/Filter.vue'
 
 import ModuleConnection from './scripts/classes/ModuleConnection'
 import list_json from './assets/synth_modules_list.json'
@@ -339,6 +340,7 @@ export default {
         Theremin,
         Reverb,
         VCA,
+        Filter,
     },
     data() {
         return {

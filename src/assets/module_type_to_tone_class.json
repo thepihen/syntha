@@ -4,5 +4,6 @@
     "MidiIn":"MidiIn",
     "Theremin":"Theremin",
     "Reverb":"Reverb",
-    "VCA":"Gain"
+    "VCA":"Gain",
+    "Filter":"Filter"
 }
