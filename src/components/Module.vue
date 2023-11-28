@@ -41,7 +41,9 @@ export default {
     computed: {
         elementStyles() {
             return {
-                transform: `translate(${this.currentPosition.x}px, ${this.currentPosition.y}px)`,
+                top: `${this.currentPosition.y}px`,
+                left: `${this.currentPosition.x}px`,
+                //transform: `translate(${this.currentPosition.x}px, ${this.currentPosition.y}px)`,
             };
         },
     },

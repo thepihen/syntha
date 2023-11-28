@@ -17,7 +17,7 @@ import * as Tone from 'tone'
     </header>
 
     <main @contextmenu.prevent="setVisibleContextMenu($event)">
-        <div class="mainDiv">
+        <div class="mainDiv" @mousedown="clickedMainDiv($event, true)" @mouseup="clickedMainDiv($event, false)" @mousemove="moveMainDiv">
         <div style="cursor:default">
             <!-- create a module -->
             <!-- <Module :moduleName="moduleName" :inputPorts="inputPorts" :outputPorts="outputPorts"
@@ -35,7 +35,10 @@ import * as Tone from 'tone'
                     @start-dragging-port="startPortDragging" 
                     @handle-port-drag="handlePortDragging" @stop-dragging-port="stopPortDragging" 
                     @contextmenu.prevent="setVisibleContextMenu($event)"
-                    @module-moved="moduleMovedUpdate" @remove-module="removeModule">
+                    @module-moved="moduleMovedUpdate" @remove-module="removeModule"
+                    :style="{
+                    transform: 'translate(' + playGroundXtranslate + 'px,' + playGroundYtranslate +'px)' }"
+                    >
                     <component :is="module.type" @portClicked="startPortDragging"  
                     @modulePortMouseMoved="handlePortDragging"
                     @modulePortMouseStopMove="stopPortDragging"
@@ -285,6 +288,10 @@ main {
     cursor: grab;
 }
 
+.maindiv-grabbed{
+    cursor: grabbing;
+}
+
 @media (min-width: 1024px) {
     header {
         display: flex;
@@ -344,13 +351,18 @@ export default {
             mouseCurrentX:0,
             mouseCurrentY:0,
             makeConnectionPermanent:false,
-            playGroundTranslateX:0,
-            playGroundTranslateX:0,
             lastHoveredPortModID:-1,
             lastHoveredPortID:-1,
             lastHoveredPortX:0,
             lastHoveredPortY:0,
             lastAssignedModuleId:-1,
+
+
+            canMovePlayground:false,
+            playGroundMoveInitialX:0,
+            playGroundMoveInitialY:0,
+            playGroundXtranslate:0,
+            playGroundYtranslate:0,
         };
     },
     options: {
@@ -516,8 +528,8 @@ export default {
                         { id: 2, x: 190, y: 80 },
                     ], // Define initial output ports if needed
                     */
-                    createdCoordsX: (Math.floor(Math.random()*600)+200),
-                    createdCoordsY: (Math.floor(Math.random() * 500)+100),
+                    createdCoordsX: (Math.floor(Math.random()*600)+200) - this.playGroundXtranslate,
+                    createdCoordsY: (Math.floor(Math.random() * 500)+100) - this.playGroundYtranslate,
                 });
                 return;
             }
@@ -579,6 +591,42 @@ export default {
             synth.triggerAttackRelease("C4", "2n");
             console.log("lol");
             this.ACM.testACM()
+        },
+
+        clickedMainDiv(event, type){
+            //if the class of the event original target is not mainDiv
+            //then do nothing
+            if (event.originalTarget.classList.contains("mainDiv") == false){
+                //console.log("non duce")
+                return;
+            }
+            //console.log("duce")
+            this.canMovePlayground = type; //type is a boolean
+            if (type == true){
+                //
+                event.originalTarget.classList.add("maindiv-grabbed")
+                this.playGroundMoveInitialX = event.clientX;
+                this.playGroundMoveInitialY = event.clientY;
+            }
+            else{
+                //
+                event.originalTarget.classList.remove("maindiv-grabbed")
+            }
+
+        },
+        moveMainDiv(event){
+            //i'm sure this won't be a problem at all
+            //and won't hog resources for nothing
+            //...however time is short
+            if(this.canMovePlayground == false){
+                return;
+            }
+            console.log(event.clientX, event.clientY)
+            console.log("moving the playground sire!")
+            this.playGroundXtranslate += event.clientX - this.playGroundMoveInitialX;
+            this.playGroundYtranslate += event.clientY - this.playGroundMoveInitialY;
+            this.playGroundMoveInitialX = event.clientX;
+            this.playGroundMoveInitialY = event.clientY;
         }
     },
 
