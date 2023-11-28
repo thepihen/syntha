@@ -12,7 +12,9 @@
             <br>
             Horizontal axis: pitch
             <br> 
-            Click and drag to move!
+            Click and drag to move! 
+            <br>
+            (just clicking won't update values!)
         </div>
         <div class="portContainerThe">
             <component @portClicked="handlePortClick" @portMouseMoved="handlePortMouseMove"
@@ -42,7 +44,6 @@
     left: 0%;
     width: 100%;
     height: 300px;
-    border: 1px solid white;
     background-color: transparent;
     overflow: hidden;
 }

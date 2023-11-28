@@ -21,7 +21,7 @@ export default class AudioNode {
         this.next[portIdFrom] = node;
         if(node.type == "AudioOut"){
             this.sendOutToDestination();
-        }else if(node.type!="MidiIn"){
+        }else if(node.type!="MidiIn" && this.type != "MidiIn"){
             this.synthNode.connect(node.synthNode);
         }
     }
@@ -39,6 +39,7 @@ export default class AudioNode {
                     frequency: "C4"
                 });
                 this.synthNode.start();
+                console.log("OSCILLATING", this.synthNode)
                 //this.synthNode.toDestination().start();
             break;
 
@@ -126,6 +127,13 @@ export default class AudioNode {
             }
         }
         */
+        if (this.type == "Oscillator") {
+            if (parameter == "type") {
+                this.synthNode.type = value;
+                return;
+            }
+        }
+
         if (this.synthNode.hasOwnProperty(parameter)) {
             if(parameter=="volume"){
                 this.synthNode.volume.value = value;
@@ -138,6 +146,7 @@ export default class AudioNode {
                     return;
                 }
             }
+            
             this.synthNode.set({
                 [parameter]: value
             });
@@ -175,12 +184,18 @@ export default class AudioNode {
 
 
     keyPlayed(midiKey){
+        console.log("KEY PLAYED", midiKey)
+        if(midiKey == undefined || midiKey == null || isNaN(midiKey)){
+            return;
+        }
+        
         if(this.type=="MidiIn"){
             if(this.next[0] != null && this.next[0] != undefined){
                 this.next[0].keyPlayed(midiKey);
             }
         }
         if(this.type=="Oscillator"){
+            this.synthNode.volume.value = 0;
             this.synthNode.set({
                 "frequency": Tone.Frequency(midiKey, "midi").toFrequency(),
             });
@@ -188,7 +203,14 @@ export default class AudioNode {
     }
     
     keyReleased(midiKey){
-        
+        if (this.type == "MidiIn") {
+            if (this.next[0] != null && this.next[0] != undefined) {
+                this.next[0].keyReleased(midiKey);
+            }
+        }
+        if (this.type == "Oscillator") {
+            this.synthNode.volume.value = -200;
+        }
     }
 
     sendOutToDestination(){

@@ -27,7 +27,7 @@
             @portMouseStopMove="handlePortMouseStopMove" @portHovered="handlePortHover" @portOut="handlePortOut"
             :is="'Port'" :type="'OUT'" :parameter="'V/OCT'" :modId="this.$parent.moduleId" :ID="0"></component>
 
-            
+        <!-- commented as for now we can't implement these
         <component @portClicked="handlePortClick" @portMouseMoved="handlePortMouseMove"
             @portMouseStopMove="handlePortMouseStopMove" @portHovered="handlePortHover" @portOut="handlePortOut" :is="'Port'"
             :type="'OUT'" :parameter="'GATE'" :modId="this.$parent.moduleId" :ID="1"></component>
@@ -35,7 +35,8 @@
         <component @portClicked="handlePortClick" @portMouseMoved="handlePortMouseMove"
             @portMouseStopMove="handlePortMouseStopMove" @portHovered="handlePortHover" @portOut="handlePortOut" :is="'Port'"
             :type="'OUT'" :parameter="'VEL'" :modId="this.$parent.moduleId" :ID="2"></component>
-        <!-- you could go on and on... but that doesn't make sense here -->
+        -->
+            <!-- you could go on and on... but that doesn't make sense here -->
     </div>
 </template>
 

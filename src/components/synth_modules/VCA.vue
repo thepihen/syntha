@@ -68,24 +68,16 @@ export default {
     },
     data() {
         return {
-            timeOutID: -1,
         }
     },
     methods: {
         knobUpdatedValue(data) {
-            clearTimeout(this.timeOutID);
             var param, val;
             if (data != null) {
                 param = data[0];
                 val = parseFloat(data[1]);
             }
-            //this is needed because tonejs handles the reverb decay in a stupid
-            //manner... Basically every time it is changed 
-            //it is like creating a new reverb object, hence moving this 
-            //knob would crash the entire browser...
-            this.timeOutID = setTimeout(() => {
-                this.ACM.updateModuleParameter(this.$parent.moduleId, param, val);
-            }, 100);
+            this.ACM.updateModuleParameter(this.$parent.moduleId, param, val);
         },
 
 

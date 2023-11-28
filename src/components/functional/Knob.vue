@@ -198,7 +198,7 @@ knob.addEventListener("mousemove", (e) => {
 .label {
     position: relative;
     font-size: 16px;
-    top: 25%;
+    
     user-select: none;
 }
 

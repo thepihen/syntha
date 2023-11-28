@@ -8,6 +8,13 @@
         <component  @updateknobvalue="knobUpdatedValue" :is="'Knob'" :parameter="'attack'" :label="'ATK'" :initialValue=4 :from=3
             :to=10> </component>
         </div>
+        <!-- sorry if it looks like crap -->
+        <select v-model="selectedWaveType" @change="handleWaveTypeChange">
+            <option>sine</option>
+            <option>triangle</option>
+            <option>sawtooth</option>
+            <option>square</option>
+        </select>
 
         <div class="portContainer">
             <component @portClicked="handlePortClick" @portMouseMoved="handlePortMouseMove"  
@@ -49,7 +56,7 @@
     left:0%;
     width:100%;
     height:100%;
-    min-height:300px;
+    min-height:150px;
     background-color: rgb(25, 198, 117);
 }
 .portContainer {
@@ -73,7 +80,12 @@ export default{
         Port,
     },
     created(){
-        
+        this.selectedWaveType = "sine";
+    },
+    data(){
+        return{
+            selectedWaveType: "sine",
+        }
     },
     methods:{
         knobUpdatedValue(data){
@@ -106,6 +118,11 @@ export default{
         handlePortOut(portId){
             this.$emit("modulePortOut", this.$parent.moduleId, portId)
         },
+
+        handleWaveTypeChange(){
+            console.log(this.selectedWaveType)
+            this.ACM.updateModuleParameter(this.$parent.moduleId, "type", this.selectedWaveType);
+        }
     },
 }
 </script>
