@@ -90,7 +90,7 @@ import * as Tone from 'tone'
     </main>
 
     <div class="controls">
-        <ControlsToolbar @play-main-function="play" oncontextmenu="return false;" />
+        <ControlsToolbar oncontextmenu="return false;" />
     </div>
 </template>
 

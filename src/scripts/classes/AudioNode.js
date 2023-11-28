@@ -119,7 +119,6 @@ export default class AudioNode {
         */
         if (this.synthNode.hasOwnProperty(parameter)) {
             if(parameter=="volume"){
-                console.log(value);
                 this.synthNode.volume.value = value;
                 return;
             }

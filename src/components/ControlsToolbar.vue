@@ -1,8 +1,19 @@
 <script>
 export default {
+    //emits: ['play-main-function', 'stop-record-audio', 'record-audio'],
+    inject:['ACM'],
     methods: {
         playMainFunction() {
-            this.$emit('play-main-function');
+            //this.$emit('play-main-function');
+        },
+        
+        stopRecordAudio(){
+            //this.$emit('stop-record-audio');
+            this.ACM.stopRecordAudio();
+        },
+        recordAudio(){
+            //this.$emit('record-audio');
+            this.ACM.recordAudio();
         },
     },
 };
@@ -12,9 +23,8 @@ export default {
         <div class="toolbar-actions">
             <!-- Add toolbar actions/buttons here -->
             <!-- insert 5 buttons -->
-            <button class="controlButton" @click="playMainFunction">Play</button>
-            <button class="controlButton" @click="">Stop</button>
-
+            <button class="controlButton material-symbols-outlined" @click="recordAudio">fiber_manual_record</button>
+            <button class="controlButton material-symbols-outlined" @click="stopRecordAudio">stop</button>
         </div>
     </div>
 </template>
@@ -51,18 +61,12 @@ export default {
     background-color: blueviolet;
 }
 .controlButton{
-    background-color: blueviolet;
-        /* Blue background */
-        border: none;
-        /* Remove borders */
-        color: white;
-        /* White text */
-        padding: 12px 16px;
-        /* Some padding */
-        font-size: 16px;
-        /* Set a font size */
-        cursor: pointer;
-        /* Mouse pointer on hover */
+    /*background-color: blueviolet;*/
+    background-color: rgb(182, 182, 182);
+    border: none;
+    color: rgb(210, 13, 13);
+    font-size: 48px;
+    cursor: pointer;
 }
 .controlButton:hover {
     background-color: rgb(147, 64, 224);

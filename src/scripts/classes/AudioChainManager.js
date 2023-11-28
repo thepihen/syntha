@@ -3,12 +3,14 @@
 
 import AudioNode from "./AudioNode.js";
 import * as Tone from 'tone'
-//import the type to tone class json
+//import the type to tone class json otherwise this poor ACM doesn't know which tone blocks to add!
 import type_to_class_json from "../../assets/module_type_to_tone_class.json"
 export default class AudioChainManager {
     constructor(appName) {
         this.appName = appName;
         this.modules = [];
+        this.audioStarted = false;
+        this.outputRecorder = new Tone.Recorder();
     }
     addNode(id, type){
         let toneType = type_to_class_json[type];
@@ -87,7 +89,10 @@ export default class AudioChainManager {
     }
 
     async startAudio(){
-        await Tone.start().then(console.log('Hello party people, this is your captain ACM speaking. The audio is ready'))
+        if(this.audioStarted){
+            return;
+        }
+        await Tone.start().then(console.log('Hello party people, this is your captain ACM speaking. The audio is ready'), this.audioStarted = true)
     }
     checkConnectionValidity(fromModId, toModId, fromPortId, toPortId){
         //fromPortId and toPortId can't have multiple active connections 
@@ -136,6 +141,29 @@ export default class AudioChainManager {
     testACM(){
         console.log(this.appName + " ACM tested successfully")
 
+    }
+
+    async recordAudio(){
+        //the idea is simple. Everything that goes through the an Audio Out
+        //node is also saved in a buffer. When the user presses stop, the buffer
+        //is saved as a wav file and downloaded
+        Tone.Destination.connect(this.outputRecorder);
+        this.outputRecorder.start()
+    }
+    async stopRecordAudio(){
+        //save the buffer as an audio file and download it
+        // the recorded audio is returned as a blob
+        const recording = await this.outputRecorder.stop();
+        // download the recording by creating an anchor element and blob url
+        const url = URL.createObjectURL(recording);
+        const anchor = document.createElement("a");
+        //this is a "fake" wav file, it is actually an ogg file
+        //saved as wav... Unfortunately Tone only allows to save as wav
+        //with the Recorder
+        anchor.download = "recording.wav";
+        anchor.href = url;
+        anchor.click();
+        Tone.Destination.disconnect(this.outputRecorder)
     }
 }
 
@@ -194,3 +222,7 @@ or really any node.
 // ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⡀⢄⠄⣀⠄⡀⣀⢠⢄⣖⣖⣞⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
 // ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⣱⡐⡕⡕⡽⣝⣟⣮⣾⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
 // ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣵⣽⣸⣃⣧⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+
+
+
+//realest manager i've ever seen. 10/10 would manage again

@@ -81,7 +81,13 @@ export default {
       xhr.send(data);
       */
     }, //end testButton
+
+    //this will start the Audio Context Manager (the object that
+    //manages everything related to audio and nodes underneath
+    //the application)
     async startACM(){
+      //we're basically "tricking" the user into giving us permission
+      //to play audio
       await this.ACM.startAudio();
     },
   }
@@ -99,13 +105,12 @@ export default {
         <router-link to="/workshop">Workshop</router-link>
         <router-link to="/about">About</router-link>
         <button @click="testButton" class="testButton">CLick me!</button>
-        <button @click="startACM" class="testButton">start ACM!</button>
     </div>
     <div class="accountSection">
       <router-link to="/login" v-if="(store.loggedIn==false)">Login</router-link>
       <router-link to="/account" v-if="(store.loggedIn)">Account</router-link> <!-- here we will put the actual account -->
     </div>
-    <div class="version">DEMO v0.2</div>
+    <div class="version">DEMO v0.5</div>
   </div>
   
   <main >
