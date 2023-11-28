@@ -1,7 +1,7 @@
 <template>
     <header></header>
     <main>
-        <div class="aboutDiv"> We are a team of passionate individuals working on our dream synthesizer </div>
+        <div class="aboutDiv"> Welcome to the workshop! </div>
     </main>
 </template>
 

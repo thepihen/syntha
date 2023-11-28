@@ -47,6 +47,7 @@ export default {
     right: 0;
     z-index: 100;
     height: 2rem;
+    border: 1px solid rgb(0, 0, 0);
 }
 .control_toolbar a {
     float: left;

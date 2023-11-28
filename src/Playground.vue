@@ -48,11 +48,14 @@ import * as Tone from 'tone'
                 </Module>
             </div>
         </div>
+
+        <!-- Add more options as needed -->
+        <!--
         <div v-if="contextMenuVisible" class="context-menu"
             :style="{ top: contextMenuPosition.y + 'px', left: contextMenuPosition.x + 'px' }">
-            <div class="contextualMenuButton" @click="addModule('New Module', fromContextMenu = true)">Add Module</div>
-            <!-- Add more options as needed -->
-        </div>
+            <div class="contextualMenuButton" @click="addModule('New Module', fromContextMenu = true)">Add Module</div> 
+        -->
+
         <button id="libButton" class="libraryButton material-symbols-outlined" @click="libraryButtonClicked">arrow_forward_ios</button>
         <div id="modulesScaffold" v-if="libButtonClicked" class="modules-scaffold">
             <div class="scaffoldTitle"> MODULE SCAFFOLD </div>
@@ -86,8 +89,8 @@ import * as Tone from 'tone'
         </svg>
     
         <svg class="visualConnections"  v-for="(item,index) in connections" :key="index">
-            <line  :x1="connections[index].x1" :y1="connections[index].y1"
-                :x2="connections[index].x2" :y2="connections[index].y2" :stroke="connections[index].color" stroke-width="6" />
+            <line  :x1="(connections[index].x1 + playGroundXtranslate)" :y1="(connections[index].y1 + playGroundYtranslate)"
+                :x2="(connections[index].x2 + playGroundXtranslate)" :y2="(connections[index].y2 + playGroundYtranslate)" :stroke="connections[index].color" stroke-width="6" />
         </svg>
         </div> <!--mainDiv-->
     </main>
@@ -122,11 +125,13 @@ main {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    background-color: rgb(128, 129, 150);/* #767779;*/
-        background-image: linear-gradient(90deg, #a5a5a5ab 2px, transparent 1px),
-            linear-gradient(#a5a5a5ab 2px, transparent 1px);
-        background-size: 30px 30px;
-        /* Size of each square */
+    /* background-color: rgb(128, 129, 150);  */ /*old colors #767779;*/
+    background-color: rgb(52, 54, 64);
+    /* a5a5a5ab old color */
+    background-image: linear-gradient(90deg, #585858ab 2px, transparent 1px),
+        linear-gradient(#585858ab 2px, transparent 1px);
+    background-size: 30px 30px;/*square size*/
+    
     min-height: 100%;
     min-width: 100%;
     overflow: hidden;

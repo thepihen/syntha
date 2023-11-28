@@ -145,6 +145,7 @@ header {
   line-height: 1.5;
   z-index: 100;
   overflow: hidden;
+  border: 1px solid #000;
 }
 .toolbar a {
    height:100%;
