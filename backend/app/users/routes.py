@@ -1,3 +1,5 @@
+import dataclasses
+import json
 from http import HTTPStatus
 
 from flask import render_template, request, redirect, make_response, jsonify
@@ -30,7 +32,7 @@ def register():
         db.session.add(new_user)
         db.session.commit()
         login_user(new_user)
-        return make_response(f"Successfully registered and logged in as {username}", HTTPStatus.OK)
+        return make_response(f"Successfully registered and logged in as {username}", HTTPStatus.OK, { "user_id": new_user.id })
     else:
         return '''
                   <form method="POST">
@@ -40,17 +42,25 @@ def register():
                   </form>'''
 
 
-@bp.route("/login", methods=['POST'])
+@bp.route("/login", methods=['GET', 'POST'])
 def login():
-    username = request.form.get("username")
-    password = request.form.get("password")
+    if request.method == 'POST':
+        username = request.form.get("username")
+        password = request.form.get("password")
 
-    user = User.query.filter_by(username=username).first()
-    if user and bcrypt.check_password_hash(user.password, password):
-        login_user(user)
-        return make_response(f"Successfully loggen in as {username}", HTTPStatus.OK)
+        user = User.query.filter_by(username=username).first()
+        if user and bcrypt.check_password_hash(user.password, password):
+            login_user(user)
+            return make_response(f"Successfully loggen in as {username}", HTTPStatus.OK)
+        else:
+            return make_response("Login failed", HTTPStatus.BAD_REQUEST)
     else:
-        return make_response("Login failed", HTTPStatus.BAD_REQUEST)
+        return '''
+                      <form method="POST">
+                          <div><label>username: <input type="text" name="username"></label></div>
+                          <div><label>password: <input type="password" name="password"></label></div>
+                          <input type="submit" value="Submit">
+                      </form>'''
 
 
 @bp.route("/logout", methods=['GET'])
@@ -59,22 +69,37 @@ def logout():
     return make_response("Successfully logged out", HTTPStatus.OK)
 
 
-@bp.route("/<int:user>", methods=["GET", "DELETE"])
-def get_user(user_id):
+@bp.route("/<int:user_id>", methods=["GET", "DELETE", "POST"])
+def update_user(user_id):
+    user = User.query.filter_by(id=user_id).first()
+    if user is None:
+        return make_response("User not found", HTTPStatus.NOT_FOUND)
+
     if request.method == "GET":
-        user = User.query.filter_by(id=user_id)
-        if user:
-            return make_response(user, HTTPStatus.OK)
-        else:
-            return make_response("User not found", HTTPStatus.NOT_FOUND)
+        user_result = {
+            'id': user.id,
+            'username': user.username,
+            'seen_tutorial': user.seen_tutorial
+        }
+        return make_response(jsonify(user_result), HTTPStatus.OK)
+
     elif request.method == "DELETE":
-        user = User.query.filter_by(id=user_id)
-        if user:
-            db.session.delete(user)
-            db.session.commit()
-            return make_response("Successfully deleted user", HTTPStatus.OK)
-        else:
-            return make_response("User not found", HTTPStatus.NOT_FOUND)
+        db.session.delete(user)
+        db.session.commit()
+        return make_response("Successfully deleted user", HTTPStatus.OK)
+
+    elif request.method == 'POST':
+        request_data = request.get_json()
+        if request_data.get("username"):
+            if User.query.filter_by(id=request_data.get("username")).first() is not None:
+                return make_response("Failed: username already exists", HTTPStatus.BAD_REQUEST)
+            user.username = request_data.get("username")
+        if request_data.get("password"):
+            user.password = request_data.get("password")
+        if request_data.get("seen_tutorial"):
+            user.seen_tutorial = request_data.get("seen_tutorial")
+        db.session.commit()
+        return make_response("Successfully updated user", HTTPStatus.OK)
 
 
 @bp.route("/all", methods=['GET'])
