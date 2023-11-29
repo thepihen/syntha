@@ -113,6 +113,6 @@ def get_user_presets(user_id):
     presets = Preset.query.all()
     user_presets = []
     for preset in presets:
-        if int(preset["creator_id"]) == user_id:
+        if int(preset.creator_id) == user_id:
             user_presets.append(preset)
     return make_response(jsonify(user_presets), HTTPStatus.OK)
