@@ -113,8 +113,13 @@ export default class AudioNode {
                     //console.log(this.prev[key])
                     this.prev[key].synthNode.disconnect();
                 }
+                return
             break;
+            case "MidiIn":
+                return
+                break;
         }
+        console.log(this.synthNode)
         this.synthNode.dispose();
         if(this.internalChain.length>0){
             for(let i=0; i<this.internalChain.length; i++){
