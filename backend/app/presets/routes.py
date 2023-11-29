@@ -79,6 +79,6 @@ def get_public_presets():
     presets = Preset.query.all()
     public_presets = []
     for preset in presets:
-        if preset.isPublic:
+        if preset.public:
             public_presets.append(preset)
     return make_response(jsonify(public_presets), HTTPStatus.OK)
