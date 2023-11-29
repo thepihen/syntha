@@ -660,25 +660,18 @@ export default {
             
             //create a new preset object
             let METADATA = {
-                "id": 539, //get the last ID from server
-	            "name": "SynthA! Team",  //get the user's name,
-                "pos":{x:this.playGroundXtranslate, y:this.playGroundYtranslate},
-                "owner": 0, //get the current user's id from the local storage,
-                "public": true,// if trueeverybody who has the preset_id can edit it
-	            "date_of_creation": getTodaysDate(), //if modifying a preset then we should
-                //have a flag saying that, then the original date should be kept
-                "date_of_last_modification": getTodaysDate(), //or we can just not let
-                //users modify presets
+                "creator_id": 0, //get the current user's id from the local storage,
+                "public": true// if trueeverybody who has the preset_id can edit it
             }
             let MODULES_STATE = []; //we need a specific functions for modules
             //to get their state. Both from module.vue and from the ACM
 
             let CONNECTIONS_STATE = []; //get this from the  ACM and here
             
+            let DATA = {"modules": MODULES_STATE, "connections": CONNECTIONS_STATE};
             let preset = {
                 "metadata":METADATA,
-                "modules": MODULES_STATE,
-                "connections": CONNECTIONS_STATE,
+                "data": DATA
             }
 
             //save this on the goofy ahh database
@@ -687,7 +680,8 @@ export default {
             var data = JSON.stringify({
                 "name": "testPresetName",
                 "data": "testPresetData",
-                "creator_id": "1"
+                "creator_id": "1",
+                "pos": { x: this.playGroundXtranslate, y: this.playGroundYtranslate },
             });
             fetch('http://localhost:5000/presets/new', {
                 method: 'POST',
