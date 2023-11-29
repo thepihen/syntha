@@ -154,6 +154,14 @@ export default class AudioChainManager {
 
     }
 
+    getData(){
+        let data = {
+            "appName": this.appName,
+            "modules": this.modules
+        };
+        return data;
+    }
+
     async recordAudio(){
         //the idea is simple. Everything that goes through the an Audio Out
         //node is also saved in a buffer. When the user presses stop, the buffer

@@ -329,7 +329,7 @@ import Filter from './components/synth_modules/Filter.vue'
 import ModuleConnection from './scripts/classes/ModuleConnection'
 import list_json from './assets/synth_modules_list.json'
 import synth_info_json from './assets/synth_modules.json'
-import {getTodaysDate} from './scripts/utils/utils.js'
+import './scripts/utils/cycle.js'
 export default {
     inject: ['ACM'],
     components: {
@@ -647,7 +647,7 @@ export default {
 
 
         //PRESET MANAGEMENT STUFF
-        savePreset(){
+        async savePreset(){
             console.log("saving preset!!!!")
             //create a small screen to get user input
             //get the name of the preset
@@ -660,29 +660,33 @@ export default {
             
             //create a new preset object
             let METADATA = {
+                "preset_name": presetName,
                 "creator_id": 0, //get the current user's id from the local storage,
                 "public": true// if trueeverybody who has the preset_id can edit it
             }
-            let MODULES_STATE = []; //we need a specific functions for modules
+            let PLAYGROUND_STATE = {
+                "x": this.playGroundXtranslate,
+                "y": this.playGroundYtranslate,
+                "modules": this.modules,
+                "connections": this.connections,
+                "lastAssignedModuleId": this.lastAssignedModuleId
+            }; //we need a specific functions for modules
             //to get their state. Both from module.vue and from the ACM
+            let ACM_DATA = this.ACM.getData();
 
-            let CONNECTIONS_STATE = []; //get this from the  ACM and here
-            
-            let DATA = {"modules": MODULES_STATE, "connections": CONNECTIONS_STATE};
+            let DATA = { "playground_data": PLAYGROUND_STATE, "ACM_data": ACM_DATA };
             let preset = {
                 "metadata":METADATA,
                 "data": DATA
             }
 
             //save this on the goofy ahh database
-
+            
             //TODO
             var data = JSON.stringify({
-                "name": "testPresetName",
-                "data": "testPresetData",
-                "creator_id": "1",
-                "pos": { x: this.playGroundXtranslate, y: this.playGroundYtranslate },
+                "preset": JSON.decycle(preset)
             });
+            console.log(data);
             fetch('http://localhost:5000/presets/new', {
                 method: 'POST',
                 headers: {
