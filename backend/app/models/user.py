@@ -1,9 +1,17 @@
+from dataclasses import dataclass
+
 from flask_login import UserMixin
 
 from app.extensions import db
 
 
+@dataclass
 class User(db.Model, UserMixin):
+    id: int
+    username: str
+    password: str
+    seenTutorial: int
+
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), nullable=False, unique=True)
     password = db.Column(db.String(80), nullable=False)
