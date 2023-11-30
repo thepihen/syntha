@@ -8,6 +8,7 @@ export default {
             glowcolor: "rgb(112, 224, 255)",
             username:'',
             password:'',
+            loginFailed: false,
         }
     },
     created() {
@@ -47,7 +48,15 @@ export default {
                 response.json()
             )
             .then(data => {
+                if(data["status"] != 200){
+                    //invalid data
+                    console.log("Invalid Data");
+                    
+                    this.loginFailed = true;
+                    return;
+                }
                 console.log('Success:', data);
+                this.loginFailed=false;
                 localStorage.setItem('loggedIn', 'true');
                 localStorage.setItem('userId', data['user_id']);
                 //move the user back to home!
@@ -83,7 +92,9 @@ export default {
             <router-link class="homebtnLogin" to="/syntha/" style="text-decoration: none;">&#9750;</router-link>
             <div class="mainBoxOfSomething">
                 <input type="checkbox" id="chk" aria-hidden="true">
-
+                <div v-if="loginFailed" style="background-color:red; color:white; justify-content: center; align-items: center;">
+                    Signup/Login Failed. Bad credentials or already existing account.
+                </div>
                 <div class="signup">
                     <form>
                         <label for="chk" aria-hidden="true">SIGN UP</label>

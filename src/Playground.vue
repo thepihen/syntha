@@ -98,7 +98,7 @@ import * as Tone from 'tone'
                     </div>
                 </template>
                 
-                <style scoped>
+<style scoped>
                 /* checkout https: //developers.google.com/fonts/docs/material_symbols */
                 header {
                     line-height: 1.5;
@@ -314,243 +314,226 @@ import * as Tone from 'tone'
                     }
                 }
             </style>
-            <script>
-            import Module from './components/Module.vue'
-            import BasicOsc from './components/synth_modules/BasicOsc.vue'
-            import AudioOut from './components/synth_modules/AudioOut.vue'
-            import MidiIn from './components/synth_modules/MidiIn.vue'
-            import Theremin from './components/synth_modules/Theremin.vue'
-            import Reverb from './components/synth_modules/Reverb.vue'
-            import VCA from './components/synth_modules/VCA.vue'
-            import Filter from './components/synth_modules/Filter.vue'
-            
-            import ModuleConnection from './scripts/classes/ModuleConnection'
-            import list_json from './assets/synth_modules_list.json'
-            import synth_info_json from './assets/synth_modules.json'
-            import './scripts/utils/cycle.js'
-            export default {
-                inject: ['ACM'],
-                components: {
-                    Module,
-                    BasicOsc,
-                    AudioOut,
-                    MidiIn,
-                    Theremin,
-                    Reverb,
-                    VCA,
-                    Filter,
+<script>
+        import Module from './components/Module.vue'
+        import BasicOsc from './components/synth_modules/BasicOsc.vue'
+        import AudioOut from './components/synth_modules/AudioOut.vue'
+        import MidiIn from './components/synth_modules/MidiIn.vue'
+        import Theremin from './components/synth_modules/Theremin.vue'
+        import Reverb from './components/synth_modules/Reverb.vue'
+        import VCA from './components/synth_modules/VCA.vue'
+        import Filter from './components/synth_modules/Filter.vue'
+        
+        import ModuleConnection from './scripts/classes/ModuleConnection'
+        import list_json from './assets/synth_modules_list.json'
+        import synth_info_json from './assets/synth_modules.json'
+        import './scripts/utils/cycle.js'
+        export default {
+            inject: ['ACM'],
+            components: {
+                Module,
+                BasicOsc,
+                AudioOut,
+                MidiIn,
+                Theremin,
+                Reverb,
+                VCA,
+                Filter,
+            },
+            data() {
+                return {
+                    libButtonClicked: false,
+                    contextMenuVisible: false,
+                    contextMenuPosition: { x: 0, y: 0 },
+                    modules: [],
+                    moduleName: "My Module",
+                    myJson: list_json,
+                    synth_info: synth_info_json,
+                    mod_categories: list_json["categories"],
+                    categories_content: synth_info_json["categories_content"],
+                    expandedCategories: [], //array of expanded categories ids
+                    connections: [], //save all connections between modules here
+                    isDraggingPort:false,
+                    dragPortPositionX:0,
+                    dragPortPositionY:0,
+                    mouseCurrentX:0,
+                    mouseCurrentY:0,
+                    makeConnectionPermanent:false,
+                    lastHoveredPortModID:-1,
+                    lastHoveredPortID:-1,
+                    lastHoveredPortX:0,
+                    lastHoveredPortY:0,
+                    lastAssignedModuleId:-1,
+                    
+                    
+                    canMovePlayground:false,
+                    playGroundMoveInitialX:0,
+                    playGroundMoveInitialY:0,
+                    playGroundXtranslate:0,
+                    playGroundYtranslate:0,
+                    
+                };
+            },
+            options: {
+                isDragging() {
+                    return this.isDraggingPort;
                 },
-                data() {
-                    return {
-                        libButtonClicked: false,
-                        contextMenuVisible: false,
-                        contextMenuPosition: { x: 0, y: 0 },
-                        modules: [],
-                        moduleName: "My Module",
-                        myJson: list_json,
-                        synth_info: synth_info_json,
-                        mod_categories: list_json["categories"],
-                        categories_content: synth_info_json["categories_content"],
-                        expandedCategories: [], //array of expanded categories ids
-                        connections: [], //save all connections between modules here
-                        isDraggingPort:false,
-                        dragPortPositionX:0,
-                        dragPortPositionY:0,
-                        mouseCurrentX:0,
-                        mouseCurrentY:0,
-                        makeConnectionPermanent:false,
-                        lastHoveredPortModID:-1,
-                        lastHoveredPortID:-1,
-                        lastHoveredPortX:0,
-                        lastHoveredPortY:0,
-                        lastAssignedModuleId:-1,
-                        
-                        
-                        canMovePlayground:false,
-                        playGroundMoveInitialX:0,
-                        playGroundMoveInitialY:0,
-                        playGroundXtranslate:0,
-                        playGroundYtranslate:0,
-                        
-                    };
+            },
+            methods: {
+                isDragging(){
+                    return this.isDraggingPort;
                 },
-                options: {
-                    isDragging() {
-                        return this.isDraggingPort;
-                    },
+                startPortDragging(module, port, posX, posY) {
+                    // Implement the logic to handle port dragging here
+                    this.dragPortPositionX = posX;
+                    this.dragPortPositionY = posY;
+                    this.isDraggingPort = true;
+                    console.log("Starting")
+                    console.log(this.dragPortPositionX, this.dragPortPositionY)
                 },
-                methods: {
-                    isDragging(){
-                        return this.isDraggingPort;
-                    },
-                    startPortDragging(module, port, posX, posY) {
-                        // Implement the logic to handle port dragging here
-                        this.dragPortPositionX = posX;
-                        this.dragPortPositionY = posY;
-                        this.isDraggingPort = true;
-                        console.log("Starting")
-                        console.log(this.dragPortPositionX, this.dragPortPositionY)
-                    },
-                    handlePortDragging(posX, posY) {
-                        console.log("handling")
-                        if(!this.isDraggingPort){
-                            return;
-                        }
-                        //TODO: this is just an easy fix to the fact
-                        //the event listener is never remoevd and i was sick
-                        //of seeing the console spammed
-                        /*
-                        if(!this.isDragging()){
-                            return;
-                        }*/
-                        this.mouseCurrentX = posX;
-                        this.mouseCurrentY = posY;
-                        //make a line between posX, posY and the current mouse position
-                    },
-                    stopPortDragging(moduleID,portID,fromX,fromY) {
-                        this.isDraggingPort = false;
-                        //if you're over another port then guess what we're connecting the two
-                        //if you're not over another port then guess what we're not connecting the two
-                        //connecting = making the connection permanently visible
-                        
-                        //this.makeConnectionPermanent = true; //for demo purposes
-                        
-                        //for now this is quite useless
-                        console.log("Module ID from: ", moduleID)
-                        console.log("Last Hoevered module:", this.lastHoveredPortModID)
-                        console.log(this.isHoveringPort);
-                        if(this.isHoveringPort){
-                            if(moduleID != this.lastHoveredPortModID){
-                                console.log("fff", moduleID, this.lastHoveredPortModID);
-                                //let connection = new ModuleConnection(this.ACM, moduleID, this.lastHoveredPortModID, portID, this.lastHoveredPortID, fromX, fromY, this.lastHoveredPortX, this.lastHoveredPortY);
-                                //here one could check if the connection is valid and makes sense, 
-                                //however, taking inspiration from VCV rack, we decided it really 
-                                //doesn't make sense to do that
-                                //and we'd rather let the user take weird decisions
-                                let valid = this.ACM.checkConnectionValidity(moduleID, this.lastHoveredPortModID, portID, this.lastHoveredPortID);
-                                if (valid){
-                                    this.connections.push(new ModuleConnection(this.ACM, moduleID, this.lastHoveredPortModID, 
-                                    portID, this.lastHoveredPortID, fromX - this.playGroundXtranslate, 
-                                    fromY - this.playGroundYtranslate, this.lastHoveredPortX - this.playGroundXtranslate, 
-                                    this.lastHoveredPortY - this.playGroundYtranslate));
-                                    this.connections[this.connections.length - 1].printConnection();
-                                }else{
-                                    console.log("Invalid connection");
-                                }
-                            }
-                        }
-                        this.isHoveringPort = false;
-                    },
+                handlePortDragging(posX, posY) {
+                    console.log("handling")
+                    if(!this.isDraggingPort){
+                        return;
+                    }
+                    //TODO: this is just an easy fix to the fact
+                    //the event listener is never remoevd and i was sick
+                    //of seeing the console spammed
+                    /*
+                    if(!this.isDragging()){
+                        return;
+                    }*/
+                    this.mouseCurrentX = posX;
+                    this.mouseCurrentY = posY;
+                    //make a line between posX, posY and the current mouse position
+                },
+                stopPortDragging(moduleID,portID,fromX,fromY) {
+                    this.isDraggingPort = false;
+                    //if you're over another port then guess what we're connecting the two
+                    //if you're not over another port then guess what we're not connecting the two
+                    //connecting = making the connection permanently visible
                     
+                    //this.makeConnectionPermanent = true; //for demo purposes
                     
-                    trackPort(moduleId, portID, x, y){
-                        //console.log(moduleId, portID, x, y);
-                        this.lastHoveredPortModID = moduleId;
-                        this.lastHoveredPortID = portID;
-                        this.lastHoveredPortX = x;
-                        this.lastHoveredPortY = y;
-                        this.isHoveringPort = true;
-                    },
-                    stopTrackPort(){
-                        this.isHoveringPort = false;
-                    },
-                    
-                    moduleMovedUpdate(moduleId, xoff, yoff){
-                        //update all connections to and from this module to
-                        //match the new position
-                        this.findUpdateConnectionsToModule(moduleId, xoff, yoff);
-                        this.findUpdateConnectionsFromModule(moduleId, xoff, yoff);
-                    }, 
-                    findUpdateConnectionsToModule(moduleId,xoff,yoff){
-                        if (this.connections.length == 0){
-                            return;
-                        }
-                        for (let i = 0; i < this.connections.length; i++) {
-                            if (this.connections[i].toId == moduleId) {
-                                this.connections[i].x2 += xoff;
-                                this.connections[i].y2 += yoff;
+                    //for now this is quite useless
+                    console.log("Module ID from: ", moduleID)
+                    console.log("Last Hoevered module:", this.lastHoveredPortModID)
+                    console.log(this.isHoveringPort);
+                    if(this.isHoveringPort){
+                        if(moduleID != this.lastHoveredPortModID){
+                            console.log("fff", moduleID, this.lastHoveredPortModID);
+                            //let connection = new ModuleConnection(this.ACM, moduleID, this.lastHoveredPortModID, portID, this.lastHoveredPortID, fromX, fromY, this.lastHoveredPortX, this.lastHoveredPortY);
+                            //here one could check if the connection is valid and makes sense, 
+                            //however, taking inspiration from VCV rack, we decided it really 
+                            //doesn't make sense to do that
+                            //and we'd rather let the user take weird decisions
+                            let valid = this.ACM.checkConnectionValidity(moduleID, this.lastHoveredPortModID, portID, this.lastHoveredPortID);
+                            if (valid){
+                                this.connections.push(new ModuleConnection(this.ACM, moduleID, this.lastHoveredPortModID, 
+                                portID, this.lastHoveredPortID, fromX - this.playGroundXtranslate, 
+                                fromY - this.playGroundYtranslate, this.lastHoveredPortX - this.playGroundXtranslate, 
+                                this.lastHoveredPortY - this.playGroundYtranslate));
+                                this.connections[this.connections.length - 1].printConnection();
+                            }else{
+                                console.log("Invalid connection");
                             }
                         }
-                    },
-                    findUpdateConnectionsFromModule(moduleId, xoff, yoff){
-                        if (this.connections.length == 0) {
-                            return;
+                    }
+                    this.isHoveringPort = false;
+                },
+                
+                
+                trackPort(moduleId, portID, x, y){
+                    //console.log(moduleId, portID, x, y);
+                    this.lastHoveredPortModID = moduleId;
+                    this.lastHoveredPortID = portID;
+                    this.lastHoveredPortX = x;
+                    this.lastHoveredPortY = y;
+                    this.isHoveringPort = true;
+                },
+                stopTrackPort(){
+                    this.isHoveringPort = false;
+                },
+                
+                moduleMovedUpdate(moduleId, xoff, yoff){
+                    //update all connections to and from this module to
+                    //match the new position
+                    this.findUpdateConnectionsToModule(moduleId, xoff, yoff);
+                    this.findUpdateConnectionsFromModule(moduleId, xoff, yoff);
+                }, 
+                findUpdateConnectionsToModule(moduleId,xoff,yoff){
+                    if (this.connections.length == 0){
+                        return;
+                    }
+                    for (let i = 0; i < this.connections.length; i++) {
+                        if (this.connections[i].toId == moduleId) {
+                            this.connections[i].x2 += xoff;
+                            this.connections[i].y2 += yoff;
                         }
-                        for(let i = 0; i < this.connections.length; i++){
-                            if (this.connections[i].fromId == moduleId){
-                                this.connections[i].x1 += xoff;
-                                this.connections[i].y1 += yoff;
-                            }
+                    }
+                },
+                findUpdateConnectionsFromModule(moduleId, xoff, yoff){
+                    if (this.connections.length == 0) {
+                        return;
+                    }
+                    for(let i = 0; i < this.connections.length; i++){
+                        if (this.connections[i].fromId == moduleId){
+                            this.connections[i].x1 += xoff;
+                            this.connections[i].y1 += yoff;
                         }
-                    },
-                    removeConnectionsWithModule(moduleId){
-                        if (this.connections.length == 0) {
-                            return;
+                    }
+                },
+                removeConnectionsWithModule(moduleId){
+                    if (this.connections.length == 0) {
+                        return;
+                    }
+                    for (let i = 0; i < this.connections.length; i++) {
+                        if (this.connections[i].fromId == moduleId || this.connections[i].toId == moduleId) {
+                            this.connections.splice(i, 1);
                         }
-                        for (let i = 0; i < this.connections.length; i++) {
-                            if (this.connections[i].fromId == moduleId || this.connections[i].toId == moduleId) {
-                                this.connections.splice(i, 1);
-                            }
+                    }
+                },
+                removeModule(moduleId){
+                    //remove all connections to and from this module
+                    this.removeConnectionsWithModule(moduleId);
+                    this.ACM.removeNode(moduleId);
+                    //remove the module itself
+                    for(let i = 0 ; i < this.modules.length; i++){
+                        if (this.modules[i].id == moduleId){
+                            this.modules.splice(i, 1);
                         }
-                    },
-                    removeModule(moduleId){
-                        //remove all connections to and from this module
-                        this.removeConnectionsWithModule(moduleId);
-                        this.ACM.removeNode(moduleId);
-                        //remove the module itself
-                        for(let i = 0 ; i < this.modules.length; i++){
-                            if (this.modules[i].id == moduleId){
-                                this.modules.splice(i, 1);
-                            }
-                        }
-                    },
-                    
-                    setVisibleContextMenu(event) {
-                        console.log(this.contextMenuVisible)
-                        if (this.contextMenuVisible == true) {
-                            //console.log("Hi")
-                            this.contextMenuVisible = false;
-                        } else {
-                            this.contextMenuVisible = true;
-                            this.contextMenuPosition = { x: event.clientX, y: event.clientY };
-                            //console.log(event.clientX, event.clientY)
-                        }
-                        //console.log(Boolean(event.originalTarget.closest("modulesScaffold")))
-                        if (event.target.parentElement.classList.contains("module")){
-                            //manage the removal of modules here
-                        }
-                        console.log(event);
-                    },
-                    addModule(moduleName, fromContextMenu = false) {
-                        // Add a new module to the modules array
-                        if(!fromContextMenu){
-                            let codeName = synth_info_json[moduleName]["codename"];
-                            //let currId = this.modules.length;
-                            let currId = this.lastAssignedModuleId + 1;
-                            this.lastAssignedModuleId = currId;
-                            //just have it in a random (visible hopefully) position
-                            this.modules.push({
-                                moduleName,
-                                type: codeName,
-                                id: currId,
-                                /*
-                                inputPorts: [
-                                { id: 1, x: 10, y: 50 },
-                                { id: 2, x: 10, y: 80 },
-                                ], // Define initial input ports if needed
-                                outputPorts: [
-                                { id: 1, x: 190, y: 50 },
-                                { id: 2, x: 190, y: 80 },
-                                ], // Define initial output ports if needed
-                                */
-                                createdCoordsX: (Math.floor(Math.random()*600)+200) - this.playGroundXtranslate,
-                                createdCoordsY: (Math.floor(Math.random() * 500)+100) - this.playGroundYtranslate,
-                            });
-                            return;
-                        }
-                        //add a module at the position of the context menu
+                    }
+                },
+                
+                setVisibleContextMenu(event) {
+                    console.log(this.contextMenuVisible)
+                    if (this.contextMenuVisible == true) {
+                        //console.log("Hi")
+                        this.contextMenuVisible = false;
+                    } else {
+                        this.contextMenuVisible = true;
+                        this.contextMenuPosition = { x: event.clientX, y: event.clientY };
+                        //console.log(event.clientX, event.clientY)
+                    }
+                    //console.log(Boolean(event.originalTarget.closest("modulesScaffold")))
+                    if (event.target.parentElement.classList.contains("module")){
+                        //manage the removal of modules here
+                    }
+                    console.log(event);
+                },
+                addModule(moduleName, fromContextMenu = false) {
+                    // Add a new module to the modules array
+                    if(!fromContextMenu){
+                        let codeName = synth_info_json[moduleName]["codename"];
+                        //let currId = this.modules.length;
+                        let currId = this.lastAssignedModuleId + 1;
+                        this.lastAssignedModuleId = currId;
+                        //just have it in a random (visible hopefully) position
                         this.modules.push({
                             moduleName,
+                            type: codeName,
+                            id: currId,
+                            /*
                             inputPorts: [
                             { id: 1, x: 10, y: 50 },
                             { id: 2, x: 10, y: 80 },
@@ -559,224 +542,265 @@ import * as Tone from 'tone'
                             { id: 1, x: 190, y: 50 },
                             { id: 2, x: 190, y: 80 },
                             ], // Define initial output ports if needed
-                            createdCoordsX: this.contextMenuPosition.x,
-                            createdCoordsY: this.contextMenuPosition.y,
+                            */
+                            createdCoordsX: (Math.floor(Math.random()*600)+200) - this.playGroundXtranslate,
+                            createdCoordsY: (Math.floor(Math.random() * 500)+100) - this.playGroundYtranslate,
                         });
-                        //console.log("POS: "+this.contextMenuPosition.x + "   " + this.contextMenuPosition.y)
-                        // Close the context menu
-                        this.contextMenuVisible = false;
-                    },
-                    
-                    
-                    libraryButtonClicked() {
-                        this.libButtonClicked = !this.libButtonClicked;
-                        if (this.libButtonClicked) {
-                            //document.getElementById("libButton").style.left = "10%";
-                            document.getElementById("libButton").style.transform = "translate(calc(24cqw), -50%) ";
-                            document.getElementById("libButton").innerHTML = "arrow_back_ios_new";
-                            //document.getElementById("libButton").style.transform = "rotate(180deg)";
-                            //get the modulesScaffold and make a transition from 0 width to 300 px width
-                            //document.getElementById("modulesScaffold").classList.add("active");
-                            //console.log(document.getElementById("modulesScaffold")) //it doesnt exist yet here!
-                        }
-                        else {
-                            //document.getElementById("libButton").style.left = "1%";
-                            document.getElementById("libButton").innerHTML = "arrow_forward_ios";
-                            document.getElementById("libButton").style.transform = "translate(0px, -50%)";
-                        }   
-                    },
-                    
-                    toggleCategory(index) {
-                        // Toggle the expanded state of the category at the given index
-                        if (this.expandedCategories.includes(index)) {
-                            this.expandedCategories = this.expandedCategories.filter(i => i !== index);
-                            document.getElementById("category_span" + index).innerHTML = "arrow_drop_down";
-                        } else {
-                            this.expandedCategories.push(index);
-                            document.getElementById("category_span" + index).innerHTML = "arrow_drop_up";
-                        }
-                    },
-                    isExpanded(index) {
-                        return this.expandedCategories.includes(index);
-                    },
-                    
-                    /* //testing function, should you wish to test the ACM alone
-                    play() {
-                        const synth = new Tone.Synth().toDestination();
-                        synth.triggerAttackRelease("C4", "2n");
-                        console.log("lol");
-                        this.ACM.testACM()
-                    },
-                    */
-                    
-                    
-                    //PLAYGROUND MOVEMENT STUFF
-                    clickedMainDiv(event, type){
-                        //if the class of the event original target is not mainDiv
-                        //then do nothing
-                        console.log(event)
-                        if (event.target.classList.contains("mainDiv") == false){
-                            //console.log("non duce")
-                            return;
-                        }
-                        //console.log("duce")
-                        this.canMovePlayground = type; //type is a boolean
-                        if (type == true){
-                            //
-                            event.target.classList.add("maindiv-grabbed")
-                            this.playGroundMoveInitialX = event.clientX;
-                            this.playGroundMoveInitialY = event.clientY;
-                        }
-                        else{
-                            //
-                            event.target.classList.remove("maindiv-grabbed")
-                        }
-                        
-                    },
-                    moveMainDiv(event){
-                        //i'm sure this won't be a problem at all
-                        //and won't hog resources for nothing
-                        //...however time is short
-                        if(this.canMovePlayground == false){
-                            return;
-                        }
-                        console.log(event.clientX, event.clientY)
-                        console.log("moving the playground sire!")
-                        this.playGroundXtranslate += event.clientX - this.playGroundMoveInitialX;
-                        this.playGroundYtranslate += event.clientY - this.playGroundMoveInitialY;
+                        return;
+                    }
+                    //add a module at the position of the context menu
+                    this.modules.push({
+                        moduleName,
+                        inputPorts: [
+                        { id: 1, x: 10, y: 50 },
+                        { id: 2, x: 10, y: 80 },
+                        ], // Define initial input ports if needed
+                        outputPorts: [
+                        { id: 1, x: 190, y: 50 },
+                        { id: 2, x: 190, y: 80 },
+                        ], // Define initial output ports if needed
+                        createdCoordsX: this.contextMenuPosition.x,
+                        createdCoordsY: this.contextMenuPosition.y,
+                    });
+                    //console.log("POS: "+this.contextMenuPosition.x + "   " + this.contextMenuPosition.y)
+                    // Close the context menu
+                    this.contextMenuVisible = false;
+                },
+                
+                
+                libraryButtonClicked() {
+                    this.libButtonClicked = !this.libButtonClicked;
+                    if (this.libButtonClicked) {
+                        //document.getElementById("libButton").style.left = "10%";
+                        document.getElementById("libButton").style.transform = "translate(calc(24cqw), -50%) ";
+                        document.getElementById("libButton").innerHTML = "arrow_back_ios_new";
+                        //document.getElementById("libButton").style.transform = "rotate(180deg)";
+                        //get the modulesScaffold and make a transition from 0 width to 300 px width
+                        //document.getElementById("modulesScaffold").classList.add("active");
+                        //console.log(document.getElementById("modulesScaffold")) //it doesnt exist yet here!
+                    }
+                    else {
+                        //document.getElementById("libButton").style.left = "1%";
+                        document.getElementById("libButton").innerHTML = "arrow_forward_ios";
+                        document.getElementById("libButton").style.transform = "translate(0px, -50%)";
+                    }   
+                },
+                
+                toggleCategory(index) {
+                    // Toggle the expanded state of the category at the given index
+                    if (this.expandedCategories.includes(index)) {
+                        this.expandedCategories = this.expandedCategories.filter(i => i !== index);
+                        document.getElementById("category_span" + index).innerHTML = "arrow_drop_down";
+                    } else {
+                        this.expandedCategories.push(index);
+                        document.getElementById("category_span" + index).innerHTML = "arrow_drop_up";
+                    }
+                },
+                isExpanded(index) {
+                    return this.expandedCategories.includes(index);
+                },
+                
+                /* //testing function, should you wish to test the ACM alone
+                play() {
+                    const synth = new Tone.Synth().toDestination();
+                    synth.triggerAttackRelease("C4", "2n");
+                    console.log("lol");
+                    this.ACM.testACM()
+                },
+                */
+                
+                
+                //PLAYGROUND MOVEMENT STUFF
+                clickedMainDiv(event, type){
+                    //if the class of the event original target is not mainDiv
+                    //then do nothing
+                    console.log(event)
+                    if (event.target.classList.contains("mainDiv") == false){
+                        //console.log("non duce")
+                        return;
+                    }
+                    //console.log("duce")
+                    this.canMovePlayground = type; //type is a boolean
+                    if (type == true){
+                        //
+                        event.target.classList.add("maindiv-grabbed")
                         this.playGroundMoveInitialX = event.clientX;
                         this.playGroundMoveInitialY = event.clientY;
-                    },
+                    }
+                    else{
+                        //
+                        event.target.classList.remove("maindiv-grabbed")
+                    }
                     
+                },
+                moveMainDiv(event){
+                    //i'm sure this won't be a problem at all
+                    //and won't hog resources for nothing
+                    //...however time is short
+                    if(this.canMovePlayground == false){
+                        return;
+                    }
+                    console.log(event.clientX, event.clientY)
+                    console.log("moving the playground sire!")
+                    this.playGroundXtranslate += event.clientX - this.playGroundMoveInitialX;
+                    this.playGroundYtranslate += event.clientY - this.playGroundMoveInitialY;
+                    this.playGroundMoveInitialX = event.clientX;
+                    this.playGroundMoveInitialY = event.clientY;
+                },
+                
+                
+                //PRESET MANAGEMENT STUFF
+                async savePreset(){
+                    console.log("saving preset!!!!")
+                    //create a small screen to get user input
+                    //get the name of the preset
                     
-                    //PRESET MANAGEMENT STUFF
-                    async savePreset(){
-                        console.log("saving preset!!!!")
-                        //create a small screen to get user input
-                        //get the name of the preset
-                        
-                        //create the small screen
-                        let presetName = prompt("Please enter the name of your preset", "Preset Name");
-                        if (presetName == null || presetName == ""){
-                            return;
-                        }
-                        
-                        //create a new preset object
-                        let METADATA = {
-                            "preset_name": presetName,
-                            "creator_id": 1, //get the current user's id from the local storage,
-                            "public": true// if trueeverybody who has the preset_id can edit it
-                        }
-                        let PLAYGROUND_STATE = {
-                            "x": this.playGroundXtranslate,
-                            "y": this.playGroundYtranslate,
-                            "modules": this.modules,
-                            "connections": this.connections,
-                            "lastAssignedModuleId": this.lastAssignedModuleId
-                        }; //we need a specific functions for modules
-                        //to get their state. Both from module.vue and from the ACM
-                        let ACM_DATA = this.ACM.getData();
-                        
-                        let DATA = { "playground_data": PLAYGROUND_STATE, "ACM_data": ACM_DATA };
-                        let preset = {
-                            "metadata":METADATA,
-                            "data": DATA
-                        }
-                        
-                        //save this on the goofy ahh database
-                        
-                        //TODO
-                        /*
-                        console.log("GHhrtko")
-                        console.log(JSON.decycle(preset)) */
-                        /*
-                        var data = JSON.stringify({
-                            "preset": JSON.decycle(preset)
-                        });
-                        */
-                        var data = {
-                            "preset": preset
-                        }
-                        data = JSON.stringify(JSON.decycle(data));
-                        this.sentData = data;
-                        /*
-                        console.log(data);
-                        fetch('https://syntha-backend-fef92fb3e9de.herokuapp.com/presets/new', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: data,
-                        })
-                        .then(
-                        response => 
-                        
-                        response.json()
-                        )
-                        .then(data => {
-                            console.log('Success:', data);
-                            this.lastSavedId = data.preset_id;
-                        })
-                        .catch((error) => {
-                            console.error('Error:', error);
-                        });
-                        */
-                    },
+                    //create the small screen
+                    let presetName = prompt("Please enter the name of your preset", "Preset Name");
+                    if (presetName == null || presetName == ""){
+                        return;
+                    }
                     
-                    loadPreset(){
-                        console.log("loading preset!!!!")
-                        //load the preset from the database
-                        
-                        //empty modules and connections in case there is any
-                        
-                        //re-initialise ACM if needed
-                        
-                        
-                        const headers = { "Content-Type": "application/json" };
-                        /*
-                        fetch("https://syntha-backend-fef92fb3e9de.herokuapp.com/presets/"+this.lastSavedId, 
-                        { method:'GET',headers:headers
-                    })
-                    .then(response => response.json())
-                    .then(data => (
-                    console.log(data),
-                    data = JSON.retrocycle((data.data)),
-                    console.log(data),
-                    this.modules = [],
-                    this.connections = [],
-                    this.lastAssignedModuleId = -1,
-                    this.modules = data["playground_data"]["modules"],
-                    this.connections = data["playground_data"]["connections"],
-                    this.playGroundXtranslate = data["playground_data"]["x"],
-                    this.playGroundYtranslate = data["playground_data"]["y"],
-                    this.lastAssignedModuleId = data["playground_data"]["lastAssignedModuleId"],
-                    this.ACM.initializeFromPreset(data["ACM_data"]),
-                    console.log(data)
-                    ));
+                    //create a new preset object
+                    let METADATA = {
+                        "preset_name": presetName,
+                        "creator_id": 1, //get the current user's id from the local storage,
+                        "public": true// if trueeverybody who has the preset_id can edit it
+                    }
+                    let PLAYGROUND_STATE = {
+                        "x": this.playGroundXtranslate,
+                        "y": this.playGroundYtranslate,
+                        "modules": this.modules,
+                        "connections": this.connections,
+                        "lastAssignedModuleId": this.lastAssignedModuleId
+                    }; //we need a specific functions for modules
+                    //to get their state. Both from module.vue and from the ACM
+                    let ACM_DATA = this.ACM.getData();
+                    
+                    let DATA = { "playground_data": PLAYGROUND_STATE, "ACM_data": ACM_DATA };
+                    let preset = {
+                        "metadata":METADATA,
+                        "data": DATA
+                    }
+                    
+                    //save this on the goofy ahh database
+                    
+                    //TODO
+                    /*
+                    console.log("GHhrtko")
+                    console.log(JSON.decycle(preset)) */
+                    /*
+                    var data = JSON.stringify({
+                        "preset": JSON.decycle(preset)
+                    });
                     */
-                    console.log(this.sentData)
-                    var broo = JSON.parse(this.sentData);
-                    broo = JSON.retrocycle(broo);
-                    console.log(broo);
-                    console.log("-----" )
-                    console.log(broo["preset"]["data"]);
-                    var data = broo["preset"]["data"]; 
+                    var data = {
+                        "preset": preset
+                    }
+                    data = JSON.stringify(JSON.decycle(data));
+                    this.sentData = data;
+                    
+                    console.log(data);
+                    fetch('https://syntha-backend-fef92fb3e9de.herokuapp.com/presets/new', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: data,
+                    })
+                    .then(
+                    response => 
+                    
+                    response.json()
+                    )
+                    .then(data => {
+                        console.log('Success:', data);
+                        this.lastSavedId = data.preset_id;
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    });
+                    
+                },
+                
+                loadPreset(){
+                    console.log("loading preset!!!!")
+                    //load the preset from the database
+                    
+                    //empty modules and connections in case there is any
+                    
+                    //re-initialise ACM if needed
+                    
+                    
+                    const headers = { "Content-Type": "application/json" };
+                    
+                    fetch("https://syntha-backend-fef92fb3e9de.herokuapp.com/presets/"+this.lastSavedId, 
+                    { method:'GET',headers:headers
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data)
+                    //broo = JSON.parse(data["result"]["preset"]);
+                    var broo = JSON.retrocycle(data["result"]["preset"]);
+                    console.log(broo)
+                    var data = broo["data"]
+                    console.log(data)
+                    data = JSON.parse(data)
+                    
+                    console.log(data)
                     console.log("OG")
                     console.log(this.modules)
                     this.modules = [];
                     this.connections = [];
                     this.lastAssignedModuleId = -1;
                     this.modules = data["playground_data"]["modules"];
-                    console.log(this.modules)
-                    console.log("BBBBBBBBBB")
                     this.connections = data["playground_data"]["connections"];
                     this.playGroundXtranslate = data["playground_data"]["x"];
                     this.playGroundYtranslate = data["playground_data"]["y"];
                     this.lastAssignedModuleId = data["playground_data"]["lastAssignedModuleId"];
-                    console.log(data["ACM_data"]["modules"])
                     this.ACM.initializeFromPreset(data["ACM_data"])
-                },
+                /*
+                console.log(data),
+                data = JSON.retrocycle((data.data)),
+                console.log(data),
+                this.modules = [],
+                this.connections = [],
+                this.lastAssignedModuleId = -1,
+                this.modules = data["playground_data"]["modules"],
+                this.connections = data["playground_data"]["connections"],
+                this.playGroundXtranslate = data["playground_data"]["x"],
+                this.playGroundYtranslate = data["playground_data"]["y"],
+                this.lastAssignedModuleId = data["playground_data"]["lastAssignedModuleId"],
+                this.ACM.initializeFromPreset(data["ACM_data"]),
+                console.log(data)
+                */
+                });
+                
+                /*
+                var broo = JSON.parse(this.sentData);
+                broo = JSON.retrocycle(broo);
+                console.log(broo);
+                console.log("-----" )
+                console.log(broo["preset"]["data"]);
+                var data = broo["preset"]["data"]; 
+                console.log("OG")
+                console.log(this.modules)
+                this.modules = [];
+                this.connections = [];
+                this.lastAssignedModuleId = -1;
+                this.modules = data["playground_data"]["modules"];
+                console.log(this.modules)
+                console.log("BBBBBBBBBB")
+                this.connections = data["playground_data"]["connections"];
+                this.playGroundXtranslate = data["playground_data"]["x"];
+                this.playGroundYtranslate = data["playground_data"]["y"];
+                this.lastAssignedModuleId = data["playground_data"]["lastAssignedModuleId"];
+                console.log(data["ACM_data"]["modules"])
+                this.ACM.initializeFromPreset(data["ACM_data"])
+
+                */
             },
-            
-        };
-    </script>
+        },
+        
+    };
+</script>

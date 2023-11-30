@@ -105,7 +105,6 @@ export default {
         <router-link to="/syntha/workshop">Workshop</router-link>
         <router-link to="/syntha/docs">Documentation</router-link>
         <router-link to="/syntha/about">About</router-link>
-        <button @click="testButton" class="testButton">CLick me!</button>
     </div>
     <div class="accountSection">
       <router-link to="/syntha/login" v-if="(store.loggedIn==false)">Login</router-link>

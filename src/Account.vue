@@ -29,6 +29,11 @@ export default {
             else
             return false;
         },
+
+        logout(){
+            localStorage.setItem('loggedIn', 'false');
+            this.$router.push('/syntha/');
+        }
         
         
     },
@@ -82,13 +87,7 @@ export default {
             </table>
             <br>
             <br>
-            <div class="actions"> <a href="#"><button>
-                EDIT
-            </button></a>
-            <button onclick="confirmSubmit()">
-                DELETE
-            </button>
-        </div>
+            <button @click="logout">LOGOUT</button>
         <br>
         <br>
     </div>
