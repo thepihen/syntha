@@ -25,6 +25,10 @@ export default new Router({
             path: '/syntha/docs',
             component: () => import('./Documentation.vue')
         },
+        {
+            path: '/syntha/quiz',
+            component: () => import('./Quiz.vue')
+        }
         // Add more routes as needed
     ]
 

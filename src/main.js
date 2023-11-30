@@ -10,6 +10,7 @@ import Account from './Account.vue'
 import Workshop from './Workshop.vue'
 import Documentation from './Documentation.vue'
 import AudioChainManager from "./scripts/classes/AudioChainManager.js"
+import Quiz from './Quiz.vue'
 // 3. Create the router instance and pass the `routes` option
 // You can pass in additional options here, but let's
 // keep it simple for now.
@@ -24,6 +25,7 @@ const router = createRouter({
         { path: '/syntha/account', component: Account},
         { path: '/syntha/workshop', component: Workshop },
         { path: '/syntha/docs', component: Documentation },
+        { path: '/syntha/quiz', component: Quiz },
         { path: '/syntha/:pathMatch(.*)*', name: 'not-found', component: NotFound }
     ], // short for `routes: routes`
 });

@@ -1,20 +1,73 @@
+
 <script>
-export default{
-    methods:{  
+import { store } from './store.js'
+export default {
+    data() {
+        return {
+            store,
+            glowcolor: "rgb(112, 224, 255)",
+            username:'',
+            password:'',
+        }
+    },
+    created() {
+        if (localStorage.getItem('loggedIn') == 'true') {
+            this.loggedIn = true;
+        } else {
+            localStorage.setItem('loggedIn', 'false')
+            this.loggedIn = false;
+        }
+    },
+
+    methods: {
         openNav() {
             document.getElementById("myNav").style.width = "100%";
         },
+
         closeNav() {
             document.getElementById("myNav").style.width = "0%";
+        },
+        async sendData(action){
+            console.log(this.username, this.password);
+
+            var data = {
+                "username": this.username,
+                "password": this.password
+            }
+            data = JSON.stringify((data));
+            fetch('https://syntha-backend-fef92fb3e9de.herokuapp.com/users/'+action, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: data,
+            })
+            .then(
+            response => 
+                response.json()
+            )
+            .then(data => {
+                console.log('Success:', data);
+                localStorage.setItem('loggedIn', 'true');
+                localStorage.setItem('userId', data['user_id']);
+                //move the user back to home!
+                this.$router.push('/syntha/');
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                
+                
+            });
+        
         }
     }
 }
 </script>
 
 <template>
-    <body>
+    
         <div id="myNav" class="overlay">
-            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+            <a href="javascript:void(0)" class="closebtn" @click="closeNav()">&times;</a>
             <div class="overlay-content">
                 <a href="home2.html">HOME</a> <br>
                 <a href="library.html">LIBRARY</a> <br>
@@ -23,37 +76,43 @@ export default{
                 <a href="about.html">ABOUT</a>
             </div>
         </div>
-        <span class="menubtn" onclick="openNav()">&#9776;</span>
-        <a href="home2.html"><span class="homebtn"> &#9750;</span></a>
 
-        <main>
-            <div class="main">
+
+        <div class="mainDivLogin">
+            <span class="hamburger" style="font-size:30px;cursor:pointer;" @click="openNav()">&#9776;</span>
+            <router-link class="homebtnLogin" to="/syntha/" style="text-decoration: none;">&#9750;</router-link>
+            <div class="mainBoxOfSomething">
                 <input type="checkbox" id="chk" aria-hidden="true">
 
                 <div class="signup">
                     <form>
                         <label for="chk" aria-hidden="true">SIGN UP</label>
+                        <!--
                         <input type="text" name="username" placeholder="Username" required="">
                         <input type="password" name="password" placeholder="Password" required="">
-                        <button>SIGN UP</button>
+                        <button @click="sendData(username,password)">SIGN UP</button>
+                        -->
+                        <input type="username" v-model="username" required=""/>
+                        <input type="password" v-model="password" required=""/>
+                        <button @click.prevent="sendData('register')">SIGN UP</button>
                     </form>
                 </div>
 
                 <div class="login">
                     <form>
                         <label for="chk" aria-hidden="true">LOGIN</label>
-                        <input type="test" name="username" placeholder="Username" required="">
-                        <input type="password" name="password" placeholder="Password" required="">
-                        <button>LOGIN</button>
+                        <input type="username" v-model="username" required=""/>
+                        <input type="password" v-model="password" required="" />
+                        <button @click.prevent="sendData('login')">SIGN UP</button>
                     </form>
                 </div>
             </div>
-        </main>
-    </body>
+        </div>
+    
 </template>
 
 <style scoped>
-    @import url("https://fonts.googleapis.com/css?family=Raleway");
+@import url("https://fonts.googleapis.com/css?family=Raleway");
 
     :root {
         --glow-color: rgb(112, 224, 255);
@@ -73,12 +132,24 @@ export default{
         background: rgb(8, 5, 41);
     }
 
+    .mainDivLogin{
+        z-index: 100;
+        position: absolute;
+        left: 0%;
+        top: 0%;
+        width: 100%;
+        height:100%;
+        overflow: hidden;
+        font-family: "Raleway", sans-serif;
+        background: rgb(8, 5, 41);
+    }
+
 
     .overlay {
         height: 100%;
         width: 0;
         position: fixed;
-        z-index: 1;
+        z-index: 1000;
         top: 0;
         left: 0;
         background-color: rgb(0, 0, 0);
@@ -116,22 +187,26 @@ export default{
         font-size: 60px;
     }
 
-    .menubtn {
+    .hamburger {
+        padding: 10px;
+            color: v-bind('glowcolor');
+        /*
         position: relative;
         right: 513px;
         bottom: 341px;
         font-size: 30px;
         cursor: pointer;
-        color: var(--glow-color)
+        color:  v-bind('glowcolor');
+        */
     }
 
-    .homebtn {
+    .homebtnLogin {
         position: relative;
-        right: 479px;
-        bottom: 344px;
+        top:0%;
+        left:0%;
         font-size: 40px;
         cursor: pointer;
-        color: var(--glow-color);
+        color:  v-bind('glowcolor');;
     }
 
     @media screen and (max-height: 450px) {
@@ -147,9 +222,13 @@ export default{
     }
 
 
-    .main {
+    .mainBoxOfSomething {
         width: 350px;
         height: 500px;
+        position:relative;
+        top:50%;
+        left:50%;
+        transform:translate(-50%,-50%);
         overflow: hidden;
         border-radius: 10px;
         background: rgb(20, 14, 83);

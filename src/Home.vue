@@ -8,6 +8,7 @@
                 <router-link to="/syntha/account">ACCOUNT</router-link><br>
                 <router-link to="/syntha/docs">DOCUMENTATION</router-link><br>
                 <router-link to="/syntha/about">ABOUT</router-link><br>
+                <router-link to="/syntha/quiz" v-if="konamiCode">QUIZ??</router-link><br>
             </div>
         </div>
         
@@ -16,7 +17,10 @@
             <!--
             <a href="login.html"><span class="accountbtn">log in</span></a>
             -->
-            <router-link class="accountbtn" to="/syntha/login" style="text-decoration: none;">LOGIN</router-link>
+            <router-link class="accountbtn" to="/syntha/login" v-if="(loggedIn==false)"
+                style="text-decoration: none;">LOGIN</router-link>
+            <router-link class="accountbtn" to="/syntha/account" v-if="(loggedIn)"
+                style="text-decoration: none;">Account</router-link>
             <router-link to="/syntha/synth" class='glowing-btn'>OPEN SYNTHA</router-link>
         </div>
 
@@ -261,13 +265,50 @@ main {
 
 
 <script>
+import { store } from './store.js'
 export default{
-    data(){
-        return{
+    data() {
+        return {
+            store,
             glowcolor: "rgb(112, 224, 255)",
+            konamiCode: false,
+            sequenceKeys:0,
+            sequence: ['w', 'w', 's', 's', 'a', 'd', 'a', 'd', 'b', 'a'],
         }
     },
+    created() {
+        if (localStorage.getItem('loggedIn') == 'true') {
+            this.loggedIn = true;
+        } else {
+            this.loggedIn = false;
+        }
+    },
+    mounted(){
+        window.addEventListener("keydown", this.trackKeys)
+    },
+    beforeUnmount() {
+        window.removeEventListener("keydown", this.trackKeys)// Make sure to call next() to indicate that the navigation can continue
+    },
+    
 methods:{
+    //[38, 38, 40, 40, 37, 39, 37, 39, 66, 65],
+    trackKeys(event){
+        console.log(event.key)
+        let key = event.key;
+        
+        if (key == (this.sequence[this.sequenceKeys])) {
+            console.log("got one")
+            this.sequenceKeys++;
+            if (this.sequenceKeys == this.sequence.length) {
+                this.konamiCode = true;
+                this.sequenceKeys = 0;
+                window.removeEventListener("keydown", this.trackKeys)
+                console.log("Secret Unlocked")
+            }
+        } else {
+            this.sequenceKeys = 0;
+        }
+    },
     openNav() {
         document.getElementById("myNav").style.width = "100%";
     },
