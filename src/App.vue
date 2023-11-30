@@ -100,17 +100,18 @@ export default {
   <div class="toolbar" style="user-select: none;">
     <div class="toolbar-title">SynthA!</div>
     <div class="toolbar-actions">
-        <router-link to="/">Home</router-link>
-        <router-link @click="startACM" to="/synth">Playground</router-link>
-        <router-link to="/workshop">Workshop</router-link>
-        <router-link to="/about">About</router-link>
+        <router-link to="/syntha/">Home</router-link>
+        <router-link @click="startACM" to="/syntha/synth">Playground</router-link>
+        <router-link to="/syntha/workshop">Workshop</router-link>
+        <router-link to="/syntha/docs">Documentation</router-link>
+        <router-link to="/syntha/about">About</router-link>
         <button @click="testButton" class="testButton">CLick me!</button>
     </div>
     <div class="accountSection">
-      <router-link to="/login" v-if="(store.loggedIn==false)">Login</router-link>
-      <router-link to="/account" v-if="(store.loggedIn)">Account</router-link> <!-- here we will put the actual account -->
+      <router-link to="/syntha/login" v-if="(store.loggedIn==false)">Login</router-link>
+      <router-link to="/syntha/account" v-if="(store.loggedIn)">Account</router-link> <!-- here we will put the actual account -->
     </div>
-    <div class="version">DEMO v0.5</div>
+    <div class="version">v1.0</div>
   </div>
   
   <main >

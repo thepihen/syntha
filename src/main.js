@@ -8,6 +8,7 @@ import Playground from './Playground.vue'
 import Login from './Login.vue'
 import Account from './Account.vue'
 import Workshop from './Workshop.vue'
+import Documentation from './Documentation.vue'
 import AudioChainManager from "./scripts/classes/AudioChainManager.js"
 // 3. Create the router instance and pass the `routes` option
 // You can pass in additional options here, but let's
@@ -16,14 +17,14 @@ const router = createRouter({
     // 4. Provide the history implementation to use. We are using the hash history for simplicity here.
     history: createWebHistory(),
     routes: [
-        { path: '/', component: Home },
-        { path: '/about', component: About },
-        { path: '/synth', component: Playground },
-        { path: '/login', component: Login },
-        { path: '/account', component: Account},
-        { path: '/workshop', component: Workshop },
-
-        { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFound }
+        { path: '/syntha/', component: Home },
+        { path: '/syntha/about', component: About },
+        { path: '/syntha/synth', component: Playground },
+        { path: '/syntha/login', component: Login },
+        { path: '/syntha/account', component: Account},
+        { path: '/syntha/workshop', component: Workshop },
+        { path: '/syntha/docs', component: Documentation },
+        { path: '/syntha/:pathMatch(.*)*', name: 'not-found', component: NotFound }
     ], // short for `routes: routes`
 });
 var ACM = new AudioChainManager("SynthA!");

@@ -6,20 +6,24 @@ Vue.use(Router)
 export default new Router({
     routes: [
         {
-            path: '/',
+            path: '/syntha/',
             component: () => import('./App.vue')
         },
         {
-            path: '/synth',
+            path: '/syntha/synth',
             component: () => import('./Playground.vue')
         },
         {
-            path: '/about',
+            path: '/syntha/about',
             component: () => import('./About.vue')
         },
         {
-            path: '/login',
+            path: '/syntha/login',
             component: () => import('./Login.vue')
+        },
+        {
+            path: '/syntha/docs',
+            component: () => import('./Documentation.vue')
         },
         // Add more routes as needed
     ]

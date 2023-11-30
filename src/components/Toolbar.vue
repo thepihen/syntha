@@ -16,12 +16,12 @@ export default {
         <div class="toolbar-title">SynthA!</div>
         
         <div class="toolbar-actions">
-            <router-link to="/">Home</router-link>
+            <router-link to="/syntha/">Home</router-link>
             <button class="toolbarButton" @click="savePreset"> Save </button>
             <button class="toolbarButton" @click="loadPreset"> Load </button>
         </div>
         
-        <div class="version">DEMO v0.5</div>
+        <div class="version">v1.0</div>
     </div>
 </template>
 
