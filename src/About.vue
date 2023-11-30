@@ -16,8 +16,8 @@
         </div>
         <div class="mainDivAbout">
         <span class="weirdAssButton" style="font-size:30px;cursor:pointer;" @click="openNav()">&#9776;</span>
-        <router-link class="homebtn" to="/syntha/">&#9750;</router-link>
-        <router-link class="accountbtn" to="/syntha/login">LOGIN</router-link>
+        <router-link class="homebtn" to="/syntha/" style="text-decoration: none;">&#9750;</router-link>
+        <router-link class="accountbtn" to="/syntha/login" style="text-decoration: none;">LOGIN</router-link>
         <!--
         <a href="home2.html"><span class="homebtn"> &#9750;</span></a>
         <a href="login.html"><span class="accountbtn">log in</span></a>
@@ -163,6 +163,7 @@ main {
     --glowcolor: rgb(112, 224, 255);
 }
 .weirdAssButton{
+    padding: 10px;
     color: v-bind('glowcolor');
 }
 /*
