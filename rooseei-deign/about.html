@@ -1,0 +1,192 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Home Page</title>
+    <meta name="description" content="SynthA about">
+    <style>
+        @import url("https://fonts.googleapis.com/css?family=Raleway");
+
+        .overlay {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: rgb(0, 0, 0);
+            background-color: rgba(16, 9, 45, 0.95);
+            overflow-x: hidden;
+            transition: 0.5s;
+        }
+
+        .overlay-content {
+            position: relative;
+            top: 25%;
+            width: 100%;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .overlay a {
+            padding: 8px;
+            text-decoration: none;
+            font-size: 36px;
+            color: rgb(112, 224, 255);
+            display: block;
+            transition: 0.3s;
+        }
+
+        .overlay a:hover,
+        .overlay a:focus {
+            color: #f1f1f1;
+        }
+
+        .overlay .closebtn {
+            position: absolute;
+            top: 20px;
+            right: 45px;
+            font-size: 60px;
+        }
+
+        @media screen and (max-height: 450px) {
+            .overlay a {
+                font-size: 20px
+            }
+
+            .overlay .closebtn {
+                font-size: 40px;
+                top: 15px;
+                right: 35px;
+            }
+        }
+
+
+        :root {
+            --glow-color: rgb(112, 224, 255);
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            font-family: "Raleway", sans-serif;
+            background: rgb(8, 5, 41);
+        }
+
+        main {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            font-family: "Raleway", sans-serif;
+        }
+
+
+        .glowing-btn {
+            position: relative;
+            color: var(--glow-color);
+            padding: 0.35em 1em;
+            margin-left: 550px;
+            margin-top: 100px;
+            margin-bottom: 50px;
+            border: 0.15em solid var(--glow-color);
+            border-radius: 0.45em;
+            background: none;
+            perspective: 2em;
+            font-family: "Raleway", sans-serif;
+            font-size: 2em;
+            font-weight: 900;
+            letter-spacing: 1em;
+
+            -webkit-box-shadow: inset 0px 0px 0.5em 0px var(--glow-color),
+                0px 0px 0.5em 0px var(--glow-color);
+            -moz-box-shadow: inset 0px 0px 0.5em 0px var(--glow-color),
+                0px 0px 0.5em 0px var(--glow-color);
+            box-shadow: inset 0px 0px 0.5em 0px var(--glow-color),
+                0px 0px 0.5em 0px var(--glow-color);
+        }
+
+
+
+        @media only screen and (max-width: 100%) {
+            .glowing-btn {
+                font-size: 1em;
+            }
+        }
+
+        .accountbtn {
+            position: static;
+            margin-left: 1270px;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--glow-color);
+        }
+
+        .homebtn {
+            position: relative;
+            margin-right: 70px;
+            font-size: 40px;
+            cursor: pointer;
+            color: var(--glow-color);
+        }
+
+
+        .text {
+            text-align: center;
+            position: relative;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="myNav" class="overlay">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <div class="overlay-content">
+            <a href="library.html">LIBRARY</a> <br>
+            <a href="account.html">ACCOUNT</a> <br>
+            <a href="#">DOCUMENTATION</a> <br>
+            <a href="#">ABOUT</a>
+        </div>
+    </div>
+    <span style="font-size:30px;cursor:pointer;color:var(--glow-color)" onclick="openNav()">&#9776;</span>
+    <a href="home2.html"><span class="homebtn"> &#9750;</span></a>
+    <a href="login.html"><span class="accountbtn">log in</span></a>
+
+
+    <main>
+        <button class='glowing-btn'>SYNTHA</span></button>
+
+
+        <div class="text">
+            <p>SynthA! is a student made project, hoping to make it easier to develop music wherever you are! <br>
+                The site was build for the 'Design of WWW Services' course at Aalto Univeristy</p>
+            <h1>THE TEAM</h1>
+            <p><b>Francesco Colotti <br>
+                </b> Creator of the sandboxTM <br><br>
+                <b>Jakub Votrubec</b> <br> Mastermind of the login and library <br><br>
+                <b>Roos Zoutman
+                </b> <br> Designer of the frontpage
+            </p>
+        </div>
+    </main>
+    <script>
+        function openNav() {
+            document.getElementById("myNav").style.width = "100%";
+        }
+
+        function closeNav() {
+            document.getElementById("myNav").style.width = "0%";
+        }
+    </script>
+</body>
+
+</html>
