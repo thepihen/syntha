@@ -194,10 +194,13 @@ export default {
                 }
                 return;
             }
-            this.setActiveKey(key)
+            
             let octDiff = this.oct - 4
             let midiKey = this.getMidiKey(key) + 12 * octDiff;
-            this.ACM.keyPlayed(midiKey, this.$parent.moduleId)
+            if (this.activeKey != key) {
+                this.setActiveKey(key)
+                this.ACM.keyPlayed(midiKey, this.$parent.moduleId)
+            }
         },
         setActiveKey(key){
             this.activeKey = key;

@@ -105,8 +105,7 @@ export default {
                     x: this.currentPosition.x,
                     y: this.currentPosition.y,
                 };
-                
-                
+
             }
         },
         stopDragging() {
@@ -127,13 +126,16 @@ export default {
         test(){
             console.log("test");
         },
+        printModule(){
+            console.log("LOL")
+        }
     },
 };
 </script>
 
 <template>
 <div class="module" :style="elementStyles">
-    <div class="module-title" @mousedown="startDragging">{{ moduleName }} <a style="cursor:pointer" @click="removeModule"> &nbsp;&nbsp;&nbsp;&nbsp;X </a></div>
+    <div class="module-title" @mousedown="startDragging">{{ moduleName }} <!-- <a style="cursor:pointer" @click="removeModule"> &nbsp;&nbsp;&nbsp;&nbsp;X </a> --></div>
     <div class="module-control-area">
         <slot></slot> <!-- <slot/> -->
         

@@ -7,6 +7,7 @@ export default class AudioNode {
         this.type = toneType;
         this.next = {}; //can be a list
         this.prev = {}; //can be a list
+        this.isToDestination = false;
         this.createSynthNode(toneType);
     }
     createSynthNode(toneType){
@@ -26,7 +27,17 @@ export default class AudioNode {
         }
     }
     setPrevious(node, portIdTo){
-        this.prev[portIdTo] = node;
+        this.prev[portIdTo] =  node;
+        if(node.type=="MidiIn" && this.type=="Oscillator"){
+            this.synthNode.stop();
+            this.synthNode.connect(this.internalChain[0]).start()
+            
+            if (this.isToDestination) {
+                this.synthNode.disconnect(Tone.getDestination())
+                this.internalChain[0].toDestination();
+            }
+            
+        }
     }
     handleNodeSetup(type){
         //this is the point where good practices go and die
@@ -38,6 +49,14 @@ export default class AudioNode {
                 this.synthNode.set({
                     frequency: "C4"
                 });
+                var env = new Tone.AmplitudeEnvelope({
+                    attack: 0.1,
+                    decay: 1,
+                    sustain: 0.5,
+                    release: 0.5,
+                });
+                env.toDestination();
+                this.internalChain.push(env);
                 this.synthNode.start();
                 console.log("OSCILLATING", this.synthNode)
                 //this.synthNode.toDestination().start();
@@ -112,6 +131,7 @@ export default class AudioNode {
                 for (let key in this.prev) {
                     //console.log(this.prev[key])
                     this.prev[key].synthNode.disconnect();
+                    this.prev[key].isToDestination = false;
                 }
                 return
             break;
@@ -144,6 +164,14 @@ export default class AudioNode {
         */
        //kinda stupid that you can't change this with set but here we are...
         if (this.type == "Oscillator" || this.type == "Filter") {
+            //if the first four letters of the parameter are "ADSR"...
+            if (parameter.substring(0, 4) == "ADSR") {
+                //...then we're dealing with an envelope control
+                this.internalChain[0].set({
+                    [parameter.substring(4, parameter.length).toLowerCase()]: value
+                });
+                return;
+            }
             if (parameter == "type") {
                 this.synthNode.type = value;
                 return;
@@ -193,6 +221,11 @@ export default class AudioNode {
         }
         for (let key in this.prev) {
             if (this.prev[key] == node) {
+                if (node.type == "MidiIn" && this.type =="Oscillator"){
+                    this.synthNode.stop();
+                    this.synthNode.disconnect(this.internalChain[0]);
+                    this.synthNode.start();
+                }
                 delete this.prev[key];
             }
         }
@@ -212,6 +245,10 @@ export default class AudioNode {
         }
         if(this.type=="Oscillator"){
             this.synthNode.volume.value = 0;
+            if (this.internalChain.length > 0) {
+                this.internalChain[0].triggerAttack();
+            }
+            
             this.synthNode.set({
                 "frequency": Tone.Frequency(midiKey, "midi").toFrequency(),
             });
@@ -225,14 +262,103 @@ export default class AudioNode {
             }
         }
         if (this.type == "Oscillator") {
-            this.synthNode.volume.value = -200;
+            if(this.internalChain.length > 0){
+                this.internalChain[0].triggerRelease();
+            }else{
+                this.synthNode.volume.value = -200;
+            }
         }
     }
 
     sendOutToDestination(){
         this.synthNode.toDestination();
+        this.isToDestination = true;
+        if (this.type == "Oscillator") {
+            //if the previous node is a MidiIn then we need to connect the ADSR
+            
+            if (this.prev[0] != null && this.prev[0] != undefined) {
+                if(this.prev[0].type=="MidiIn"){
+                    this.synthNode.disconnect(Tone.getDestination())
+                    //this.internalChain[0].toDestination();
+                }
+            }
+        }
     }
     print(){
         console.log("id: " + this.id + " type: " + this.type);
     }
+    getData(){
+        var param_vals = {};
+        switch (this.type) {
+            //get the fucking parameters of interest and their value
+            case "Oscillator":
+                //get the frequency and the ADSR value
+                param_vals["frequency"] =  this.synthNode.frequency.value;
+                param_vals["attack"] = this.internalChain[0].attack;
+                param_vals["decay"] = this.internalChain[0].decay;
+                param_vals["sustain"] = this.internalChain[0].sustain;
+                param_vals["release"] = this.internalChain[0].release;
+                param_vals["type"] = this.synthNode.type;
+                break;
+            case "Theremin":
+                param_vals["volume"] = this.synthNode.volume.value;
+                param_vals["frequency"] = this.synthNode.frequency.value;
+                break;
+            case "Reverb":
+                param_vals["dry_wet"] = this.synthNode.wet;
+                break;
+            case "Filter":
+                param_vals["type"] = this.synthNode.type;
+                break;
+            case "VCA":
+                param_vals["gain"] = this.synthNode.factor;
+                break;
+        }
+        return {
+            id: this.id,
+            type: this.type,
+            param_vals: param_vals,
+            next: this.next,
+            prev: this.prev,
+            isToDestination: this.isToDestination
+        }
+    }
+
+    setData(type, data) {
+        console.log(data["next"])
+        /*
+        for(let key in data["next"]){
+            this.setNext(key, data["next"][key])
+        }
+        this.next = data["next"];
+        this.prev = data["prev"];
+        */
+        this.isToDestination = data["isToDestination"];
+        var param_vals = data["param_vals"];
+        switch (type) {
+            case "Oscillator":
+                // Set the frequency and the ADSR values
+                this.synthNode.frequency.value = param_vals["frequency"];
+                this.internalChain[0].attack = param_vals["attack"];
+                this.internalChain[0].decay = param_vals["decay"];
+                this.internalChain[0].sustain = param_vals["sustain"];
+                this.internalChain[0].release = param_vals["release"];
+                this.synthNode.type = param_vals["type"];
+                break;
+            case "Theremin":
+                this.synthNode.volume.value = param_vals["volume"];
+                this.synthNode.frequency.value = param_vals["frequency"];
+                break;
+            case "Reverb":
+                this.synthNode.wet.value = param_vals["dry_wet"];
+                break;
+            case "Filter":
+                this.synthNode.type = param_vals["type"];
+                break;
+            case "VCA":
+                this.synthNode.factor = param_vals["gain"];
+                break;
+        }
+    }
+
 }

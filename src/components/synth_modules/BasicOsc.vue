@@ -5,8 +5,20 @@
         :parameter="'frequency'" :label="'FREQ'" :initialValue=440
         :from=20 :to=4000>
         </component>
-        <component  @updateknobvalue="knobUpdatedValue" :is="'Knob'" :parameter="'attack'" :label="'ATK'" :initialValue=4 :from=3
-            :to=10> </component>
+        
+        <br>
+        </div>
+        <div class="knobClass2">
+            <component @updateknobvalue="knobUpdatedValue" :is="'Knob'" :parameter="'ADSRattack'" :label="'ATK'" :initialValue=0.1
+                :from=0 :to=2> </component>
+            <component @updateknobvalue="knobUpdatedValue" :is="'Knob'" :parameter="'ADSRdecay'" :label="'DEC'" :initialValue=1
+                :from=0 :to=2> </component>
+        </div>
+        <div class="knobClass3">
+                        <component @updateknobvalue="knobUpdatedValue" :is="'Knob'" :parameter="'ADSRsustain'" :label="'SUS'" :initialValue=0.5
+                            :from=0 :to=1> </component>
+                        <component @updateknobvalue="knobUpdatedValue" :is="'Knob'" :parameter="'ADSRrelease'" :label="'REL'" :initialValue=0.5
+                            :from=0 :to=5> </component>
         </div>
         <!-- sorry if it looks like crap -->
         <select v-model="selectedWaveType" @change="handleWaveTypeChange">
@@ -52,6 +64,7 @@
     position:relative;
     display:flex;
     flex-direction: row;
+    flex-wrap: wrap;
     top:0%;
     left:0%;
     width:100%;
@@ -59,6 +72,32 @@
     min-height:150px;
     background-color: rgb(25, 198, 117);
 }
+.knobClass2 {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    top: 0%;
+    left: 0%;
+    width: 100%;
+    height: 100%;
+    min-height: 150px;
+    background-color: rgb(25, 198, 117);
+}
+
+.knobClass3 {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    top: 0%;
+    left: 0%;
+    width: 100%;
+    height: 100%;
+    min-height: 150px;
+    background-color: rgb(25, 198, 117);
+}
+
 .portContainer {
     position: relative;
     display: flex;

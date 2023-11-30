@@ -11,6 +11,7 @@ or really any node.
 
 import AudioNode from "./AudioNode.js";
 import * as Tone from 'tone'
+import '../utils/cycle.js'
 //import the type to tone class json otherwise this poor ACM doesn't know which tone blocks to add!
 import type_to_class_json from "../../assets/module_type_to_tone_class.json"
 export default class AudioChainManager {
@@ -48,7 +49,7 @@ export default class AudioChainManager {
         //basically you can't immediately reconnect a new module 
         //because it could have the same type as the old one
         //Solved it by changing the way Ids are assigned to modules in Playground.vue
-
+        console.log("removed")
     }
     removeAllConnections(node){
         for(let i = 0; i<this.modules.length; i++){
@@ -132,6 +133,7 @@ export default class AudioChainManager {
     }
     hasConnections(modId, portId){
         //check if a port has connections
+        console.log(this.modules[modId])
         if(this.modules[modId].hasConnectionsOnPort(portId)){
             return true;
         }
@@ -155,11 +157,78 @@ export default class AudioChainManager {
     }
 
     getData(){
+        let modules_data = {};
+        for(let i = 0; i < this.modules.length; i++){
+            modules_data[i] = this.modules[i].getData();
+        }
         let data = {
             "appName": this.appName,
-            "modules": this.modules
+            "modules": modules_data
         };
         return data;
+    }
+
+    initializeFromPreset(data){
+        /*
+        console.log(data)
+        console.log("****")
+        console.log(this.modules)
+        console.log(data["appName"])
+        console.log(data["modules"])
+        var lll = data["modules"]
+        console.log(lll)
+        console.log(lll[0])
+        console.log(lll.length)
+        this.appName = data["appName"];
+        */
+
+        //pass every entry in modules
+        let modules_data = data["modules"];
+        for(let i = 0; i < this.modules.length; i++){
+            this.removeNode(this.modules[i].id)
+        }
+        this.modules = []
+        console.log(modules_data)
+        for(let key in modules_data){
+            let an = new AudioNode(modules_data[key]["id"], modules_data[key]["type"])
+            an.setData(modules_data[key]["type"], modules_data[key])
+            this.modules.push(an)
+        }
+        //now that all nodes are setup...
+        let ww = 0;
+        for (let key in modules_data) {
+            let nextNode = modules_data[key]["next"];
+            for(let key in nextNode){
+                let nodeId = nextNode[key]["id"]
+                let nextNodeIdx = this.findNode(nodeId)
+                this.modules[ww].setNext(this.modules[nextNodeIdx], key)
+            }
+            let prevNode = modules_data[key]["prev"];
+            for (let key in prevNode) {
+                let nodeId = prevNode[key]["id"]
+                let prevNodeIdx = this.findNode(nodeId)
+                this.modules[ww].setPrevious(this.modules[prevNodeIdx], key)
+            }
+            ww++;
+        }
+        /*
+        var tempModules = data["modules"];
+        for(let i = 0; i < tempModules.length; i++){
+            console.log("adding module")
+            let an = new AudioNode(tempModules[i]["id"], tempModules[i]["type"])
+            console.log(an.synthNode)
+            an.synthNode = tempModules[i]["synthNode"]
+            console.log(an.synthNode)
+            an.internalChain = tempModules[i]["internalChain"]
+            this.next = tempModules[i]["next"]; //can be a list
+            this.prev = tempModules[i]["prev"]; //can be a list
+            this.isToDestination = tempModules[i]["isToDestination"];
+            this.modules.push(an)
+        }
+        
+        */
+       
+        console.log(this.modules)
     }
 
     async recordAudio(){

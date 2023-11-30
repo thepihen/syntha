@@ -8,4 +8,7 @@ module.exports = {
             minimize: false,
         },
     },
+    devServer: {
+        proxy: 'https://syntha-backend-fef92fb3e9de.herokuapp.com/',
+    }
 }

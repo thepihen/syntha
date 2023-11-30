@@ -45,7 +45,10 @@
         <img class="docsImage" style="width: 50%;" src="src/assets/docs/moduleMove.jpg" alt="Image of the playground with a Theremin module with a red circle around its top part">
         <div class="docsImageCaption">Figure 3: Moving a module</div> 
 
-        
+        recording
+        saving/loading presets
+
+        module specific documentaion
         </div>
         </div>
     </main>
