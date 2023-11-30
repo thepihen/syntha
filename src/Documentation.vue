@@ -6,7 +6,7 @@
         <h2 class="docsSubTitle"> How do I operate that thing?! </h2>
         <div class="docsContent"> Welcome to the docs page! Here you will learn all about operating the SynthA! modular-style synth.
         <br>To begin you should of course click the "Playground" button on the top header. You should be led to the page in Figure 1.
-        <img class="docsImage" style="width: 50%;" src="src/assets/docs/playground.jpg" 
+        <img class="docsImage" style="width: 50%;" :src="'./src/assets/docs/playground.jpg'" 
         alt="Figure 1: A screenshot of the playground page of SynthA!. 
         The page is empty and displays a top bar with the buttons home, 
         save and load, a notebook-style background for the page and a 
@@ -17,8 +17,8 @@
             Click on a category to expand its contents; for example click on "SYNTH".
             <br> 
             Now the page should look something like Figure 2.
-        
-        <img class="docsImage" style="width: 50%;" src="src/assets/docs/scaffold.jpg"
+            
+        <img class="docsImage" style="width: 50%;" :src="'./src/assets/docs/scaffold.jpg'"
         alt="A screenshot of the playground page of SynthA!. The module scaffold is visible
         on the left side of the page. The scaffold has the synth category expanded
         and two modules, basic oscillator and theremin, are visible with their 
@@ -42,7 +42,7 @@
         <br>
         You can click and drag on the playground background to move the canvas around (useful especially if you have many modules).
         You can click and drag a module by its top part (see Figure 3) to move it around.
-        <img class="docsImage" style="width: 50%;" src="src/assets/docs/moduleMove.jpg" alt="Image of the playground with a Theremin module with a red circle around its top part">
+        <img class="docsImage" style="width: 50%;" :src="'./src/assets/docs/moduleMove.jpg'" alt="Image of the playground with a Theremin module with a red circle around its top part">
         <div class="docsImageCaption">Figure 3: Moving a module</div> 
 
         recording
