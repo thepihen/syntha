@@ -102,7 +102,7 @@ export default {
     <div class="toolbar-actions">
         <router-link to="/syntha/">Home</router-link>
         <router-link @click="startACM" to="/syntha/synth">Playground</router-link>
-        <router-link to="/syntha/workshop">Workshop</router-link>
+        <router-link to="/syntha/workshop">Library</router-link>
         <router-link to="/syntha/docs">Documentation</router-link>
         <router-link to="/syntha/about">About</router-link>
     </div>

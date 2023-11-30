@@ -372,7 +372,14 @@ import * as Tone from 'tone'
                     playGroundXtranslate:0,
                     playGroundYtranslate:0,
                     
+                    presetId:null,
                 };
+            },
+            mounted(){
+                let pId = this.$route.params.presetId;
+                if(pId!=undefined && pId!=null){
+                    this.loadPreset(pId)
+                }
             },
             options: {
                 isDragging() {
@@ -723,7 +730,8 @@ import * as Tone from 'tone'
                     
                 },
                 
-                loadPreset(){
+                loadPreset(id){
+                    
                     console.log("loading preset!!!!")
                     //load the preset from the database
                     
@@ -734,7 +742,7 @@ import * as Tone from 'tone'
                     
                     const headers = { "Content-Type": "application/json" };
                     
-                    fetch("https://syntha-backend-fef92fb3e9de.herokuapp.com/presets/"+this.lastSavedId, 
+                    fetch("https://syntha-backend-fef92fb3e9de.herokuapp.com/presets/"+id, 
                     { method:'GET',headers:headers
                 })
                 .then(response => response.json())

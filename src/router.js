@@ -10,7 +10,8 @@ export default new Router({
             component: () => import('./App.vue')
         },
         {
-            path: '/syntha/synth',
+            path: '/syntha/synth/:presetId?',
+            name: 'Playground',
             component: () => import('./Playground.vue')
         },
         {

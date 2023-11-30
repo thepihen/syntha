@@ -2,6 +2,7 @@
         <div id="myNav" class="overlay">
             <a href="javascript:void(0)" class="closebtn" @click="closeNav()">&times;</a>
             <div class="overlay-content">
+                <router-link to="/syntha/">HOME</router-link><br>
                 <router-link to="/syntha/workshop">LIBRARY</router-link><br>
                 <router-link to="/syntha/account">ACCOUNT</router-link><br>
                 <router-link to="/syntha/docs">DOCUMENTATION</router-link><br>

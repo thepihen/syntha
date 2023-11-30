@@ -20,7 +20,7 @@ const router = createRouter({
     routes: [
         { path: '/syntha/', component: Home },
         { path: '/syntha/about', component: About },
-        { path: '/syntha/synth', component: Playground },
+        { path: '/syntha/synth/:presetId?', component: Playground },
         { path: '/syntha/login', component: Login },
         { path: '/syntha/account', component: Account},
         { path: '/syntha/workshop', component: Workshop },
