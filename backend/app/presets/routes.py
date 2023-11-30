@@ -17,17 +17,17 @@ def index():
     return render_template("presets/index.html", presets=presets)
 
 
-@bp.route("/new", methods=['POST'])
+@bp.route("/new", methods=["POST"])
 def create():
     request_data = request.get_json()
     print(request_data)
-    metadata = request_data['metadata']
-    data = request_data['data']
-    name = metadata['name']
-    creator_id = metadata['creator_id']
+    metadata = request_data["metadata"]
+    data = request_data["data"]
+    name = metadata["name"]
+    creator_id = metadata["creator_id"]
     if User.query.filter_by(id=creator_id).first() is None:
         return make_response("Creator user not found", HTTPStatus.NOT_FOUND)
-    public = metadata['public']
+    public = metadata["public"]
 
     new_preset = Preset()
     new_preset.name = name
@@ -39,7 +39,9 @@ def create():
     db.session.commit()
 
     preset_id = new_preset.id
-    return make_response("Preset successfully created/updated", HTTPStatus.OK, { "preset_id": preset_id })
+    return make_response(
+        "Preset successfully created/updated", HTTPStatus.OK, {"preset_id": preset_id}
+    )
 
 
 @bp.route("/<preset_id>", methods=["GET", "DELETE", "POST"])
@@ -68,13 +70,13 @@ def modify_preset(preset_id):
         return make_response("Successfully updated preset", HTTPStatus.OK)
 
 
-@bp.route("/all", methods=['GET'])
+@bp.route("/all", methods=["GET"])
 def get_presets():
     presets = Preset.query.all()
     return make_response(jsonify(presets), HTTPStatus.OK)
 
 
-@bp.route("/public", methods=['GET'])
+@bp.route("/public", methods=["GET"])
 def get_public_presets():
     presets = Preset.query.all()
     public_presets = []
