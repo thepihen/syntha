@@ -18,7 +18,8 @@ export default {
         <div class="toolbar-actions">
             <router-link to="/syntha/">Home</router-link>
             <button class="toolbarButton" @click="savePreset"> Save </button>
-            <button class="toolbarButton" @click="loadPreset"> Load </button>
+            <!--<button class="toolbarButton" @click="loadPreset"> Load </button>-->
+            <router-link to="/syntha/workshop/">Load</router-link>
         </div>
         
         <div class="version">v1.0</div>
